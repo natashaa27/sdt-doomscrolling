@@ -4,6 +4,16 @@ A clickable, mobile-sized prototype for a design-thinking project on doomscrolli
 Pause adds a small layer before and after a scrolling session so starting is a
 conscious choice and stopping feels good. It never blocks the user.
 
+The two interventions under test:
+
+1. **Purpose Sessions with Conscious Continue**: pick a purpose and a time before the
+   app opens; at the time you chose, a purpose-specific checkpoint offers End /
+   Continue for 5 minutes / Change my purpose.
+2. **Reward the Exit**: stopping by choice shows "You chose to stop." Variant A is the
+   message only; variant B adds a plant that grows a leaf for each stop you chose.
+
+Files:
+
 - `index.html`: **Pause v3** (current version, served on GitHub Pages)
 - `pause-v2.html`: **Pause v2**, the previous version, kept for comparison
 
@@ -12,36 +22,78 @@ conscious choice and stopping feels good. It never blocks the user.
 Open `index.html` in a browser, or use the Pages site:
 https://natashaa27.github.io/sdt-doomscrolling/
 
-For a participant's own phone:
-https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=10&reward=A
+For a participant's own phone (real time, reward A):
+https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=1&reward=A
 
-URL options: `participant=1`, `speed=1|10|60`, `reward=A|B`, `breath=on`, `pid=P07`.
-Tap the phone's clock five times within three seconds to show or hide the test console.
+| Parameter | Values | Default |
+|---|---|---|
+| `participant` | `1` hides the test console | off |
+| `speed` | `1`, `10`, `60` | `1` |
+| `reward` | `A`, `B` | `A` |
+| `pause` | `off` for the baseline condition | `on` |
+| `goal` | `5`, `10`, `15` (optional weekly goal) | none |
+| `breath` | `on` for the 3-second breath | off |
+| `pid` | participant ID | `P01` |
+
+Tap the phone's clock five times within three seconds to show or hide the console.
 
 The log is kept in the tab's session storage: it survives a reload but is cleared when
 the tab closes. Export it after each participant.
 
-## What changed from v2
+## Running a test round
 
-- Purpose and time on one sheet; tapping a time opens the app (two taps).
-- "I don't need [app] right now" lets people back out; logged as `declined`, no reward.
-- Optional 3-second breath before the prompt (off by default).
-- Full-screen checkpoint whose question depends on the purpose and alternates
-  between two wordings ("Feeling rested?" / "Still on your break?").
-- Live pill at the top shows purpose and time.
-- Reward B: a plant that grows a leaf per chosen stop and flowers at a weekly goal the
-  participant sets. It never shrinks.
-- Close the app with the home bar at the bottom of the phone.
-- Console: dismissal watch (purpose picks under 1 s, same purpose repeated), running
-  totals, auto-save, CSV export/copy.
+1. **Before testing:** tell the participant that their reflection answers are saved in
+   the researcher's session log, and who will see it. Set the weekly goal with them
+   only if they want one. Keep "Example stops at week start" at 0.
+2. **Conditions:** run some tasks with the Pause layer off (baseline) and some with it
+   on, and switch reward A/B halfway through the Pause tasks. Reverse the order for
+   every second participant.
+3. **Speed:** use 1× with participants. 10× and 60× are for walkthroughs; durations
+   logged at those speeds are simulated and are left out of the real-time averages.
+4. **Debrief (outside the app):** "What made you stop or continue?" and "Did the plant
+   feel encouraging, pressuring, or irrelevant?" Record both in the console's Debrief
+   section, then export the session log and the debrief CSV.
 
-## Benchmarks shown in the console
+## What the console shows
 
-- one sec: participants closed the target app again in 36% of opening attempts
-  ([Grüning et al., PNAS 2023](https://www.pnas.org/doi/10.1073/pnas.2213114120)).
-- Wellspent: RCT of full-screen quit/continue reminders
-  ([JMIR mHealth 2026](https://mhealth.jmir.org/2026/1/e56824)). The share of reminders
-  followed by a stop has not been checked yet, so no figure is shown.
+- **Purpose-response patterns:** time to pick a purpose, with quick picks (under 1 s)
+  and repeated purposes marked. These can reflect familiarity or a consistent reason,
+  so use them as prompts for a follow-up question, not as proof of automatic dismissal.
+- **Totals:** sessions by condition, how often people chose not to open, stops within
+  1 minute of a checkpoint (app time), chosen stops, average session length for
+  1× sessions only (Pause vs baseline), and reflection counts.
+
+## Log columns
+
+Session log (one row per session): `participant_id, session_number, session_id,
+condition, app, trigger, breath_pause, purpose, purpose_history, purpose_decision_ms,
+prompt_total_ms, time_cue_min, start_time, checkpoint_count, checkpoint_titles,
+checkpoint_choices, checkpoint_decision_ms, stop_within_1min_of_checkpoint_app_time,
+original_boundary_min, final_boundary_min, time_speed, duration_app_s, end_time,
+end_type, interruption, within_boundary, reward_variant, chosen_stops_after,
+example_stops_at_start, weekly_goal, reflection, worthwhile, in_control`
+
+- Decision times (`*_ms`) are real milliseconds.
+- `duration_app_s`, clock times and `stop_within_1min_of_checkpoint_app_time` use app
+  time: it runs at `time_speed` and pauses on Pause screens. At 1× it equals real time.
+- `end_type` is `voluntary`, `declined` (chose not to open), `interrupted` or `unknown`.
+  Declined and baseline sessions earn no reward and don't count as chosen stops.
+
+Debrief CSV (one row per participant): `participant_id, saved_at,
+what_made_you_stop_or_continue, plant_feeling, notes`
+
+## Research notes
+
+Background evidence for the design, not targets for this test. Both studies ran for
+weeks with real use, so their numbers are not directly comparable with a short,
+simulated session.
+
+- **one sec** (Grüning et al., [PNAS 2023](https://www.pnas.org/doi/10.1073/pnas.2213114120)):
+  six-week field study with 280 participants. A brief pause before a chosen app opened;
+  on average, participants closed the app again in 36% of opening attempts.
+- **Wellspent** ([JMIR mHealth 2026](https://mhealth.jmir.org/2026/1/e56824)):
+  three-week RCT with 70 iPhone users. Full-screen quit/continue reminders after a
+  self-set time limit. The share of reminders followed by a stop has not been checked.
 
 ---
 

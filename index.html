@@ -198,6 +198,7 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .growth{margin-top:18px; display:flex; flex-direction:column; align-items:center}
 .plant{width:190px; height:auto}
 .growth-cap{margin:6px 0 0; font-size:15.5px; font-weight:600; color:var(--p-teal-2); text-align:center}
+.growth-note{margin:4px 0 0; font-size:13px; color:var(--p-muted); text-align:center}
 .goal{margin-top:26px}
 .goal-q{margin:0 0 10px; font-size:16px; font-weight:600}
 .goal .chips{grid-template-columns:repeat(3,1fr)}
@@ -293,6 +294,8 @@ table{border-collapse:collapse; width:100%; font-size:13px; font-variant-numeric
 th,td{padding:7px 10px; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap}
 th{font-weight:700; color:var(--muted); background:color-mix(in srgb, var(--rule) 30%, transparent)}
 tr:last-child td{border-bottom:0}
+.db-q{display:block; font-weight:700; font-size:14.5px; margin:12px 0 6px}
+.db-text{width:100%; min-height:70px; padding:8px 10px; border:1.5px solid var(--rule); border-radius:9px; background:var(--field); color:var(--ink); font:inherit; resize:vertical}
 dialog{border:1px solid var(--rule); border-radius:14px; background:var(--bg); color:var(--ink); max-width:min(720px,92vw); width:100%}
 dialog textarea{width:100%; height:260px; font-family:ui-monospace, Menlo, Consolas, monospace; font-size:12px; background:var(--field); color:var(--ink); border:1px solid var(--rule); border-radius:8px; padding:8px}
 dialog::backdrop{background:rgba(10,20,22,.45)}
@@ -337,7 +340,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <span class="c-mark" id="cMark"></span>
       <div>
         <h1>Pause test console</h1>
-        <p>Hand the participant the phone on the left and run each task from here. The log survives a page reload but is cleared when this tab closes, so export it after each participant.</p>
+        <p>Hand the participant the phone on the left and run each task from here. The log survives a page reload but is cleared when this tab closes, so export it after each participant. Before testing, tell participants that their reflection answers are recorded in this log and who will see it.</p>
       </div>
       <button class="btn" id="btnPView" type="button">Participant view</button>
     </header>
@@ -345,14 +348,22 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
     <section>
       <h2>Participant</h2>
       <div class="row"><label for="pid">Participant ID</label><input class="inp" id="pid" autocomplete="off"></div>
-      <div class="row"><label for="weekStart">Stops at week start</label><input class="inp" id="weekStart" type="number" min="0" max="50">
-        <p class="help">Seeds the plant in reward B so it doesn't start empty. Applies from the next new participant.</p></div>
+      <div class="row"><label for="weekStart">Example stops at week start</label><input class="inp" id="weekStart" type="number" min="0" max="50">
+        <p class="help">Keep at 0 for participant testing. For demos only: stops above 0 appear on the plant, labelled as example progress from earlier in the week.</p></div>
+      <div class="row"><span class="rl" id="lblGoal">Weekly goal (optional)</span>
+        <div class="segc" role="group" aria-labelledby="lblGoal" data-setting="goal">
+          <button type="button" data-v="none">No goal</button><button type="button" data-v="5">5</button><button type="button" data-v="10">10</button><button type="button" data-v="15">15</button></div>
+        <p class="help">Set this with the participant during setup, only if they want one. Without a goal the plant still grows but never flowers. The exit screen never asks for a goal.</p></div>
       <div class="row"><span class="rl">Next participant</span><div class="btns"><button class="btn fill" id="btnNew" type="button">New participant</button></div>
         <p class="help">Ends any open session (logged as unknown), moves to the next ID, resets their weekly stops and goal, and returns to the home screen.</p></div>
     </section>
 
     <section>
       <h2>Conditions</h2>
+      <div class="row"><span class="rl" id="lblPause">Pause layer</span>
+        <div class="segc" role="group" aria-labelledby="lblPause" data-setting="pause">
+          <button type="button" data-v="on">On</button><button type="button" data-v="off">Off (baseline)</button></div>
+        <p class="help">Baseline keeps the same apps, feed and home-bar exit but shows no purpose prompt, checkpoint, reward or reflection. Use it to see what Pause adds.</p></div>
       <div class="row"><span class="rl" id="lblReward">Exit reward</span>
         <div class="segc" role="group" aria-labelledby="lblReward" data-setting="reward">
           <button type="button" data-v="A">A: message</button><button type="button" data-v="B">B: message and growth</button></div>
@@ -382,8 +393,8 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
     </section>
 
     <section>
-      <h2>Dismissal watch</h2>
-      <p class="help">How long this participant takes to pick a purpose, in real seconds. The warning sign is times falling session after session and the same purpose picked every time.</p>
+      <h2>Purpose-response patterns</h2>
+      <p class="help">How long this participant takes to pick a purpose, in real seconds. A quick pick or a repeated purpose can mean familiarity or a consistent reason, not only automatic dismissal. Treat them as prompts for a follow-up question, not as proof.</p>
       <div id="watch"></div>
     </section>
 
@@ -393,11 +404,24 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
     </section>
 
     <section>
+      <h2>Debrief (after the tasks)</h2>
+      <p class="help">Ask these outside the app, once the participant has finished. Saved per participant ID and exported separately from the session log.</p>
+      <label class="db-q" for="dbWhy">What made you stop or continue?</label>
+      <textarea class="db-text" id="dbWhy"></textarea>
+      <span class="db-q" id="lblPlant">Did the plant feel encouraging, pressuring, or irrelevant?</span>
+      <div class="segc" role="group" aria-labelledby="lblPlant" data-setting="dbPlant">
+        <button type="button" data-v="encouraging">Encouraging</button><button type="button" data-v="pressuring">Pressuring</button><button type="button" data-v="irrelevant">Irrelevant</button><button type="button" data-v="not_seen">Didn't see it</button></div>
+      <label class="db-q" for="dbNotes">Notes</label>
+      <textarea class="db-text" id="dbNotes"></textarea>
+      <div class="btns" style="margin-top:10px"><button class="btn fill" type="button" id="btnDbSave">Save debrief</button><button class="btn" type="button" id="btnDbExport">Export debrief CSV</button><button class="btn" type="button" id="btnDbCopy">Copy debrief CSV</button></div>
+    </section>
+
+    <section>
       <h2>Session log</h2>
       <div class="btns"><button class="btn fill" type="button" id="btnExport">Export CSV</button><button class="btn" type="button" id="btnCopy">Copy CSV</button><button class="btn quiet" type="button" id="btnClear">Clear log</button></div>
       <div class="table-wrap"><table id="logTable"></table></div>
-      <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length and clock times use the simulated clock, which pauses on Pause screens.</p>
-      <p class="help">For participant view on their own phone, host this file (for example on GitHub Pages) and add <b>?participant=1&amp;speed=10&amp;reward=A</b> to the link. Tap the phone's clock five times within three seconds to bring this console back.</p>
+      <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length, clock times and "within 1 minute of a checkpoint" use app time, which pauses on Pause screens and runs at the chosen speed; each row records its speed, so compare durations only from 1× sessions.</p>
+      <p class="help">For participant view on their own phone, host this file (for example on GitHub Pages) and add <b>?participant=1&amp;speed=1&amp;reward=A</b> to the link (<b>&amp;pause=off</b> for baseline). Tap the phone's clock five times within three seconds to bring this console back.</p>
     </section>
   </aside>
 </div>
@@ -529,10 +553,11 @@ const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 
 const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
 
 /* ---------------- State ---------------- */
-const STORE = 'pause.v3';
+const STORE = 'pause.v4';
 const S = {
-  settings:{pid:'P01', weekStart:3, reward:'A', breath:false, speed:10},
-  week:{stops:3, goal:null},
+  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on'},
+  week:{stops:0, goal:null, seed:0},
+  debrief:{}, dbPlant:'',
   sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()
 };
 const T = {}; // timers
@@ -546,10 +571,11 @@ function load(){
     if (d.week) S.week = d.week;
     if (typeof d.sessionN === 'number') S.sessionN = d.sessionN;
     if (Array.isArray(d.log)) S.log = d.log;
+    if (d.debrief) S.debrief = d.debrief;
   }catch(e){}
 }
 function save(){
-  try{ sessionStorage.setItem(STORE, JSON.stringify({settings:S.settings, week:S.week, sessionN:S.sessionN, log:S.log})); }catch(e){}
+  try{ sessionStorage.setItem(STORE, JSON.stringify({settings:S.settings, week:S.week, sessionN:S.sessionN, log:S.log, debrief:S.debrief})); }catch(e){}
 }
 
 const el = {
@@ -600,7 +626,8 @@ function startFlow(app, trigger){
   S.sessionN++;
   S.cur = {
     id: S.settings.pid + '-' + S.sessionN + '-' + Math.random().toString(36).slice(2, 6),
-    n:S.sessionN, pid:S.settings.pid, app, trigger, breath:S.settings.breath ? 'on' : 'off',
+    n:S.sessionN, pid:S.settings.pid, app, trigger, condition:S.settings.pause === 'off' ? 'baseline' : 'pause',
+    breath:S.settings.pause !== 'off' && S.settings.breath ? 'on' : 'off',
     purpose:null, history:[], purposeMs:null, promptMs:null, cueMin:null, origCueMin:null, cueEnd:null, plan:null,
     startSim:null, elapsed:0, checkpoints:[], cpShows:0, cpTitle:'', cpShownAt:0, lastCp:null, built:false,
     endType:null, interruption:'', within:'', stop1:'', rewardVariant:'none', stopsAfter:'', goal:'', row:null
@@ -612,7 +639,8 @@ function startFlow(app, trigger){
   el.splashTile.style.background = 'rgba(255,255,255,.18)';
   el.appTop.innerHTML = ''; el.appTop.className = 'app-top'; el.appTop.style.display = 'none';
   el.feed.innerHTML = ''; el.feed.style.display = 'none';
-  if (S.settings.breath) showBreath(); else showPurpose('open');
+  if (S.cur.condition === 'baseline'){ S.cur.startSim = S.sim; openApp(); }
+  else if (S.settings.breath) showBreath(); else showPurpose('open');
   renderConsole();
 }
 
@@ -686,8 +714,8 @@ function openApp(){
   setScreen('app'); hideBk();
   el.splash.hidden = true;
   if (!c.built) buildApp(c.app);
-  el.island.classList.add('on');
-  updateIsland(); updateChrome(); renderNow();
+  if (c.condition === 'pause'){ el.island.classList.add('on'); updateIsland(); }
+  updateChrome(); renderNow();
 }
 
 function updateIsland(){
@@ -727,7 +755,8 @@ function endSession(type, interruption){
   clearTimers();
   c.endType = type; c.interruption = interruption || '';
   c.endSim = S.sim; if (c.startSim === null) c.startSim = S.sim;
-  if (type === 'voluntary'){
+  c.speed = S.settings.speed; c.seed = S.week.seed || 0;
+  if (type === 'voluntary' && c.condition === 'pause'){
     c.within = c.cueEnd != null ? (c.elapsed <= c.cueEnd + 1000 ? 'yes' : 'no') : '';
     c.rewardVariant = S.settings.reward;
     S.week.stops++; c.stopsAfter = S.week.stops; c.goal = S.week.goal || '';
@@ -736,15 +765,16 @@ function endSession(type, interruption){
   el.island.classList.remove('on');
   el.call.classList.remove('on');
   c.row = toRow(c); S.log.push(c.row); save(); renderConsole();
-  if (type === 'voluntary') showReward();
-  else if (type === 'declined') showDeclined();
+  if (c.condition === 'baseline') goHome();
+  else if (type === 'voluntary') showReward();
+  else if (type === 'declined') declineHome();
   else if (type === 'interrupted') showEnded(interruption);
   else goHome();
 }
 
 function toRow(c){
   return {
-    participant_id:c.pid, session_number:c.n, session_id:c.id, app:APPS[c.app].name, trigger:c.trigger, breath_pause:c.breath,
+    participant_id:c.pid, session_number:c.n, session_id:c.id, condition:c.condition, app:APPS[c.app].name, trigger:c.trigger, breath_pause:c.breath,
     purpose:c.purpose || '', purpose_history:c.history.join('>'),
     purpose_decision_ms:c.purposeMs ?? '', prompt_total_ms:c.promptMs ?? '',
     time_cue_min:c.cueMin ?? '', start_time:fmtHMS(c.startSim),
@@ -752,54 +782,53 @@ function toRow(c){
     checkpoint_titles:c.checkpoints.map(x => x.title).join('|'),
     checkpoint_choices:c.checkpoints.map(x => x.choice).join('|'),
     checkpoint_decision_ms:c.checkpoints.map(x => x.ms).join('|'),
-    stop_within_1min_of_checkpoint:c.stop1,
+    stop_within_1min_of_checkpoint_app_time:c.stop1,
     original_boundary_min:c.origCueMin ?? '',
     final_boundary_min:c.cueEnd != null ? +(c.cueEnd / 60000).toFixed(2) : '',
-    duration_sim_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
+    time_speed:c.speed, duration_app_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
     end_type:c.endType, interruption:c.interruption, within_boundary:c.within,
-    reward_variant:c.rewardVariant, chosen_stops_after:c.stopsAfter, weekly_goal:c.goal,
+    reward_variant:c.rewardVariant, chosen_stops_after:c.stopsAfter, example_stops_at_start:c.seed, weekly_goal:c.goal,
     reflection:'', worthwhile:'', in_control:''
   };
 }
-const COLS = ['participant_id','session_number','session_id','app','trigger','breath_pause','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint','original_boundary_min','final_boundary_min','duration_sim_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','weekly_goal','reflection','worthwhile','in_control'];
+const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
 
 /* ---------------- Exit screens ---------------- */
 function plantSVG(count, goal, animate){
-  const n = Math.max(0, Math.min(count, goal));
-  const base = 168, spacing = 116 / goal;
+  const cap = goal || Math.max(10, count);
+  const n = Math.max(0, Math.min(count, cap));
+  const base = 168, spacing = 116 / cap;
   const top = base - 14 - Math.max(0, n - 1) * spacing - 14;
-  const rx = Math.max(10, 18 - goal * 0.5), ry = rx * 0.42;
+  const rx = Math.max(10, 18 - cap * 0.5), ry = rx * 0.42;
   let leaves = '';
   for (let i = 0; i < n; i++){
     const y = base - 14 - i * spacing, side = i % 2 ? 1 : -1;
     const cx = 100 + side * (rx - 1), rot = side * -26;
-    const cls = animate && i === n - 1 && count <= goal ? ' class="leaf-new"' : '';
+    const cls = animate && i === n - 1 && count <= cap ? ' class="leaf-new"' : '';
     leaves += `<g${cls} style="transform-origin:100px ${y}px"><ellipse cx="${cx}" cy="${y}" rx="${rx}" ry="${ry}" fill="${i % 2 ? '#3FA394' : '#127C71'}" transform="rotate(${rot} 100 ${y})"/></g>`;
   }
-  const flower = count >= goal
+  const flower = goal && count >= goal
     ? `<g${animate && count === goal ? ' class="leaf-new"' : ''} style="transform-origin:100px ${top}px">${[0, 72, 144, 216, 288].map(a => `<ellipse cx="100" cy="${top - 9}" rx="5.5" ry="9" fill="#F6C85F" transform="rotate(${a} 100 ${top})"/>`).join('')}<circle cx="100" cy="${top}" r="5" fill="#E8875B"/></g>`
     : '';
   const mid = (base + top) / 2;
-  return `<svg class="plant" viewBox="0 0 200 220" role="img" aria-label="A plant with ${n} leaves${count >= goal ? ' and a flower' : ''}">
+  return `<svg class="plant" viewBox="0 0 200 220" role="img" aria-label="A plant with ${n} leaves${goal && count >= goal ? ' and a flower' : ''}">
     <path d="M100 ${base} C 96 ${mid + 12}, 104 ${mid - 12}, 100 ${top}" stroke="#2E7D6F" stroke-width="3.2" fill="none" stroke-linecap="round"/>
     ${leaves}${flower}
     <path d="M68 ${base} H132 L124 212 H76 Z" fill="#D6E0DE"/><rect x="63" y="${base - 6}" width="74" height="11" rx="3.5" fill="#BFCDCA"/>
   </svg>`;
 }
 function growthBlock(animate){
-  const c = S.cur, count = S.week.stops, goal = S.week.goal;
-  const cap = count < goal ? `${count} of ${goal} stops you chose this week` : `${count} stops you chose this week. Goal reached.`;
-  return `<div class="growth">${plantSVG(count, goal, animate)}<p class="growth-cap">${cap}</p></div>`;
-}
-function goalBlock(){
-  return `<div class="goal" id="goalBox"><p class="goal-q">Set a weekly goal: how many times do you want to stop on your own?</p>
-    <div class="chips">${[5, 10, 15].map(g => `<button class="chip-btn" type="button" data-goal="${g}">${g}</button>`).join('')}</div></div>`;
+  const count = S.week.stops, goal = S.week.goal, seed = S.week.seed || 0;
+  const cap = !goal ? `${count} stop${count === 1 ? '' : 's'} you chose this week`
+    : count < goal ? `${count} of ${goal} stops you chose this week` : `${count} stops you chose this week. Goal reached.`;
+  const note = seed ? `<p class="growth-note">Includes ${seed} example stop${seed === 1 ? '' : 's'} from earlier in the week.</p>` : '';
+  return `<div class="growth">${plantSVG(count, goal, animate)}<p class="growth-cap">${cap}</p>${note}</div>`;
 }
 function showReward(){
   const c = S.cur;
   setScreen('reward');
   const sub = c.cueEnd != null ? 'You stopped when you planned to.' : 'You ended this on your terms.';
-  const extra = c.rewardVariant === 'B' ? `<div id="growthSlot">${S.week.goal ? growthBlock(true) : goalBlock()}</div>` : '';
+  const extra = c.rewardVariant === 'B' ? growthBlock(true) : '';
   showBk(`<div class="bk-full">${mark()}
     <h1 class="r-title">You chose to stop.</h1>
     <p class="r-sub">${sub}</p>
@@ -809,12 +838,6 @@ function showReward(){
     <button class="linkbtn center" type="button" data-act="reflect">Reflect for a moment</button></div>`);
   el.bk.querySelector('[data-act=home]').addEventListener('click', () => finishSession('not_opened'));
   el.bk.querySelector('[data-act=reflect]').addEventListener('click', showReflection);
-  $$('[data-goal]', el.bk).forEach(b => b.addEventListener('click', () => {
-    S.week.goal = +b.dataset.goal; c.goal = S.week.goal;
-    if (c.row) c.row.weekly_goal = c.goal;
-    save(); renderConsole();
-    $('#growthSlot').innerHTML = growthBlock(true);
-  }));
 }
 function showReflection(){
   const c = S.cur;
@@ -826,7 +849,7 @@ function showReflection(){
     <div class="spacer"></div>
     <button class="primary" type="button" data-act="save" disabled>Save</button>
     <button class="linkbtn center" type="button" data-act="skip">Skip</button>
-    <p class="foot">Your reflection stays private.</p></div>`);
+    <p class="foot">Your responses are included in the researcher's session log.</p></div>`);
   const ans = {};
   $$('.seg', el.bk).forEach(g => g.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -846,14 +869,10 @@ function finishSession(status, ans){
   }
   goHome();
 }
-function showDeclined(){
+function declineHome(){
   const a = APPS[S.cur.app].name;
-  setScreen('declined');
-  showBk(`<div class="bk-full bk-center">${mark()}<div class="spacer"></div>
-    <h1 class="d-title">Okay.</h1><p class="r-sub">${a} will be here when you need it.</p>
-    <button class="primary soft" type="button" data-act="home">Back to home</button><div class="spacer"></div></div>`);
-  el.bk.querySelector('[data-act=home]').addEventListener('click', goHome);
-  T.dec = setTimeout(() => { if (S.screen === 'declined') goHome(); }, 2600);
+  goHome();
+  toast(`Okay. ${a} will be here when you need it.`);
 }
 function showEnded(kind){
   const a = APPS[S.cur.app].name;
@@ -867,7 +886,7 @@ function showEnded(kind){
 function goHome(){
   clearTimers();
   const c = S.cur;
-  if (c && c.row && c.endType === 'voluntary' && !c.row.reflection){ c.row.reflection = 'not_opened'; save(); }
+  if (c && c.row && c.endType === 'voluntary' && c.condition === 'pause' && !c.row.reflection){ c.row.reflection = 'not_opened'; save(); }
   S.cur = null;
   hideBk(); el.call.classList.remove('on'); el.call.innerHTML = '';
   el.app.classList.remove('on'); el.feed.innerHTML = ''; el.appTop.innerHTML = '';
@@ -891,7 +910,7 @@ el.homebar.addEventListener('click', () => {
     case 'breath': c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); break;
     case 'reward': finishSession('not_opened'); break;
     case 'reflect': finishSession('skipped'); break;
-    case 'declined': case 'ended': goHome(); break;
+    case 'ended': goHome(); break;
     default: break;
   }
 });
@@ -1008,24 +1027,25 @@ function renderNow(){
   const c = S.cur, line = $('#nowLine');
   if (!c){ line.innerHTML = `Now: <b>home screen</b>, ${esc(S.settings.pid)}, session ${S.sessionN + 1} is next.`; return; }
   const a = APPS[c.app].name;
-  const labels = {breath:'breathing screen', purpose:'purpose prompt', app:'scrolling', checkpoint:'checkpoint', reward:'exit screen', reflect:'reflection', declined:'chose not to open', ended:'interrupted', call:'incoming call'};
-  const t = c.startSim !== null ? `, ${mmss(c.elapsed)} simulated${c.cueEnd != null ? ' of ' + mmss(c.cueEnd) : ''}` : '';
-  line.innerHTML = `Now: <b>${a}, ${labels[S.screen] || S.screen}</b>${t}.`;
+  const labels = {breath:'breathing screen', purpose:'purpose prompt', app:'scrolling', checkpoint:'checkpoint', reward:'exit screen', reflect:'reflection', ended:'interrupted', call:'incoming call'};
+  const kind = S.settings.speed === 1 ? 'real time' : `simulated at ${S.settings.speed}×`;
+  const t = c.startSim !== null ? `, ${mmss(c.elapsed)} in app (${kind})${c.cueEnd != null ? ', cue at ' + mmss(c.cueEnd) : ''}` : '';
+  line.innerHTML = `Now: <b>${a}${c.condition === 'baseline' ? ' (baseline)' : ''}, ${labels[S.screen] || S.screen}</b>${t}.`;
 }
 function renderSettings(){
   $('#pid').value = S.settings.pid;
   $('#weekStart').value = S.settings.weekStart;
   $$('.segc').forEach(g => {
     const key = g.dataset.setting;
-    const val = key === 'breath' ? (S.settings.breath ? 'on' : 'off') : String(S.settings[key]);
+    const val = key === 'breath' ? (S.settings.breath ? 'on' : 'off') : key === 'goal' ? (S.week.goal ? String(S.week.goal) : 'none') : key === 'dbPlant' ? S.dbPlant : String(S.settings[key]);
     $$('button', g).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === val ? 'true' : 'false'));
   });
   const secs = 600 / S.settings.speed;
-  $('#speedHelp').textContent = `At ${S.settings.speed}×, a 10-minute cue arrives after ${secs >= 60 ? secs / 60 + (secs === 60 ? ' minute' : ' minutes') : secs + ' seconds'}. Use 10× with participants; 60× is for demos.`;
+  $('#speedHelp').textContent = `At ${S.settings.speed}×, a 10-minute cue arrives after ${secs >= 60 ? secs / 60 + (secs === 60 ? ' minute' : ' minutes') : secs + ' seconds'}. ${S.settings.speed === 1 ? 'Real time: use this with participants and for any duration comparison.' : 'Simulated time, for walkthroughs only. Durations logged at this speed are not comparable with real use.'}`;
 }
 const pLabel = k => (P[k] ? P[k].label : k);
 function renderWatch(){
-  const pid = S.settings.pid, rows = S.log.filter(r => r.participant_id === pid && r.end_type !== 'unknown');
+  const pid = S.settings.pid, rows = S.log.filter(r => r.participant_id === pid && r.end_type !== 'unknown' && r.condition !== 'baseline');
   const box = $('#watch');
   if (!rows.length){ box.innerHTML = `<p class="empty">No sessions yet for ${esc(pid)}. Ask them to open Loop, Clips or Feed.</p>`; return; }
   const vals = rows.map(r => +r.purpose_decision_ms || 0);
@@ -1039,55 +1059,66 @@ function renderWatch(){
     const changed = String(r.purpose_history || '').includes('>') ? ', changed to ' + esc(pLabel(r.purpose).toLowerCase()) : '';
     const cps = r.checkpoint_decision_ms ? String(r.checkpoint_decision_ms).split('|').map(x => (x / 1000).toFixed(1) + ' s').join(', ') : '';
     const flags = [
-      fast ? '<em class="flag">under 1 s</em>' : '',
-      same ? '<em class="flag">same purpose as last time</em>' : '',
+      fast ? '<em class="flag soft">quick pick, under 1 s</em>' : '',
+      same ? '<em class="flag soft">same purpose as previous session</em>' : '',
       r.end_type === 'declined' ? '<em class="flag ok">chose not to open</em>' : '',
       r.end_type === 'interrupted' ? '<em class="flag soft">interrupted</em>' : '',
       cps ? `<em class="flag soft">checkpoint ${cps}</em>` : ''
     ].join('');
     return `<li><span class="w-n">Session ${r.session_number}</span>
-      <span class="w-bar${fast ? ' fast' : ''}"><span style="width:${has ? Math.min(100, ms / max * 100) : 0}%"></span></span>
+      <span class="w-bar"><span style="width:${has ? Math.min(100, ms / max * 100) : 0}%"></span></span>
       <span class="w-v">${has ? (ms / 1000).toFixed(1) + ' s' : 'none'}</span>
       <span class="w-meta">${esc(r.app)}, ${r.trigger === 'notification' ? 'from a notification' : 'tapped'}${first ? ', ' + esc(pLabel(first)) + changed : ''}${r.time_cue_min && r.time_cue_min !== 'none' ? ', ' + r.time_cue_min + ' min' : r.time_cue_min === 'none' ? ', no timer' : ''} ${flags}</span></li>`;
   }).join('')}</ol>`;
 }
 function pct(a, b){ return b ? Math.round(a / b * 100) + '%' : 'n/a'; }
+function avgLen(rows){
+  if (!rows.length) return 'n/a';
+  return mmss(rows.reduce((a, r) => a + (+r.duration_app_s || 0), 0) / rows.length * 1000);
+}
 function renderTotals(){
   const all = S.log.filter(r => r.end_type !== 'unknown');
   const people = new Set(S.log.map(r => r.participant_id)).size;
-  const declined = all.filter(r => r.end_type === 'declined').length;
-  const withCp = all.filter(r => +r.checkpoint_count > 0);
-  const stop1 = withCp.filter(r => r.stop_within_1min_of_checkpoint === 'yes').length;
-  const vol = all.filter(r => r.end_type === 'voluntary');
+  const pz = all.filter(r => r.condition !== 'baseline'), base = all.filter(r => r.condition === 'baseline');
+  const declined = pz.filter(r => r.end_type === 'declined').length;
+  const withCp = pz.filter(r => +r.checkpoint_count > 0);
+  const stop1 = withCp.filter(r => r.stop_within_1min_of_checkpoint_app_time === 'yes').length;
+  const vol = pz.filter(r => r.end_type === 'voluntary');
   const intr = all.filter(r => r.end_type === 'interrupted').length;
   const saved = vol.filter(r => r.reflection === 'saved').length, skipped = vol.filter(r => r.reflection === 'skipped').length;
   const notOpened = vol.filter(r => r.reflection === 'not_opened').length;
+  const real = all.filter(r => r.end_type !== 'declined' && +r.time_speed === 1);
+  const fast = all.filter(r => r.end_type !== 'declined' && +r.time_speed !== 1).length;
   $('#totals').innerHTML = `
-    <div><dt>Sessions</dt><dd>${all.length}<small>from ${people} participant${people === 1 ? '' : 's'}</small></dd></div>
-    <div><dt>Chose not to open</dt><dd>${declined} of ${all.length}<small>${pct(declined, all.length)}. one sec field study (PNAS 2023): 36% of opening attempts.</small></dd></div>
-    <div><dt>Stopped within 1 minute of a checkpoint</dt><dd>${stop1} of ${withCp.length}<small>${pct(stop1, withCp.length)}. Compare with the Wellspent trial (JMIR mHealth 2026).</small></dd></div>
+    <div><dt>Sessions</dt><dd>${all.length}<small>${pz.length} with Pause, ${base.length} baseline, from ${people} participant${people === 1 ? '' : 's'}</small></dd></div>
+    <div><dt>Chose not to open</dt><dd>${declined} of ${pz.length}<small>${pct(declined, pz.length)} of Pause sessions</small></dd></div>
+    <div><dt>Stopped within 1 minute of a checkpoint</dt><dd>${stop1} of ${withCp.length}<small>${pct(stop1, withCp.length)}, measured in app time</small></dd></div>
     <div><dt>Chose to stop</dt><dd>${vol.length}<small>${intr} interrupted, which get no reward</small></dd></div>
+    <div><dt>Average session length, real time only</dt><dd>${avgLen(real.filter(r => r.condition !== 'baseline'))} / ${avgLen(real.filter(r => r.condition === 'baseline'))}<small>Pause / baseline, 1× sessions only${fast ? `; ${fast} faster session${fast === 1 ? '' : 's'} left out` : ''}</small></dd></div>
     <div><dt>Reflection</dt><dd>${saved} saved<small>${skipped} skipped, ${notOpened} not opened</small></dd></div>`;
 }
 function renderTable(){
-  const head = ['ID', '#', 'App', 'Opened', 'Purpose', 'Choose (ms)', 'Cue', 'Checkpoints', 'End', 'Within', 'Reward', 'Stops', 'Reflection', 'Worthwhile', 'In control'];
+  const head = ['ID', '#', 'Condition', 'App', 'Opened', 'Purpose', 'Choose (ms)', 'Cue', 'Checkpoints', 'End', 'Within', 'Reward', 'Stops', 'Reflection', 'Worthwhile', 'In control'];
   const rows = S.log.slice().reverse();
   $('#logTable').innerHTML = `<thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${
-    rows.length ? rows.map(r => `<tr><td>${esc(r.participant_id)}</td><td>${r.session_number}</td><td>${esc(r.app)}</td><td>${r.trigger}</td><td>${esc(r.purpose_history || '')}</td><td>${r.purpose_decision_ms}</td><td>${r.time_cue_min}</td><td>${esc(r.checkpoint_choices || '')}</td><td>${r.end_type}${r.interruption ? ' (' + r.interruption + ')' : ''}</td><td>${r.within_boundary}</td><td>${r.reward_variant}</td><td>${r.chosen_stops_after}${r.weekly_goal ? '/' + r.weekly_goal : ''}</td><td>${r.reflection}</td><td>${r.worthwhile}</td><td>${r.in_control}</td></tr>`).join('')
+    rows.length ? rows.map(r => `<tr><td>${esc(r.participant_id)}</td><td>${r.session_number}</td><td>${r.condition}</td><td>${esc(r.app)}</td><td>${r.trigger}</td><td>${esc(r.purpose_history || '')}</td><td>${r.purpose_decision_ms}</td><td>${r.time_cue_min}</td><td>${esc(r.checkpoint_choices || '')}</td><td>${r.end_type}${r.interruption ? ' (' + r.interruption + ')' : ''}</td><td>${r.within_boundary}</td><td>${r.reward_variant}</td><td>${r.chosen_stops_after}${r.weekly_goal ? '/' + r.weekly_goal : ''}</td><td>${r.reflection}</td><td>${r.worthwhile}</td><td>${r.in_control}</td></tr>`).join('')
     : `<tr><td colspan="${head.length}">No sessions logged yet.</td></tr>`}</tbody>`;
 }
 function renderConsole(){ renderSettings(); renderWatch(); renderTotals(); renderTable(); renderNow(); }
 
-function toCSV(){
+function toCSV(cols = COLS, rows = S.log){
   const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-  return [COLS.join(',')].concat(S.log.map(r => COLS.map(k => q(r[k])).join(','))).join('\n');
+  return [cols.join(',')].concat(rows.map(r => cols.map(k => q(r[k])).join(','))).join('\n');
 }
 const stamp = () => { const d = new Date(); return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()); };
 const downloadsP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : null;
 function showCsv(csv){ $('#csvText').value = csv; try{ $('#csvDialog').showModal(); }catch(e){ $('#csvDialog').setAttribute('open', ''); } $('#csvText').select(); }
-async function exportCSV(){
-  if (!S.log.length){ consoleMsg('Nothing to export yet.'); return; }
-  const csv = toCSV(), filename = `pause-log-${stamp()}.csv`;
+async function exportCSV(csv, prefix){
+  if (typeof csv !== 'string'){
+    if (!S.log.length){ consoleMsg('Nothing to export yet.'); return; }
+    csv = toCSV(); prefix = 'pause-log';
+  }
+  const filename = `${prefix}-${stamp()}.csv`;
   if (downloadsP){
     const d = await downloadsP;
     if (d){
@@ -1106,9 +1137,11 @@ async function exportCSV(){
     consoleMsg('Log downloaded.');
   }catch(e){ showCsv(csv); }
 }
-function copyCSV(){
-  if (!S.log.length){ consoleMsg('Nothing to copy yet.'); return; }
-  const csv = toCSV();
+function copyCSV(csv){
+  if (typeof csv !== 'string'){
+    if (!S.log.length){ consoleMsg('Nothing to copy yet.'); return; }
+    csv = toCSV();
+  }
   if (navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(csv).then(() => consoleMsg('Log copied. Paste it into a spreadsheet.'), () => showCsv(csv));
   } else showCsv(csv);
@@ -1120,8 +1153,8 @@ function newParticipant(){
   else if (S.cur) goHome();
   const m = /^(.*?)(\d+)$/.exec(S.settings.pid);
   if (m) S.settings.pid = m[1] + String(+m[2] + 1).padStart(m[2].length, '0');
-  S.sessionN = 0; S.week = {stops:S.settings.weekStart, goal:null};
-  hideNotif(); save(); goHome();
+  S.sessionN = 0; S.week = {stops:S.settings.weekStart, goal:null, seed:S.settings.weekStart};
+  hideNotif(); loadDebrief(); save(); goHome();
   consoleMsg(`Ready for ${S.settings.pid}.`);
 }
 $('#btnNew').addEventListener('click', newParticipant);
@@ -1129,18 +1162,20 @@ $('#pid').addEventListener('change', e => {
   const v = e.target.value.trim() || 'P01';
   S.settings.pid = v;
   S.sessionN = S.log.filter(r => r.participant_id === v).length;
-  save(); renderConsole();
+  loadDebrief(); save(); renderConsole();
 });
 $('#weekStart').addEventListener('change', e => {
   const v = Math.max(0, Math.min(50, parseInt(e.target.value, 10) || 0));
   S.settings.weekStart = v;
-  if (!S.log.some(r => r.participant_id === S.settings.pid)) S.week.stops = v;
+  if (!S.log.some(r => r.participant_id === S.settings.pid)){ S.week.stops = v; S.week.seed = v; }
   save(); renderConsole();
 });
 $$('.segc').forEach(g => g.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const key = g.dataset.setting;
   if (key === 'breath') S.settings.breath = b.dataset.v === 'on';
+  else if (key === 'goal') S.week.goal = b.dataset.v === 'none' ? null : +b.dataset.v;
+  else if (key === 'dbPlant') S.dbPlant = b.dataset.v;
   else if (key === 'speed') S.settings.speed = +b.dataset.v;
   else S.settings[key] = b.dataset.v;
   save(); renderSettings();
@@ -1152,8 +1187,23 @@ $('#btnUnknown').addEventListener('click', () => {
   else if (S.cur){ goHome(); }
   else consoleMsg('No session is open.');
 });
-$('#btnExport').addEventListener('click', exportCSV);
-$('#btnCopy').addEventListener('click', copyCSV);
+$('#btnExport').addEventListener('click', () => exportCSV());
+$('#btnCopy').addEventListener('click', () => copyCSV());
+const DB_COLS = ['participant_id','saved_at','what_made_you_stop_or_continue','plant_feeling','notes'];
+function loadDebrief(){
+  const d = S.debrief[S.settings.pid] || {};
+  $('#dbWhy').value = d.what_made_you_stop_or_continue || '';
+  $('#dbNotes').value = d.notes || '';
+  S.dbPlant = d.plant_feeling || '';
+}
+function debriefCSV(){ return toCSV(DB_COLS, Object.values(S.debrief)); }
+$('#btnDbSave').addEventListener('click', () => {
+  const pid = S.settings.pid;
+  S.debrief[pid] = {participant_id:pid, saved_at:new Date().toISOString(), what_made_you_stop_or_continue:$('#dbWhy').value.trim(), plant_feeling:S.dbPlant, notes:$('#dbNotes').value.trim()};
+  save(); consoleMsg(`Debrief saved for ${pid}.`);
+});
+$('#btnDbExport').addEventListener('click', () => { if (!Object.keys(S.debrief).length){ consoleMsg('No debriefs saved yet.'); return; } exportCSV(debriefCSV(), 'pause-debrief'); });
+$('#btnDbCopy').addEventListener('click', () => { if (!Object.keys(S.debrief).length){ consoleMsg('No debriefs saved yet.'); return; } copyCSV(debriefCSV()); });
 let clearArmed = false;
 $('#btnClear').addEventListener('click', e => {
   if (!clearArmed){ clearArmed = true; e.target.textContent = 'Click again to clear everything'; T.clr = setTimeout(() => { clearArmed = false; e.target.textContent = 'Clear log'; }, 4000); return; }
@@ -1175,9 +1225,12 @@ const qs = new URLSearchParams(location.search);
 if (qs.get('speed') && [1, 10, 60].includes(+qs.get('speed'))) S.settings.speed = +qs.get('speed');
 if (qs.get('reward') && /^[AB]$/i.test(qs.get('reward'))) S.settings.reward = qs.get('reward').toUpperCase();
 if (qs.get('breath')) S.settings.breath = qs.get('breath') === '1' || qs.get('breath') === 'on';
+if (qs.get('pause')) S.settings.pause = qs.get('pause') === 'off' ? 'off' : 'on';
+if (qs.get('goal') && [5, 10, 15].includes(+qs.get('goal'))) S.week.goal = +qs.get('goal');
 if (qs.get('pid')){ S.settings.pid = qs.get('pid'); S.sessionN = S.log.filter(r => r.participant_id === S.settings.pid).length; }
 if (qs.get('participant') === '1') setPView(true);
 $('#cMark').innerHTML = MARK_SVG(30);
+loadDebrief();
 buildHome();
 setScreen('home');
 el.sbTime.textContent = fmtHM(S.sim); $('#wTime').textContent = fmtHM(S.sim);
