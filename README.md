@@ -1,54 +1,83 @@
 # Pause – doomscrolling prototype
 
 A clickable, mobile-sized prototype for a design-thinking project on doomscrolling.
-Pause adds a small layer before and after a scrolling session so starting is a
-conscious choice and stopping feels good. It never blocks the user.
+Pause helps students make intentional choices about social-media use. It adds a small
+layer before and after a scrolling session so starting is a conscious choice and
+stopping feels good. It never blocks the user.
 
-The two interventions under test:
+Loop is the single simulated social-media app, so there is one complete journey:
+open Loop → choose a purpose → scroll → check in → finish → plant reward.
 
-1. **Purpose Sessions with Conscious Continue**: "What brings you here?" (Something
-   specific / Taking a break / Just browsing), an optional "Remind me after 10 minutes"
-   setting, then "Open Loop". At the reminder: "You came here for a break. It's been
-   10 minutes." with "Finish for now" and "5 more minutes", and "Change my purpose"
-   as a smaller link.
-2. **Reward the Exit**: a chosen stop returns to the home screen and briefly shows
-   "You chose when to stop." with no tap needed. Variant A is the message only;
-   variant B adds a plant that grows a leaf for each stop you chose.
+Design references, adapted:
 
-The prototype has one app, Loop, so there is one complete journey: open Loop → choose
-purpose → scroll → check-in → stop → plant reward. Other scrolling formats (short
-video, text feeds) are a possible later step.
+- **one sec**: a brief intention before the app opens ("What brings you here?").
+- **Wellspent**: a timely, easy-to-read check-in during scrolling.
+- **Forest**: visible progress as a plant grows, one leaf per chosen stop, with no
+  dying plant, penalties or leaderboards.
 
-Each screen asks one question and has one obvious next action. The first purpose
-screen explains Pause once, and the home bar is labelled "Finish session" during the
-first session in each condition.
+## The two interventions
 
-Files:
+1. **Purpose Sessions with Conscious Continue**
+   - "What brings you here?": Something specific / Taking a break / Just browsing, with
+     "Just browsing is okay."
+   - "Remind me after": 5 min / 10 min / 15 min / Off (10 min selected by default);
+     the line underneath says what will happen.
+   - One button, "Open Loop". Choosing a purpose or reminder only changes the setting;
+     the feed opens when the user taps "Open Loop".
+   - While scrolling, a small pill shows the purpose and time since the feed opened, and
+     a "Finish session" label points at the home bar (highlighted on first use).
+   - At the reminder time, the timer pauses and a check-in shows "You came here for a
+     break. It's been 10 minutes." with "Finish for now" and "5 more minutes", and
+     "Change my purpose" as a smaller link. Continuing adds five minutes; changing
+     purpose keeps the elapsed time.
+2. **Reward the Exit**
+   - Finishing (the check-in button or the home bar) ends the session and returns to
+     the home screen straight away. A card shows the plant and "You chose when to
+     stop." for a few seconds and fades on its own.
+   - One leaf per finished session, counted once. Continuing keeps existing growth.
+     Progress starts at zero; a weekly goal is optional and set in the console.
+   - A call, a class reminder, leaving the page (switching tabs or locking the phone)
+     or an unknown end earns no reward.
 
-- `index.html`: **Pause v3** (current version, served on GitHub Pages)
-- `pause-v2.html`: **Pause v2**, the previous version, kept for comparison
+Pause is explained once, on the first purpose screen: "Choose why you're opening an
+app. Pause will check in when you want."
 
 ## Run it
 
-Open `index.html` in a browser, or use the Pages site:
-https://natashaa27.github.io/sdt-doomscrolling/
-
-For a participant's own phone (real time, reward A):
-https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=1&reward=A
+- **Demonstration (participant view):** https://natashaa27.github.io/sdt-doomscrolling/
+  shows only the phone, with Pause on, plant reward on, breathing and in-app reflection
+  off, and real time (1×).
+- **Facilitator view:** https://natashaa27.github.io/sdt-doomscrolling/?facilitator=1
+  adds the console (conditions, baseline mode, events, log, CSV exports, debrief). In
+  participant view, tap the phone's clock five times within three seconds to show it.
+- **Quicker classroom demo:** add `?speed=60` so a 10-minute reminder arrives after 10
+  seconds. These sessions are logged as `accelerated_demo`.
 
 | Parameter | Values | Default |
 |---|---|---|
-| `participant` | `1` hides the test console | off |
+| `facilitator` | `1` shows the console | off |
 | `speed` | `1`, `10`, `60` | `1` |
-| `reward` | `A`, `B` | `A` |
+| `reward` | `A` (message only), `B` (message and plant) | `B` |
 | `pause` | `off` for the baseline condition | `on` |
+| `remind` | `off` to start with the reminder set to Off | `on` (10 min) |
 | `goal` | `5`, `10`, `15` (optional weekly goal) | none |
-| `remind` | `off` to start with the reminder switched off | `on` (10 min) |
 | `reflect` | `on` to show the reflection questions in the app | `off` |
-| `breath` | `on` for the 3-second breath | off |
+| `breath` | `on` for the 3-second breath | `off` |
 | `pid` | participant ID | `P01` |
 
-Tap the phone's clock five times within three seconds to show or hide the console.
+Files:
+
+- `index.html`: the current prototype (served on GitHub Pages)
+- `pause-v2.html`: an earlier version, kept for comparison
+- `presentation/`: screenshots and the evidence pack
+- `pilot-notes.md`: template for recording pilot sessions
+
+## Future implementation
+
+This is a web simulation of Loop. Connecting Pause to real social-media apps is a
+later phase: on iOS through a Shortcuts "App is opened" automation or the Screen Time
+API, on Android through UsageStatsManager or an AccessibilityService overlay. See
+`presentation/evidence.md` for the full plan.
 
 The log is kept in the tab's session storage: it survives a reload but is cleared when
 the tab closes. Export it after each participant.
@@ -101,6 +130,9 @@ example_stops_at_start, weekly_goal, reflection, worthwhile, in_control`
 (plus `intro_shown` after `breath_pause`)
 
 - Decision times (`*_ms`) are real milliseconds.
+- `run_mode` is `real_time` (1×) or `accelerated_demo` (10× or 60×). Compare durations
+  only from `real_time` sessions.
+- `interruption` is `call`, `class` or `left_page` (the page was hidden mid-session).
 - `duration_app_s`, clock times and `stop_within_1min_of_checkpoint_app_time` use app
   time: it runs at `time_speed` and pauses on Pause screens. At 1× it equals real time.
 - `reflection` is `after_task` when in-app reflection is off (the default), otherwise

@@ -90,7 +90,6 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .ic{display:flex; flex-direction:column; align-items:center; gap:6px; background:none; border:0; color:#fff; padding:0; width:72px}
 .ic .tile{width:60px; height:60px; border-radius:15px; display:grid; place-items:center; box-shadow:0 4px 10px -4px rgba(0,0,0,.35)}
 .ic .lab{font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,.3)}
-.ic.inert .tile{opacity:.92}
 .home-hint{position:absolute; left:0; right:0; bottom:40px; text-align:center; font-size:12.5px; opacity:.8}
 
 /* app layer */
@@ -99,7 +98,7 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .splash[hidden]{display:none}
 .splash .tile{width:92px; height:92px; border-radius:24px; display:grid; place-items:center}
 .app-top{position:absolute; top:44px; left:0; right:0; height:52px; z-index:3; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#fff}
-.feed{position:absolute; left:0; right:0; top:96px; bottom:0; overflow-y:auto; overscroll-behavior:contain; padding-bottom:34px; background:#fff}
+.feed{position:absolute; left:0; right:0; top:96px; bottom:0; overflow-y:auto; overscroll-behavior:contain; padding-bottom:96px; background:#fff}
 .feed::-webkit-scrollbar{display:none}
 .feed{scrollbar-width:none}
 
@@ -194,15 +193,11 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .notif b{display:block; font-size:14px}
 .notif .when{font-size:12px; color:var(--p-muted); align-self:start}
 .intro{margin:0 0 12px; padding:10px 14px; border-radius:14px; background:var(--p-tint); color:var(--p-teal-2); font-size:14.5px; line-height:1.4}
-.remind{border:1.5px solid var(--p-line); border-radius:14px; padding:6px 14px; margin:2px 0 16px}
-.rem-row{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:44px; padding:4px 0; background:none; border:0; color:var(--p-ink); font-size:15.5px; text-align:left}
-.sw{position:relative; flex:none; width:46px; height:28px; border-radius:14px; background:#C9D6D3; transition:background .15s}
-.sw::after{content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:transform .15s}
-.rem-row[aria-checked="true"] .sw{background:var(--p-teal)}
-.rem-row[aria-checked="true"] .sw::after{transform:translateX(18px)}
-.rem-mins{display:flex; gap:8px; padding:4px 0 8px}
-.rem-mins[hidden]{display:none}
-.rem-mins button{flex:1; min-height:38px; border-radius:999px; border:1.5px solid var(--p-line); background:#fff; color:var(--p-ink); font-size:14px}
+.remind{border:1.5px solid var(--p-line); border-radius:14px; padding:12px 14px; margin:2px 0 16px}
+.rem-lbl{margin:0 0 8px; font-size:14.5px; font-weight:650}
+.rem-now{margin:8px 0 0; font-size:13.5px; color:var(--p-muted)}
+.rem-mins{display:flex; gap:8px}
+.rem-mins button{flex:1; min-height:44px; border-radius:999px; border:1.5px solid var(--p-line); background:#fff; color:var(--p-ink); font-size:14px}
 .rem-mins button[aria-pressed="true"]{border-color:var(--p-teal); background:var(--p-tint); color:var(--p-teal-2); font-weight:650}
 .ack{position:absolute; left:28px; right:28px; top:50%; z-index:7; transform:translateY(-50%); padding:22px 20px 20px; border-radius:24px; background:#fff; color:var(--p-ink);
   text-align:center; box-shadow:0 24px 60px -24px rgba(0,0,0,.5); pointer-events:none; opacity:0; visibility:hidden; transition:opacity .3s, visibility 0s linear .3s}
@@ -214,6 +209,8 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .barlabel{position:absolute; left:50%; bottom:24px; z-index:9; transform:translateX(-50%); display:none; padding:9px 18px; border:0; border-radius:999px;
   background:var(--p-teal); color:#fff; font-size:14.5px; font-weight:650; white-space:nowrap; box-shadow:0 8px 20px -8px rgba(0,0,0,.45)}
 .barlabel.on{display:block}
+.barlabel.quiet{padding:7px 15px; font-size:13.5px; background:rgba(30,42,48,.8)}
+.barlabel.quiet::after{background:rgba(30,42,48,.8)}
 .barlabel::after{content:""; position:absolute; left:50%; bottom:-5px; width:10px; height:10px; background:var(--p-teal); transform:translateX(-50%) rotate(45deg)}
 .toast{position:absolute; left:50%; bottom:84px; transform:translateX(-50%); z-index:8; background:rgba(20,32,36,.9); color:#fff; font-size:13.5px;
   padding:9px 14px; border-radius:12px; width:max-content; max-width:86%; text-align:center; opacity:0; transition:opacity .2s; pointer-events:none}
@@ -421,7 +418,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <div class="btns"><button class="btn fill" type="button" id="btnExport">Export CSV</button><button class="btn" type="button" id="btnCopy">Copy CSV</button><button class="btn quiet" type="button" id="btnClear">Clear log</button></div>
       <div class="table-wrap"><table id="logTable"></table></div>
       <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length, clock times and "within 1 minute of a checkpoint" use app time, which pauses on Pause screens and runs at the chosen speed; each row records its speed, so compare durations only from 1× sessions.</p>
-      <p class="help">For participant view on their own phone, host this file (for example on GitHub Pages) and add <b>?participant=1&amp;speed=1&amp;reward=A</b> to the link (<b>&amp;pause=off</b> for baseline). Tap the phone's clock five times within three seconds to bring this console back.</p>
+      <p class="help">The plain link opens in participant view. Add <b>?facilitator=1</b> to open this console, or tap the phone's clock five times within three seconds. Link options such as <b>?speed=1&amp;reward=A</b> set the conditions (<b>&amp;pause=off</b> for baseline). Tap the phone's clock five times within three seconds to bring this console back.</p>
     </section>
   </aside>
 </div>
@@ -451,10 +448,6 @@ const ICONS = {
 const APPS = {
   loop:  {name:'Loop',  bg:'#F2B705'}
 };
-const INERT = [
-  {k:'messages', name:'Messages', bg:'#34B566'}, {k:'camera', name:'Camera', bg:'#E6EAEB'},
-  {k:'calendar', name:'Calendar', bg:'#FFFFFF'}, {k:'maps', name:'Maps', bg:'#3E8E7E'}, {k:'settings', name:'Settings', bg:'#7D8B90'}
-];
 const PURPOSES = [
   {k:'check',  icon:'🔎', label:'Something specific', short:'Specific', came:'for something specific'},
   {k:'break',  icon:'☕', label:'Taking a break',     short:'Break',    came:'for a break'},
@@ -496,9 +489,9 @@ const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 
 const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
 
 /* ---------------- State ---------------- */
-const STORE = 'pause.v6';
+const STORE = 'pause.v7';
 const S = {
-  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on', remind:'on', reflect:'off'},
+  settings:{pid:'P01', weekStart:0, reward:'B', breath:false, speed:1, pause:'on', remind:'on', reflect:'off'},
   week:{stops:0, goal:null, seed:0, intro:false, bar:{}},
   debrief:{}, db:{},
   sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()
@@ -540,7 +533,8 @@ function updateChrome(){
   let light = false;
   if (s === 'home' || s === 'call') light = true;
   el.screen.classList.toggle('chrome-light', light);
-  el.barLabel.classList.toggle('on', s === 'app' && !!c && !(S.week.bar || {})[c.condition]);
+  el.barLabel.classList.toggle('on', s === 'app' && !!c);
+  el.barLabel.classList.toggle('quiet', !!c && !!(S.week.bar || {})[c.condition]);
 }
 function showBk(html){ el.bk.innerHTML = html; el.bk.classList.add('on'); }
 function hideBk(){ el.bk.classList.remove('on'); el.bk.innerHTML = ''; }
@@ -550,12 +544,10 @@ function toast(text){ el.toast.textContent = text; el.toast.classList.add('show'
 function buildHome(){
   const tile = (k, bg) => `<span class="tile" style="background:${bg}">${ICONS[k]}</span>`;
   const main = Object.entries(APPS).map(([k, a]) => `<button class="ic" type="button" data-open="${k}">${tile(k, a.bg)}<span class="lab">${a.name}</span></button>`);
-  const inert = INERT.map(a => `<button class="ic inert" type="button" data-inert="1">${tile(a.k, a.bg)}<span class="lab">${a.name}</span></button>`);
-  $('#appGrid').innerHTML = main.concat(inert).join('');
+  $('#appGrid').innerHTML = main.join('');
   $('#appGrid').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.open) startFlow(b.dataset.open, 'tap');
-    else toast('Only Loop opens in this test.');
   });
   const d = new Date();
   $('#wDate').textContent = d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long'});
@@ -608,8 +600,8 @@ function showPurpose(mode){
   setScreen('purpose');
   const shownAt = performance.now(); c.pShownAt = shownAt;
   let picked = null, firstPick = null;
-  let remOn = mode === 'open' ? S.settings.remind === 'on' : c.cueEnd != null;
-  let remMin = (c.plan && c.plan.min) || 10;
+  let rem = mode === 'open' ? (S.settings.remind === 'on' ? 10 : 0) : (c.cueEnd != null ? (c.plan && c.plan.min) || 10 : 0);
+  const remText = m => m ? `Pause will check in after ${m} minutes.` : `No reminder. Pause won't check in.`;
   const intro = mode === 'open' && !S.week.intro;
   if (intro){ S.week.intro = true; c.intro = true; save(); }
   showBk(`<div class="bk-sheet-wrap"><div class="bk-sheet" role="dialog" aria-modal="true" aria-labelledby="pTitle">
@@ -618,9 +610,10 @@ function showPurpose(mode){
     <h1 class="p-title" id="pTitle">${mode === 'open' ? 'What brings you here?' : 'What are you here for now?'}</h1>
     <div>${PURPOSES.map(p => `<button class="opt" type="button" data-p="${p.k}" aria-pressed="${mode !== 'open' && c.purpose === p.k}"><span class="opt-ic" aria-hidden="true">${p.icon}</span><span>${p.label}</span></button>`).join('')}</div>
     <p class="okay">Just browsing is okay.</p>
-    <div class="remind">
-      <button class="rem-row" type="button" id="remSw" role="switch" aria-checked="${remOn}"><span>Remind me after <b id="remMin">${remMin}</b> minutes</span><span class="sw" aria-hidden="true"></span></button>
-      <div class="rem-mins" id="remMins" role="group" aria-label="Reminder time"${remOn ? '' : ' hidden'}>${[5, 10, 15].map(m => `<button type="button" data-rm="${m}" aria-pressed="${m === remMin}">${m} min</button>`).join('')}</div>
+    <div class="remind" role="group" aria-labelledby="remLbl">
+      <p class="rem-lbl" id="remLbl">Remind me after</p>
+      <div class="rem-mins">${[5, 10, 15, 0].map(m => `<button type="button" data-rm="${m}" aria-pressed="${m === rem}">${m ? m + ' min' : 'Off'}</button>`).join('')}</div>
+      <p class="rem-now" id="remNow">${remText(rem)}</p>
     </div>
     <button class="primary" type="button" id="openBtn"${mode === 'open' ? ' disabled' : ''}>${mode === 'open' ? 'Open ' + a : 'Back to ' + a}</button>
     ${mode === 'open'
@@ -634,18 +627,13 @@ function showPurpose(mode){
     $$('.opt', el.bk).forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
     $('#openBtn').disabled = false;
   }));
-  $('#remSw').addEventListener('click', () => {
-    remOn = !remOn;
-    $('#remSw').setAttribute('aria-checked', String(remOn));
-    $('#remMins').hidden = !remOn;
-  });
   $$('[data-rm]', el.bk).forEach(b => b.addEventListener('click', () => {
-    remMin = +b.dataset.rm; $('#remMin').textContent = remMin;
+    rem = +b.dataset.rm; $('#remNow').textContent = remText(rem);
     $$('[data-rm]', el.bk).forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
   }));
   $('#openBtn').addEventListener('click', () => {
     if (!picked) return;
-    applyPurpose(mode, picked, remOn ? remMin : 0, firstPick, Math.round(performance.now() - shownAt));
+    applyPurpose(mode, picked, rem, firstPick, Math.round(performance.now() - shownAt));
   });
   const dec = el.bk.querySelector('[data-act=decline]');
   if (dec) dec.addEventListener('click', () => { c.purposeMs = firstPick; c.promptMs = Math.round(performance.now() - shownAt); endSession('declined'); });
@@ -718,7 +706,8 @@ function endSession(type, interruption){
   if (type === 'voluntary' && c.condition === 'pause'){
     c.within = c.cueEnd != null ? (c.elapsed <= c.cueEnd + 1000 ? 'yes' : 'no') : '';
     c.rewardVariant = S.settings.reward;
-    S.week.stops++; c.stopsAfter = S.week.stops; c.goal = S.week.goal || '';
+    if (!c.rewarded){ c.rewarded = true; S.week.stops++; }
+    c.stopsAfter = S.week.stops; c.goal = S.week.goal || '';
   }
   if (c.checkpoints.length) c.stop1 = (type === 'voluntary' && c.lastCp != null && c.elapsed - c.lastCp <= 60000) ? 'yes' : 'no';
   el.island.classList.remove('on');
@@ -746,13 +735,13 @@ function toRow(c){
     stop_within_1min_of_checkpoint_app_time:c.stop1,
     original_boundary_min:c.origCueMin ?? '',
     final_boundary_min:c.cueEnd != null ? +(c.cueEnd / 60000).toFixed(2) : '',
-    time_speed:c.speed, duration_app_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
+    time_speed:c.speed, run_mode:c.speed === 1 ? 'real_time' : 'accelerated_demo', duration_app_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
     end_type:c.endType, interruption:c.interruption, within_boundary:c.within,
     reward_variant:c.rewardVariant, chosen_stops_after:c.stopsAfter, example_stops_at_start:c.seed, weekly_goal:c.goal,
     reflection:'', worthwhile:'', in_control:''
   };
 }
-const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','intro_shown','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
+const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','intro_shown','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','run_mode','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
 
 /* ---------------- Exit screens ---------------- */
 function plantSVG(count, goal, animate){
@@ -772,7 +761,8 @@ function plantSVG(count, goal, animate){
     ? `<g${animate && count === goal ? ' class="leaf-new"' : ''} style="transform-origin:100px ${top}px">${[0, 72, 144, 216, 288].map(a => `<ellipse cx="100" cy="${top - 9}" rx="5.5" ry="9" fill="#F6C85F" transform="rotate(${a} 100 ${top})"/>`).join('')}<circle cx="100" cy="${top}" r="5" fill="#E8875B"/></g>`
     : '';
   const mid = (base + top) / 2;
-  return `<svg class="plant" viewBox="0 0 200 220" role="img" aria-label="A plant with ${n} leaves${goal && count >= goal ? ' and a flower' : ''}">
+  const vy = Math.max(0, Math.min(Math.round(top) - (goal && count >= goal ? 34 : 22), 110));
+  return `<svg class="plant" viewBox="0 ${vy} 200 ${220 - vy}" role="img" aria-label="A plant with ${n} leaves${goal && count >= goal ? ' and a flower' : ''}">
     <path d="M100 ${base} C 96 ${mid + 12}, 104 ${mid - 12}, 100 ${top}" stroke="#2E7D6F" stroke-width="3.2" fill="none" stroke-linecap="round"/>
     ${leaves}${flower}
     <path d="M68 ${base} H132 L124 212 H76 Z" fill="#D6E0DE"/><rect x="63" y="${base - 6}" width="74" height="11" rx="3.5" fill="#BFCDCA"/>
@@ -836,7 +826,7 @@ function declineHome(){
 }
 function endedHome(kind){
   goHome();
-  toast(kind === 'call' ? 'Session ended because a call came in.' : 'Session ended because your class is starting.');
+  toast(kind === 'call' ? 'Session ended because a call came in.' : kind === 'class' ? 'Session ended because your class is starting.' : 'Session ended because Loop was closed.');
 }
 function goHome(){
   clearTimers();
@@ -1164,6 +1154,12 @@ el.sbTime.addEventListener('click', () => {
   if (taps.length >= 5){ taps = []; setPView(!document.body.classList.contains('pview')); }
 });
 
+/* Leaving the page (switching tabs, locking the phone) ends an open session without a reward. */
+document.addEventListener('visibilitychange', () => {
+  const c = S.cur;
+  if (document.hidden && c && !c.endType && c.startSim !== null) endSession('interrupted', 'left_page');
+});
+
 /* ---------------- Start ---------------- */
 load();
 const qs = new URLSearchParams(location.search);
@@ -1175,7 +1171,8 @@ if (qs.get('remind')) S.settings.remind = qs.get('remind') === 'on' ? 'on' : 'of
 if (qs.get('reflect')) S.settings.reflect = qs.get('reflect') === 'on' ? 'on' : 'off';
 if (qs.get('goal') && [5, 10, 15].includes(+qs.get('goal'))) S.week.goal = +qs.get('goal');
 if (qs.get('pid')){ S.settings.pid = qs.get('pid'); S.sessionN = S.log.filter(r => r.participant_id === S.settings.pid).length; }
-if (qs.get('participant') === '1') setPView(true);
+/* Participant view is the default; ?facilitator=1 (or five taps on the phone's clock) shows the console. */
+setPView(!(qs.get('facilitator') === '1' || qs.get('participant') === '0'));
 $('#cMark').innerHTML = MARK_SVG(30);
 loadDebrief();
 buildHome();

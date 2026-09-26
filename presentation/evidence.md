@@ -147,6 +147,12 @@ participants.
 | v4 → v5 | Pause explained once on first use; home bar labelled "Finish session" in each condition's first session | A simulated phone's tappable bar isn't obviously an exit |
 | v5 | Reminder switched on by default (10 minutes); participants can switch it off | So every participant reaches the reminder screen; a default is a nudge, so it stays the same for everyone |
 | v5 | One app (Loop) instead of three; Clips and Feed removed | One complete journey (open Loop → choose purpose → scroll → check-in → stop → plant) shows both prototypes without extra choices |
+| v6 | Remaining non-working app icons removed from the home screen | Loop is the only thing to tap |
+| v6 | Reminder shown as 5 / 10 / 15 / Off with a line saying what will happen | The chosen setting is always visible, including Off |
+| v6 | "Finish session" label shown whenever the feed is open (highlighted on first use) | The exit stays easy to find while scrolling |
+| v6 | Leaving the page ends the session without a reward; each finish counted once | Only deliberate stops grow the plant |
+| v6 | Participant view is the default, with the plant reward on; console behind `?facilitator=1` | The plain link is the classroom demonstration |
+| v6 | Log records `run_mode` (`real_time` or `accelerated_demo`) | Keeps demo sessions out of duration comparisons |
 
 ### After the pilot
 
@@ -219,6 +225,6 @@ opens. The last one guards against the stop-counting side effect.
 ## Updating the screenshots
 
 The screenshots were captured with a Playwright script in participant view
-(`?participant=1`) at 390 × 844. To refresh them, open the Pages link on a phone or in
+(the default participant view) at 390 × 844. To refresh them, open the Pages link on a phone or in
 the browser's device mode at the same size, and use the same URL options (`reward=B`,
 `goal=5`, `pause=off`) for the reward and baseline screens.
