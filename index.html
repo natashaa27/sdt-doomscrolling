@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pause Prototype</title>
+<style>
+  :root {
+    /* Phone (Pause app) palette: fixed, always light by design */
+    --teal: #127C71;
+    --teal-dark: #0E6158;
+    --teal-soft: #E7F2F0;
+    --teal-line: #BFDCD7;
+    --ink: #1E2A30;
+    --ink-muted: #56666D;
+    --line: #E1E8E7;
+    --ph: #EDF1F1;
+    --ph-2: #E2E8E8;
+    --white: #FFFFFF;
+
+    /* Facilitator panel palette: follows the viewer's theme */
+    --bg: #F3F6F6;
+    --panel: #FFFFFF;
+    --panel-2: #F6F9F9;
+    --text: #1E2A30;
+    --text-muted: #5A6A70;
+    --border: #DCE5E4;
+    --accent: #127C71;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E7F2F0;
+    --bezel: #1E2A30;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11191C;
+      --panel: #182226;
+      --panel-2: #1D292E;
+      --text: #E4ECEC;
+      --text-muted: #9DB0B2;
+      --border: #2B3A3F;
+      --accent: #4FB8AB;
+      --accent-ink: #0E1A1C;
+      --accent-soft: #1D3633;
+      --bezel: #05090A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11191C;
+    --panel: #182226;
+    --panel-2: #1D292E;
+    --text: #E4ECEC;
+    --text-muted: #9DB0B2;
+    --border: #2B3A3F;
+    --accent: #4FB8AB;
+    --accent-ink: #0E1A1C;
+    --accent-soft: #1D3633;
+    --bezel: #05090A;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding-inline: 16px;
+    padding-block: 16px;
+  }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--teal-line);
+    outline-offset: 2px;
+  }
+  [hidden] { display: none !important; }
+
+  .stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: center;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone-col { flex: 0 0 auto; max-width: 100%; }
+  .phone {
+    width: 418px;
+    max-width: 100%;
+    padding: 14px;
+    border-radius: 56px;
+    background: var(--bezel);
+    box-shadow: 0 20px 50px rgba(15, 30, 35, .18);
+  }
+  .screen {
+    position: relative;
+    width: 390px;
+    max-width: 100%;
+    height: 844px;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--white);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+  .statusbar {
+    flex: 0 0 auto;
+    height: 48px;
+    padding: 14px 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    z-index: 5;
+  }
+  .statusbar .notch {
+    position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+    width: 120px; height: 32px; border-radius: 20px; background: #0B1113;
+  }
+  .statusbar .sys { display: flex; gap: 6px; align-items: center; }
+  .statusbar .sys span { display: block; background: var(--ink); border-radius: 2px; }
+  .view { flex: 1 1 auto; position: relative; min-height: 0; display: flex; flex-direction: column; }
+
+  /* ---------- Home ---------- */
+  .home { flex: 1; background: linear-gradient(180deg, #F5F9F8 0%, #E9F2F0 100%); padding: 24px 24px 32px; display: flex; flex-direction: column; }
+  .home .clock { text-align: center; margin-top: 28px; }
+  .home .clock .t { font-size: 64px; font-weight: 300; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .home .clock .d { margin-top: 8px; color: var(--ink-muted); font-size: 16px; }
+  .apps { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 8px 40px; }
+  .app-btn { background: none; border: 0; padding: 6px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--ink); border-radius: 18px; }
+  .app-icon { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(30, 42, 48, .12); }
+  .app-icon svg { width: 36px; height: 36px; }
+  .app-btn .n { font-size: 14px; font-weight: 500; }
+  .icon-loop { background: #3F5560; }
+  .icon-clips { background: #6A5B8C; }
+  .icon-feed { background: #B06A3B; }
+  .home-hint { text-align: center; color: var(--ink-muted); font-size: 13px; }
+
+  .notif {
+    position: absolute; top: 6px; left: 10px; right: 10px; z-index: 10;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid var(--line);
+    border-radius: 22px; padding: 12px 14px;
+    box-shadow: 0 8px 24px rgba(30, 42, 48, .16);
+    display: flex; gap: 12px; align-items: center; text-align: left; color: var(--ink);
+    width: calc(100% - 20px);
+    animation: drop .35s ease-out;
+  }
+  .notif .app-icon { width: 40px; height: 40px; border-radius: 11px; flex: 0 0 auto; }
+  .notif .app-icon svg { width: 22px; height: 22px; }
+  .notif b { display: block; font-size: 14px; }
+  .notif small { color: var(--ink-muted); font-size: 13px; }
+  @keyframes drop { from { transform: translateY(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* ---------- Pause screens (shared) ---------- */
+  .pause { flex: 1; display: flex; flex-direction: column; padding: 20px 24px 28px; background: var(--white); overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 8px; color: var(--teal); font-weight: 600; font-size: 14px; letter-spacing: .04em; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--teal); }
+  .brand .ctx { color: var(--ink-muted); font-weight: 400; letter-spacing: 0; }
+  .pause h1 { font-size: 28px; line-height: 1.2; margin: 28px 0 6px; font-weight: 650; text-wrap: balance; letter-spacing: -.3px; }
+  .pause .sub { color: var(--ink-muted); font-size: 16px; margin: 0 0 20px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    min-height: 54px; width: 100%;
+    border: 1.5px solid var(--line); border-radius: 16px; background: var(--white);
+    color: var(--ink); font-size: 17px; text-align: left; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    transition: border-color .15s, background .15s;
+  }
+  .opt .tick { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--teal-line); flex: 0 0 auto; display: grid; place-items: center; }
+  .opt[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); }
+  .opt[aria-pressed="true"] .tick { background: var(--teal); border-color: var(--teal); }
+  .opt[aria-pressed="true"] .tick::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+  .okay { margin: 12px 2px 0; color: var(--ink-muted); font-size: 15px; }
+  .label { margin: 24px 0 10px; font-size: 13px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    min-height: 44px; padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--white); color: var(--ink); font-size: 15px;
+  }
+  .chip[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); font-weight: 600; }
+  .spacer { flex: 1 1 auto; min-height: 20px; }
+  .btn {
+    min-height: 56px; width: 100%; border-radius: 16px; font-size: 17px; font-weight: 600;
+    border: 1.5px solid var(--teal); background: var(--white); color: var(--teal-dark); padding: 12px 16px;
+  }
+  .btn.primary { background: var(--teal); color: #fff; }
+  .btn:disabled { background: var(--ph); border-color: var(--ph-2); color: #7C8B90; cursor: default; }
+  .btn-stack { display: flex; flex-direction: column; gap: 10px; }
+  .link { background: none; border: 0; color: var(--ink-muted); font-size: 15px; padding: 12px; margin-top: 4px; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
+  .foot { text-align: center; color: var(--ink-muted); font-size: 14px; margin-top: 14px; }
+
+  /* ---------- Feed ---------- */
+  .feed-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; background: #F7F9F9; }
+  .feed-head { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 10px; background: #F7F9F9; border-bottom: 1px solid var(--line); }
+  .feed-head .appname { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; }
+  .feed-head .app-icon { width: 30px; height: 30px; border-radius: 9px; box-shadow: none; }
+  .feed-head .app-icon svg { width: 17px; height: 17px; }
+  .pchip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--teal-dark); background: var(--teal-soft);
+    border-radius: 999px; padding: 5px 10px; font-variant-numeric: tabular-nums; white-space: nowrap;
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pchip .d { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex: 0 0 auto; }
+  .feed { flex: 1; overflow-y: auto; padding: 12px 12px 90px; display: flex; flex-direction: column; gap: 12px; overscroll-behavior: contain; }
+  .card { background: var(--white); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); }
+  .card .top { display: flex; align-items: center; gap: 10px; }
+  .card .av { width: 36px; height: 36px; border-radius: 50%; background: var(--ph-2); flex: 0 0 auto; }
+  .card .bars { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .bar { height: 10px; border-radius: 5px; background: var(--ph-2); }
+  .card .media { border-radius: 12px; background: var(--ph); }
+  .card .acts { display: flex; gap: 18px; }
+  .card .acts span { width: 22px; height: 22px; border-radius: 6px; background: var(--ph); }
+  .close-bar { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 20px 22px; background: linear-gradient(180deg, rgba(247,249,249,0) 0%, #F7F9F9 40%); display: flex; justify-content: center; }
+  .close-btn { min-height: 50px; padding: 10px 28px; border-radius: 999px; background: var(--ink); color: #fff; border: 0; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(30, 42, 48, .2); }
+
+  /* ---------- Checkpoint sheet ---------- */
+  .scrim { position: absolute; inset: 0; background: rgba(30, 42, 48, .28); z-index: 20; display: flex; align-items: flex-end; animation: fade .3s ease-out; }
+  .sheet { width: 100%; background: var(--white); border-radius: 28px 28px 0 0; padding: 24px 24px 30px; animation: rise .35s ease-out; }
+  .sheet h1 { margin-top: 18px; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rise { from { transform: translateY(30px); } to { transform: none; } }
+
+  /* ---------- Exit ---------- */
+  .exit-mark { width: 64px; height: 64px; border-radius: 50%; background: var(--teal-soft); display: grid; place-items: center; margin-top: 48px; }
+  .exit-mark.neutral { background: var(--ph); }
+  .exit-mark svg { width: 30px; height: 30px; }
+  .progress { margin-top: 28px; border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .progress .row { display: flex; gap: 16px; align-items: center; }
+  .ring { width: 84px; height: 84px; flex: 0 0 auto; }
+  .progress .num { font-size: 30px; font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .progress .cap { font-size: 14px; color: var(--ink-muted); }
+  .progress .goal-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--ink-muted); }
+  .progress .chip { min-height: 38px; padding: 6px 12px; font-size: 14px; }
+
+  /* ---------- Reflection ---------- */
+  .q { font-size: 17px; font-weight: 600; margin: 22px 0 10px; }
+  .seg { display: flex; gap: 8px; }
+  .seg .chip { flex: 1; }
+  .vstack { display: flex; flex-direction: column; gap: 8px; }
+  .vstack .chip { text-align: left; border-radius: 14px; padding: 10px 16px; min-height: 48px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- Facilitator panel ---------- */
+  .panel { flex: 1 1 520px; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: 16px; }
+  .panel header h2 { margin: 0; font-size: 20px; }
+  .panel header p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; max-width: 65ch; }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .box h3 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .ctrl { display: flex; flex-direction: column; gap: 6px; }
+  .ctrl > span { font-size: 13px; color: var(--text-muted); }
+  .segc { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--panel-2); width: max-content; max-width: 100%; }
+  .segc button { border: 0; background: transparent; color: var(--text); padding: 8px 14px; min-height: 38px; font-size: 14px; border-right: 1px solid var(--border); }
+  .segc button:last-child { border-right: 0; }
+  .segc button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .hint { font-size: 12.5px; color: var(--text-muted); }
+  .row-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .fbtn { border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 10px; padding: 8px 14px; min-height: 38px; font-size: 14px; }
+  .fbtn.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .fbtn:disabled { opacity: .45; cursor: default; }
+  .panel input[type="text"], .panel input[type="number"], .panel select, .panel textarea {
+    font: inherit; font-size: 14px; color: var(--text); background: var(--panel-2);
+    border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-height: 38px;
+  }
+  .panel input[type="text"] { width: 110px; }
+  .panel input[type="number"] { width: 90px; }
+  .live { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+  .live div { background: var(--panel-2); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+  .live small { display: block; font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .live b { display: block; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 360px; overflow-y: auto; }
+  table { border-collapse: collapse; font-size: 12.5px; width: max-content; min-width: 100%; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  th { position: sticky; top: 0; background: var(--panel-2); color: var(--text-muted); font-weight: 600; z-index: 1; }
+  tr.active td { background: var(--accent-soft); font-style: italic; }
+  .empty { padding: 16px; color: var(--text-muted); font-size: 14px; }
+  #csvOut { width: 100%; min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+  .status-msg { font-size: 13px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone-col" id="phoneCol">
+    <div class="phone" aria-label="Simulated phone">
+      <div class="screen" id="screen">
+        <div class="statusbar"><span id="sbTime">9:41</span><div class="notch"></div>
+          <div class="sys" aria-hidden="true"><span style="width:3px;height:6px"></span><span style="width:3px;height:8px"></span><span style="width:3px;height:10px"></span><span style="width:22px;height:11px;border-radius:3px;margin-left:4px"></span></div>
+        </div>
+        <div class="view" id="view"></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="panel" aria-label="Facilitator panel">
+    <header>
+      <h2>Facilitator panel</h2>
+      <p>Run the participant on the phone. Set variants here before each task. Everything stays in this browser tab; export the log before closing it.</p>
+    </header>
+
+    <section class="box">
+      <h3>Participant</h3>
+      <div class="row-actions">
+        <label class="ctrl"><span>Participant ID</span><input type="text" id="pidInput" value="P01"></label>
+        <label class="ctrl"><span>Reclaimed minutes at week start</span><input type="number" id="weekSeed" min="0" step="1" value="40"></label>
+        <div class="ctrl"><span>&nbsp;</span><button class="fbtn" id="newParticipant">New participant</button></div>
+      </div>
+      <div class="hint">New participant ends any open session (logged as <i>unknown</i>), resets the weekly total and goal, and returns to the home screen.</div>
+    </section>
+
+    <section class="box">
+      <h3>Conditions</h3>
+      <div class="grid2">
+        <div class="ctrl"><span>Purpose prompt</span>
+          <div class="segc" id="promptSeg"><button data-v="A" aria-pressed="true">A · full list</button><button data-v="B" aria-pressed="false">B · short</button></div>
+        </div>
+        <div class="ctrl"><span>Exit reward</span>
+          <div class="segc" id="rewardSeg"><button data-v="A" aria-pressed="true">A · message</button><button data-v="B" aria-pressed="false">B · + progress</button></div>
+        </div>
+        <div class="ctrl"><span>Time speed</span>
+          <div class="segc" id="speedSeg"><button data-v="1" aria-pressed="true">1×</button><button data-v="10" aria-pressed="false">10×</button><button data-v="60" aria-pressed="false">60×</button></div>
+          <span class="hint">At 60×, a 10-minute cue arrives after 10 seconds.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="box">
+      <h3>Events</h3>
+      <div class="row-actions">
+        <select id="notifApp" aria-label="App for notification"><option>Loop</option><option selected>Clips</option><option>Feed</option></select>
+        <button class="fbtn" id="simNotif">Simulate notification</button>
+      </div>
+      <div class="row-actions">
+        <select id="interruptKind" aria-label="Interruption type"><option value="call">Incoming call</option><option value="class">Class starting</option></select>
+        <button class="fbtn" id="simInterrupt">Simulate interruption</button>
+      </div>
+      <div class="live" id="live"></div>
+    </section>
+
+    <section class="box">
+      <h3>Session log</h3>
+      <div class="row-actions">
+        <button class="fbtn accent" id="exportCsv">Export CSV</button>
+        <button class="fbtn" id="copyCsv">Copy CSV</button>
+        <span class="status-msg" id="csvMsg" role="status"></span>
+      </div>
+      <div class="table-wrap" id="logWrap"></div>
+      <textarea id="csvOut" readonly hidden aria-label="CSV text"></textarea>
+      <div class="hint">One row per session. Feed content is never logged. Times use the simulated clock, so <i>end_time</i> = <i>start_time</i> + simulated duration. The clock pauses while the checkpoint or purpose screen is showing.</div>
+    </section>
+  </aside>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- Config ----------
+  const APPS = {
+    Loop:  { cls: "icon-loop",  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>', notif: "3 new posts from people you follow" },
+    Clips: { cls: "icon-clips", svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M10 9l5 3-5 3z" fill="#fff"/></svg>', notif: "A new clip is trending near you" },
+    Feed:  { cls: "icon-feed",  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="6" rx="2"/><path d="M4 15h16M4 19h10"/></svg>', notif: "Someone mentioned you in a comment" }
+  };
+  const PURPOSES = {
+    A: [
+      { label: "Reply to someone",         noun: "reply session" },
+      { label: "Check something specific", noun: "check-in" },
+      { label: "Learn something",          noun: "learning session" },
+      { label: "Take a break",             noun: "break" },
+      { label: "Just browsing",            noun: "browsing session" }
+    ],
+    B: [
+      { label: "Something specific", noun: "check-in" },
+      { label: "A break",            noun: "break" },
+      { label: "Just browsing",      noun: "browsing session" }
+    ]
+  };
+  const CUES = [5, 10, 15, "none"];
+  const CONTINUE_MIN = 5;
+  const COLS = ["participant_id","session_id","app","trigger","prompt_variant","purpose","time_cue_chosen",
+    "time_to_choose_purpose_ms","start_time","checkpoint_count","checkpoint_choices","final_boundary","end_time",
+    "end_type","within_boundary","reward_variant_shown","well_spent","how_it_ended","time_speed","sim_duration_s"];
+
+  // ---------- State ----------
+  const state = {
+    pid: "P01", pNum: 1, sessionCounter: 0,
+    promptVariant: "A", rewardVariant: "A", speed: 1,
+    weekSeed: 40, weekTotal: 40, weeklyGoal: 60,
+    sessions: [], current: null, lastEnded: null,
+    screen: "home", notif: null
+  };
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const view = $("#view");
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const icon = name => `<span class="app-icon ${APPS[name].cls}" aria-hidden="true">${APPS[name].svg}</span>`;
+  const mmss = ms => { const t = Math.floor(ms / 1000); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+  const fmtMin = ms => String(Math.round(ms / 6000) / 10);
+
+  // ---------- Session lifecycle ----------
+  function startSession(app, trigger) {
+    if (state.current) endSession("unknown");
+    state.notif = null;
+    state.sessionCounter++;
+    const s = {
+      participant_id: state.pid,
+      session_id: `${state.pid}-S${String(state.sessionCounter).padStart(2, "0")}`,
+      app, trigger, prompt_variant: state.promptVariant,
+      purposes: [], nouns: [], time_cue_chosen: "", time_to_choose_purpose_ms: "",
+      start: null, opened: false, elapsedMs: 0,
+      boundaryMs: null, cueMin: null, extended: false,
+      checkpoint_count: 0, checkpoint_choices: [],
+      end: null, end_type: "", within_boundary: "", reward_variant_shown: "",
+      well_spent: "", how_it_ended: "", status: "active",
+      promptShownAt: performance.now()
+    };
+    state.sessions.push(s);
+    state.current = s;
+    showPrompt(false);
+    renderLog();
+  }
+
+  function endSession(type) {
+    const s = state.current;
+    if (!s) return null;
+    s.end_type = type;
+    s.end = s.start ? new Date(s.start.getTime() + s.elapsedMs) : new Date();
+    if (s.opened && s.boundaryMs != null) s.within_boundary = s.elapsedMs <= s.boundaryMs + 500 ? "yes" : "no";
+    s.speed = state.speed;
+    s.status = "done";
+    state.current = null;
+    state.lastEnded = s;
+    renderLog();
+    return s;
+  }
+
+  function closeApp() {
+    const s = endSession("voluntary");
+    if (s.within_boundary === "no") { showExitNeutral(s, "closed"); return; }
+    s.reward_variant_shown = state.rewardVariant;
+    if (state.rewardVariant === "B") {
+      const reclaimed = s.boundaryMs != null ? Math.max(0, Math.round((s.boundaryMs - s.elapsedMs) / 60000)) : 0;
+      state.weekTotal += reclaimed;
+      s.reclaimed = reclaimed;
+    }
+    renderLog();
+    showReward(s);
+  }
+
+  // ---------- Screens ----------
+  function setScreen(name, html) {
+    state.screen = name;
+    view.innerHTML = html;
+    renderLive();
+  }
+
+  function showHome() {
+    const n = state.notif;
+    setScreen("home", `
+      <div class="home">
+        ${n ? `<button class="notif" id="notif">${icon(n)}<span><b>${n}</b><small>${esc(APPS[n].notif)}</small></span></button>` : ""}
+        <div class="clock"><div class="t" id="homeTime"></div><div class="d" id="homeDate"></div></div>
+        <div class="apps">
+          ${Object.keys(APPS).map(a => `<button class="app-btn" data-app="${a}">${icon(a)}<span class="n">${a}</span></button>`).join("")}
+        </div>
+        <div class="home-hint">Tap an app to open it</div>
+      </div>`);
+    view.querySelectorAll(".app-btn").forEach(b => b.onclick = () => startSession(b.dataset.app, "tap"));
+    if (n) $("#notif").onclick = () => startSession(n, "notification");
+    tickClock();
+  }
+
+  function showPrompt(isChange) {
+    const s = state.current;
+    const variant = isChange ? state.promptVariant : s.prompt_variant;
+    const list = PURPOSES[variant];
+    let purpose = null, cue = "none";
+    const title = variant === "A" ? "What brings you here?" : "Why are you opening this?";
+    setScreen("prompt", `
+      <div class="pause">
+        <div class="brand"><span class="dot"></span>Pause <span class="ctx">· ${isChange ? "change purpose" : "before " + esc(s.app) + " opens"}</span></div>
+        <h1>${title}</h1>
+        <div class="options" role="group" aria-label="Purpose">
+          ${list.map((p, i) => `<button class="opt" data-i="${i}" aria-pressed="false"><span>${p.label}</span><span class="tick"></span></button>`).join("")}
+        </div>
+        <p class="okay">Just browsing is okay.</p>
+        <div class="label">Time cue <span style="text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
+        <div class="chips" role="group" aria-label="Time cue">
+          ${CUES.map(c => `<button class="chip" data-c="${c}" aria-pressed="${c === "none"}">${c === "none" ? "No timer" : c + " min"}</button>`).join("")}
+        </div>
+        <div class="spacer"></div>
+        <button class="btn primary" id="openBtn" disabled>${isChange ? "Back to my app" : "Open my app"}</button>
+        ${isChange ? "" : `<button class="link" id="notNow">Not now</button>`}
+      </div>`);
+    view.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      view.querySelectorAll(".opt").forEach(o => o.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      purpose = list[+b.dataset.i];
+      $("#openBtn").disabled = false;
+    });
+    view.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+      view.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      cue = b.dataset.c === "none" ? "none" : +b.dataset.c;
+    });
+    $("#openBtn").onclick = () => {
+      if (!purpose) return;
+      if (!isChange) {
+        s.time_to_choose_purpose_ms = Math.round(performance.now() - s.promptShownAt);
+        s.start = new Date();
+        s.time_cue_chosen = cue === "none" ? "none" : String(cue);
+        s.opened = true;
+      }
+      s.purposes.push(purpose.label);
+      s.nouns.push(purpose.noun);
+      s.cueMin = cue === "none" ? null : cue;
+      s.boundaryMs = cue === "none" ? null : s.elapsedMs + cue * 60000;
+      s.extended = false;
+      showFeed();
+      renderLog();
+    };
+    if (!isChange) $("#notNow").onclick = () => { endSession("voluntary"); showHome(); };
+  }
+
+  let feedSeed = 0;
+  function cardHTML() {
+    feedSeed++;
+    const r = (n) => { const x = Math.sin(feedSeed * 9301 + n * 49297) * 233280; return x - Math.floor(x); };
+    const h = [140, 200, 260, 320, 0][Math.floor(r(1) * 5)];
+    const w1 = 40 + Math.floor(r(2) * 30), w2 = 50 + Math.floor(r(3) * 45), w3 = 30 + Math.floor(r(4) * 50);
+    return `<div class="card" aria-hidden="true">
+      <div class="top"><div class="av"></div><div class="bars"><div class="bar" style="width:${w1}%"></div><div class="bar" style="width:${Math.round(w1 / 2)}%;height:8px"></div></div></div>
+      ${h ? `<div class="media" style="height:${h}px"></div>` : ""}
+      <div class="bar" style="width:${w2}%"></div>${r(5) > .5 ? `<div class="bar" style="width:${w3}%"></div>` : ""}
+      <div class="acts"><span></span><span></span><span></span></div>
+    </div>`;
+  }
+
+  function showFeed() {
+    const s = state.current;
+    setScreen("feed", `
+      <div class="feed-wrap">
+        <div class="feed-head">
+          <div class="appname">${icon(s.app)}${esc(s.app)}</div>
+          <span class="pchip" id="pchip" title="Your purpose and time in app"><span class="d"></span><span id="pchipText"></span></span>
+        </div>
+        <div class="feed" id="feed" aria-label="${esc(s.app)} feed (placeholder content)">${Array.from({ length: 8 }, cardHTML).join("")}</div>
+        <div class="close-bar"><button class="close-btn" id="closeApp">Close app</button></div>
+      </div>`);
+    const feed = $("#feed");
+    feed.addEventListener("scroll", () => {
+      if (feed.scrollTop + feed.clientHeight > feed.scrollHeight - 800) {
+        feed.insertAdjacentHTML("beforeend", Array.from({ length: 6 }, cardHTML).join(""));
+      }
+    });
+    $("#closeApp").onclick = closeApp;
+    updateChip();
+  }
+
+  function updateChip() {
+    const s = state.current, el = $("#pchipText");
+    if (!s || !el) return;
+    el.textContent = `${s.purposes[s.purposes.length - 1]} · ${mmss(s.elapsedMs)}`;
+  }
+
+  function showCheckpoint() {
+    const s = state.current;
+    s.checkpoint_count++;
+    state.screen = "checkpoint";
+    const noun = s.nouns[s.nouns.length - 1];
+    const sub = s.extended
+      ? `You added ${s.cueMin} minutes to your ${noun}.`
+      : `You chose a ${s.cueMin}-minute ${noun}.`;
+    const wrap = view.querySelector(".feed-wrap");
+    wrap.insertAdjacentHTML("beforeend", `
+      <div class="scrim" id="cp" role="dialog" aria-modal="true" aria-labelledby="cpTitle">
+        <div class="sheet">
+          <div class="brand"><span class="dot"></span>Pause</div>
+          <h1 id="cpTitle">Still doing what you came for?</h1>
+          <p class="sub">${sub}</p>
+          <div class="btn-stack">
+            <button class="btn" data-a="end">End my session</button>
+            <button class="btn" data-a="continue">Continue for 5 minutes</button>
+            <button class="btn" data-a="change">Change my purpose</button>
+          </div>
+          <p class="foot">You stay in control.</p>
+        </div>
+      </div>`);
+    renderLive();
+    $("#cp").querySelectorAll("button").forEach(b => b.onclick = () => {
+      const a = b.dataset.a;
+      if (a === "end") { s.checkpoint_choices.push("end_session"); closeApp(); }
+      if (a === "continue") {
+        s.checkpoint_choices.push("continue_5");
+        s.boundaryMs = s.elapsedMs + CONTINUE_MIN * 60000;
+        s.cueMin = CONTINUE_MIN;
+        s.extended = true;
+        $("#cp").remove();
+        state.screen = "feed";
+        renderLive();
+      }
+      if (a === "change") { s.checkpoint_choices.push("change_purpose"); showPrompt(true); }
+    });
+    $("#cp .btn").focus();
+  }
+
+  const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#127C71" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const NEUTRAL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#56666D" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"/></svg>';
+
+  function ringSVG(val, goal) {
+    const r = 34, c = 2 * Math.PI * r, p = Math.min(1, goal ? val / goal : 0);
+    return `<svg class="ring" viewBox="0 0 84 84" role="img" aria-label="${val} of ${goal} minutes">
+      <circle cx="42" cy="42" r="${r}" fill="none" stroke="#E7F2F0" stroke-width="8"/>
+      <circle cx="42" cy="42" r="${r}" fill="none" stroke="#127C71" stroke-width="8" stroke-linecap="round"
+        stroke-dasharray="${(c * p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 42 42)"/>
+      <text x="42" y="47" text-anchor="middle" font-size="15" font-weight="600" fill="#1E2A30">${Math.round(p * 100)}%</text>
+    </svg>`;
+  }
+
+  function progressHTML(s) {
+    return `<div class="progress" id="progress">
+      <div class="row">${ringSVG(state.weekTotal, state.weeklyGoal)}
+        <div><div class="cap">Minutes you chose to reclaim this week</div><div class="num">${state.weekTotal}</div>
+        <div class="cap">${s.reclaimed ? `${s.reclaimed} from this session` : `Weekly goal: ${state.weeklyGoal} min`}</div></div>
+      </div>
+      <div class="goal-row"><span>Your weekly goal</span>
+        ${[30, 60, 90, 120].map(g => `<button class="chip" data-g="${g}" aria-pressed="${g === state.weeklyGoal}">${g} min</button>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  function showReward(s) {
+    setScreen("exit", `
+      <div class="pause">
+        <div class="brand"><span class="dot"></span>Pause</div>
+        <div class="exit-mark">${CHECK_SVG}</div>
+        <h1>You chose to stop</h1>
+        <p class="sub">Your ${esc(s.nouns[s.nouns.length - 1] || "session")} ended on your terms.</p>
+        ${state.rewardVariant === "B" ? progressHTML(s) : ""}
+        <div class="spacer"></div>
+        <div class="btn-stack">
+          <button class="btn primary" id="backDay">Back to my day</button>
+          <button class="btn" id="reflect">Reflect for a moment</button>
+        </div>
+      </div>`);
+    bindGoal(s);
+    $("#backDay").onclick = showHome;
+    $("#reflect").onclick = () => showReflect(s);
+  }
+
+  function bindGoal(s) {
+    const box = $("#progress");
+    if (!box) return;
+    box.querySelectorAll("[data-g]").forEach(b => b.onclick = () => {
+      state.weeklyGoal = +b.dataset.g;
+      box.outerHTML = progressHTML(s);
+      bindGoal(s);
+    });
+  }
+
+  function showExitNeutral(s, why) {
+    const text = why === "call" ? "A call came in, so the app closed."
+      : why === "class" ? "Class is starting, so the app closed."
+      : "The app is closed.";
+    setScreen("exit", `
+      <div class="pause">
+        <div class="brand"><span class="dot"></span>Pause</div>
+        <div class="exit-mark neutral">${NEUTRAL_SVG}</div>
+        <h1>Session ended</h1>
+        <p class="sub">${text}</p>
+        <div class="spacer"></div>
+        <div class="btn-stack">
+          <button class="btn primary" id="backDay">Back to my day</button>
+          <button class="btn" id="reflect">Reflect for a moment</button>
+        </div>
+      </div>`);
+    $("#backDay").onclick = showHome;
+    $("#reflect").onclick = () => showReflect(s);
+  }
+
+  function showReflect(s) {
+    let well = "", how = "";
+    setScreen("reflect", `
+      <div class="pause">
+        <div class="brand"><span class="dot"></span>Pause <span class="ctx">· reflection</span></div>
+        <div class="q" style="margin-top:32px">Was this time well spent?</div>
+        <div class="seg" id="wellSeg">${["Yes", "Partly", "No"].map(v => `<button class="chip" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div>
+        <div class="q">How did the session end?</div>
+        <div class="vstack" id="howSeg">${["I chose to stop", "Something interrupted me", "I lost track"].map(v => `<button class="chip" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div>
+        <div class="spacer"></div>
+        <div class="btn-stack">
+          <button class="btn primary" id="saveR">Save reflection</button>
+          <button class="btn" id="skipR">Skip for now</button>
+        </div>
+        <p class="foot">Your reflection stays private.</p>
+      </div>`);
+    const pick = (id, set) => $(id).querySelectorAll("button").forEach(b => b.onclick = () => {
+      $(id).querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      set(b.dataset.v);
+    });
+    pick("#wellSeg", v => well = v);
+    pick("#howSeg", v => how = v);
+    $("#saveR").onclick = () => {
+      s.well_spent = well.toLowerCase();
+      s.how_it_ended = { "I chose to stop": "chose_to_stop", "Something interrupted me": "interrupted", "I lost track": "lost_track" }[how] || "";
+      renderLog();
+      showSaved();
+    };
+    $("#skipR").onclick = showHome;
+  }
+
+  function showSaved() {
+    setScreen("saved", `
+      <div class="pause">
+        <div class="brand"><span class="dot"></span>Pause</div>
+        <div class="exit-mark">${CHECK_SVG}</div>
+        <h1>Reflection saved</h1>
+        <p class="sub">Thanks for taking a moment.</p>
+        <div class="spacer"></div>
+        <button class="btn primary" id="backDay">Back to my day</button>
+      </div>`);
+    $("#backDay").onclick = showHome;
+  }
+
+  // ---------- Clock ----------
+  let last = performance.now();
+  setInterval(() => {
+    const now = performance.now(), d = now - last;
+    last = now;
+    const s = state.current;
+    if (s && state.screen === "feed") {
+      s.elapsedMs += d * state.speed;
+      if (s.boundaryMs != null && s.elapsedMs >= s.boundaryMs) {
+        s.elapsedMs = s.boundaryMs;
+        updateChip();
+        showCheckpoint();
+      } else updateChip();
+      renderLive();
+    }
+  }, 200);
+
+  function tickClock() {
+    const d = new Date();
+    const t = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
+    $("#sbTime").textContent = t;
+    const ht = $("#homeTime");
+    if (ht) { ht.textContent = t; $("#homeDate").textContent = d.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" }); }
+  }
+  setInterval(tickClock, 10000);
+
+  // ---------- Facilitator panel ----------
+  function segment(id, key, parse) {
+    const el = $(id);
+    el.querySelectorAll("button").forEach(b => b.onclick = () => {
+      el.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+      state[key] = parse ? parse(b.dataset.v) : b.dataset.v;
+      renderLive();
+    });
+  }
+  segment("#promptSeg", "promptVariant");
+  segment("#rewardSeg", "rewardVariant");
+  segment("#speedSeg", "speed", Number);
+
+  $("#pidInput").addEventListener("change", e => {
+    const v = e.target.value.trim();
+    if (v) { state.pid = v; state.sessionCounter = state.sessions.filter(s => s.participant_id === v).length; }
+    else e.target.value = state.pid;
+    renderLive();
+  });
+  $("#weekSeed").addEventListener("change", e => {
+    const v = Math.max(0, Math.round(+e.target.value || 0));
+    e.target.value = v;
+    state.weekTotal += v - state.weekSeed;
+    state.weekSeed = v;
+  });
+  $("#newParticipant").onclick = () => {
+    if (state.current) endSession("unknown");
+    state.pNum++;
+    state.pid = "P" + String(state.pNum).padStart(2, "0");
+    $("#pidInput").value = state.pid;
+    state.sessionCounter = 0;
+    state.weekTotal = state.weekSeed;
+    state.weeklyGoal = 60;
+    state.notif = null;
+    showHome();
+  };
+  $("#simNotif").onclick = () => {
+    if (state.current) return;
+    state.notif = $("#notifApp").value;
+    if (state.screen === "home") showHome();
+    renderLive();
+  };
+  $("#simInterrupt").onclick = () => {
+    if (!state.current) return;
+    const s = endSession("interrupted");
+    showExitNeutral(s, $("#interruptKind").value);
+  };
+
+  function renderLive() {
+    const s = state.current;
+    const screenNames = { home: "Home", prompt: "Purpose prompt", feed: "In app (feed)", checkpoint: "Checkpoint", exit: "Exit screen", reflect: "Reflection", saved: "Reflection saved" };
+    const cells = [
+      ["Screen", screenNames[state.screen] || state.screen],
+      ["Session", s ? s.session_id : "—"],
+      ["Purpose", s && s.purposes.length ? s.purposes[s.purposes.length - 1] : "—"],
+      ["Time in app", s && s.opened ? mmss(s.elapsedMs) : "—"],
+      ["Current cue ends", s && s.opened ? (s.boundaryMs == null ? "No timer" : mmss(s.boundaryMs)) : "—"],
+      ["Pending notification", state.notif || "—"]
+    ];
+    $("#live").innerHTML = cells.map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join("");
+    $("#simNotif").disabled = !!state.current;
+    $("#simInterrupt").disabled = !state.current;
+  }
+
+  function rowValues(s) {
+    return {
+      participant_id: s.participant_id,
+      session_id: s.session_id,
+      app: s.app,
+      trigger: s.trigger,
+      prompt_variant: s.prompt_variant,
+      purpose: s.opened ? s.purposes.join(" > ") : "(not opened)",
+      time_cue_chosen: s.time_cue_chosen,
+      time_to_choose_purpose_ms: s.time_to_choose_purpose_ms,
+      start_time: s.start ? s.start.toISOString() : "",
+      checkpoint_count: s.opened ? s.checkpoint_count : "",
+      checkpoint_choices: s.checkpoint_choices.join("|"),
+      final_boundary: !s.opened ? "" : s.boundaryMs == null ? "none" : fmtMin(s.boundaryMs),
+      end_time: s.end ? s.end.toISOString() : "",
+      end_type: s.status === "active" ? "(in progress)" : s.end_type,
+      within_boundary: s.within_boundary,
+      reward_variant_shown: s.reward_variant_shown,
+      well_spent: s.well_spent,
+      how_it_ended: s.how_it_ended,
+      time_speed: s.status === "active" ? state.speed : s.speed,
+      sim_duration_s: s.opened ? Math.round(s.elapsedMs / 1000) : ""
+    };
+  }
+
+  function renderLog() {
+    const wrap = $("#logWrap");
+    if (!state.sessions.length) { wrap.innerHTML = `<div class="empty">No sessions yet. Tap an app on the phone to start one.</div>`; return; }
+    const rows = state.sessions.slice().reverse();
+    wrap.innerHTML = `<table><thead><tr>${COLS.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${
+      rows.map(s => { const v = rowValues(s); return `<tr class="${s.status === "active" ? "active" : ""}">${COLS.map(c => `<td>${esc(v[c])}</td>`).join("")}</tr>`; }).join("")
+    }</tbody></table>`;
+  }
+
+  function buildCSV() {
+    const done = state.sessions.filter(s => s.status === "done");
+    const cell = v => { const t = String(v ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+    const lines = [COLS.join(",")].concat(done.map(s => { const v = rowValues(s); return COLS.map(c => cell(v[c])).join(","); }));
+    return { csv: lines.join("\n"), count: done.length, open: state.sessions.length - done.length };
+  }
+  function csvNote(r) { return `${r.count} session${r.count === 1 ? "" : "s"}${r.open ? " (the session in progress is not included)" : ""}`; }
+
+  $("#exportCsv").onclick = () => {
+    const r = buildCSV();
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
+    try {
+      const url = URL.createObjectURL(new Blob([r.csv], { type: "text/csv" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = `pause-log-${stamp}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (e) { /* downloads can be blocked; the text below is the fallback */ }
+    const out = $("#csvOut");
+    out.value = r.csv; out.hidden = false;
+    $("#csvMsg").textContent = `Exported ${csvNote(r)}. If no file downloaded, copy the text below.`;
+  };
+  $("#copyCsv").onclick = () => {
+    const r = buildCSV();
+    const out = $("#csvOut");
+    out.value = r.csv;
+    navigator.clipboard.writeText(r.csv)
+      .then(() => { $("#csvMsg").textContent = `Copied ${csvNote(r)}. Paste into a spreadsheet.`; })
+      .catch(() => { out.hidden = false; out.focus(); out.select(); $("#csvMsg").textContent = "Copy was blocked. The CSV is selected below; press Ctrl/Cmd+C."; });
+  };
+
+  window.addEventListener("beforeunload", e => {
+    if (state.sessions.length) { e.preventDefault(); e.returnValue = ""; }
+  });
+
+  // ---------- Fit phone to the window ----------
+  function fit() {
+    const col = $("#phoneCol");
+    const byH = (window.innerHeight - 32) / 872;
+    const byW = (window.innerWidth - 32) / 418;
+    const z = Math.max(0.55, Math.min(1, window.innerWidth >= 900 ? Math.min(byH, byW) : byW));
+    col.style.zoom = z;
+  }
+  window.addEventListener("resize", fit);
+
+  fit();
+  showHome();
+  renderLog();
+})();
+</script>
+</body>
+</html>
