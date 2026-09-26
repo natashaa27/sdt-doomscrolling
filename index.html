@@ -354,6 +354,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
         <div class="segc" role="group" aria-labelledby="lblGoal" data-setting="goal">
           <button type="button" data-v="none">No goal</button><button type="button" data-v="5">5</button><button type="button" data-v="10">10</button><button type="button" data-v="15">15</button></div>
         <p class="help">Set this with the participant during setup, only if they want one. Without a goal the plant still grows but never flowers. The exit screen never asks for a goal.</p></div>
+      <div class="row"><span class="rl">Order for this participant</span><p class="help" id="orderLine" style="margin:0"></p></div>
       <div class="row"><span class="rl">Next participant</span><div class="btns"><button class="btn fill" id="btnNew" type="button">New participant</button></div>
         <p class="help">Ends any open session (logged as unknown), moves to the next ID, resets their weekly stops and goal, and returns to the home screen.</p></div>
     </section>
@@ -405,11 +406,17 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 
     <section>
       <h2>Debrief (after the tasks)</h2>
-      <p class="help">Ask these outside the app, once the participant has finished. Saved per participant ID and exported separately from the session log.</p>
+      <p class="help">Ask these outside the app. Ask the two rating questions verbally right after each condition, so baseline and Pause are rated the same way. Saved per participant ID and exported separately from the session log.</p>
+      <div class="row"><span class="rl">After baseline: worthwhile?</span><div class="segc" role="group" aria-label="Baseline worthwhile" data-setting="db:baseline_worthwhile"><button type="button" data-v="yes">Yes</button><button type="button" data-v="partly">Partly</button><button type="button" data-v="no">No</button></div></div>
+      <div class="row"><span class="rl">After baseline: in control?</span><div class="segc" role="group" aria-label="Baseline in control" data-setting="db:baseline_in_control"><button type="button" data-v="yes">Yes</button><button type="button" data-v="partly">Partly</button><button type="button" data-v="no">No</button></div></div>
+      <div class="row"><span class="rl">After Pause: worthwhile?</span><div class="segc" role="group" aria-label="Pause worthwhile" data-setting="db:pause_worthwhile"><button type="button" data-v="yes">Yes</button><button type="button" data-v="partly">Partly</button><button type="button" data-v="no">No</button></div></div>
+      <div class="row"><span class="rl">After Pause: in control?</span><div class="segc" role="group" aria-label="Pause in control" data-setting="db:pause_in_control"><button type="button" data-v="yes">Yes</button><button type="button" data-v="partly">Partly</button><button type="button" data-v="no">No</button></div></div>
+      <label class="db-q" for="dbConfused">What confused you?</label>
+      <textarea class="db-text" id="dbConfused"></textarea>
       <label class="db-q" for="dbWhy">What made you stop or continue?</label>
       <textarea class="db-text" id="dbWhy"></textarea>
       <span class="db-q" id="lblPlant">Did the plant feel encouraging, pressuring, or irrelevant?</span>
-      <div class="segc" role="group" aria-labelledby="lblPlant" data-setting="dbPlant">
+      <div class="segc" role="group" aria-labelledby="lblPlant" data-setting="db:plant_feeling">
         <button type="button" data-v="encouraging">Encouraging</button><button type="button" data-v="pressuring">Pressuring</button><button type="button" data-v="irrelevant">Irrelevant</button><button type="button" data-v="not_seen">Didn't see it</button></div>
       <label class="db-q" for="dbNotes">Notes</label>
       <textarea class="db-text" id="dbNotes"></textarea>
@@ -557,7 +564,7 @@ const STORE = 'pause.v4';
 const S = {
   settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on'},
   week:{stops:0, goal:null, seed:0},
-  debrief:{}, dbPlant:'',
+  debrief:{}, db:{},
   sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()
 };
 const T = {}; // timers
@@ -591,7 +598,7 @@ const fmtHMS = ms => { if (ms == null) return ''; const d = new Date(ms); return
 const mmss = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + pad(s % 60); };
 
 /* ---------------- Screen chrome ---------------- */
-function setScreen(name){ S.screen = name; el.screen.dataset.screen = name; updateChrome(); }
+function setScreen(name){ S.screen = name; el.screen.dataset.screen = name; updateChrome(); renderNow(); }
 function updateChrome(){
   const s = S.screen, c = S.cur, app = c && c.app;
   let light = false;
@@ -1032,12 +1039,21 @@ function renderNow(){
   const t = c.startSim !== null ? `, ${mmss(c.elapsed)} in app (${kind})${c.cueEnd != null ? ', cue at ' + mmss(c.cueEnd) : ''}` : '';
   line.innerHTML = `Now: <b>${a}${c.condition === 'baseline' ? ' (baseline)' : ''}, ${labels[S.screen] || S.screen}</b>${t}.`;
 }
+/* Counterbalancing: participant 1 baseline first + message first, 2 Pause first + plant first,
+   3 baseline first + plant first, 4 Pause first + message first, then repeat. */
+function orderFor(pid){
+  const m = /(\d+)$/.exec(pid || ''), i = m ? (+m[1] - 1) % 4 : 0;
+  const baseFirst = i === 0 || i === 2, msgFirst = i === 0 || i === 3;
+  return {cond: baseFirst ? 'baseline_then_pause' : 'pause_then_baseline', reward: msgFirst ? 'A_then_B' : 'B_then_A', baseFirst, msgFirst};
+}
 function renderSettings(){
   $('#pid').value = S.settings.pid;
   $('#weekStart').value = S.settings.weekStart;
+  const o = orderFor(S.settings.pid);
+  $('#orderLine').innerHTML = `<b>${o.baseFirst ? 'Baseline first, then Pause' : 'Pause first, then baseline'}</b>. Within Pause: <b>${o.msgFirst ? 'message (A) first, then plant (B)' : 'plant (B) first, then message (A)'}</b>. Based on the ID number, rotating every four participants.`;
   $$('.segc').forEach(g => {
     const key = g.dataset.setting;
-    const val = key === 'breath' ? (S.settings.breath ? 'on' : 'off') : key === 'goal' ? (S.week.goal ? String(S.week.goal) : 'none') : key === 'dbPlant' ? S.dbPlant : String(S.settings[key]);
+    const val = key === 'breath' ? (S.settings.breath ? 'on' : 'off') : key === 'goal' ? (S.week.goal ? String(S.week.goal) : 'none') : key.startsWith('db:') ? (S.db[key.slice(3)] || '') : String(S.settings[key]);
     $$('button', g).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === val ? 'true' : 'false'));
   });
   const secs = 600 / S.settings.speed;
@@ -1175,7 +1191,7 @@ $$('.segc').forEach(g => g.addEventListener('click', e => {
   const key = g.dataset.setting;
   if (key === 'breath') S.settings.breath = b.dataset.v === 'on';
   else if (key === 'goal') S.week.goal = b.dataset.v === 'none' ? null : +b.dataset.v;
-  else if (key === 'dbPlant') S.dbPlant = b.dataset.v;
+  else if (key.startsWith('db:')) S.db[key.slice(3)] = b.dataset.v;
   else if (key === 'speed') S.settings.speed = +b.dataset.v;
   else S.settings[key] = b.dataset.v;
   save(); renderSettings();
@@ -1189,17 +1205,21 @@ $('#btnUnknown').addEventListener('click', () => {
 });
 $('#btnExport').addEventListener('click', () => exportCSV());
 $('#btnCopy').addEventListener('click', () => copyCSV());
-const DB_COLS = ['participant_id','saved_at','what_made_you_stop_or_continue','plant_feeling','notes'];
+const DB_KEYS = ['baseline_worthwhile','baseline_in_control','pause_worthwhile','pause_in_control','plant_feeling'];
+const DB_COLS = ['participant_id','saved_at','condition_order','reward_order',...DB_KEYS.slice(0, 4),'what_confused_you','what_made_you_stop_or_continue','plant_feeling','notes'];
 function loadDebrief(){
   const d = S.debrief[S.settings.pid] || {};
   $('#dbWhy').value = d.what_made_you_stop_or_continue || '';
+  $('#dbConfused').value = d.what_confused_you || '';
   $('#dbNotes').value = d.notes || '';
-  S.dbPlant = d.plant_feeling || '';
+  S.db = Object.fromEntries(DB_KEYS.map(k => [k, d[k] || '']));
 }
 function debriefCSV(){ return toCSV(DB_COLS, Object.values(S.debrief)); }
 $('#btnDbSave').addEventListener('click', () => {
   const pid = S.settings.pid;
-  S.debrief[pid] = {participant_id:pid, saved_at:new Date().toISOString(), what_made_you_stop_or_continue:$('#dbWhy').value.trim(), plant_feeling:S.dbPlant, notes:$('#dbNotes').value.trim()};
+  const o = orderFor(pid);
+  S.debrief[pid] = {participant_id:pid, saved_at:new Date().toISOString(), condition_order:o.cond, reward_order:o.reward, ...S.db,
+    what_confused_you:$('#dbConfused').value.trim(), what_made_you_stop_or_continue:$('#dbWhy').value.trim(), notes:$('#dbNotes').value.trim()};
   save(); consoleMsg(`Debrief saved for ${pid}.`);
 });
 $('#btnDbExport').addEventListener('click', () => { if (!Object.keys(S.debrief).length){ consoleMsg('No debriefs saved yet.'); return; } exportCSV(debriefCSV(), 'pause-debrief'); });

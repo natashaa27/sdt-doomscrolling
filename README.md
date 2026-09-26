@@ -45,14 +45,27 @@ the tab closes. Export it after each participant.
 1. **Before testing:** tell the participant that their reflection answers are saved in
    the researcher's session log, and who will see it. Set the weekly goal with them
    only if they want one. Keep "Example stops at week start" at 0.
-2. **Conditions:** run some tasks with the Pause layer off (baseline) and some with it
-   on, and switch reward A/B halfway through the Pause tasks. Reverse the order for
-   every second participant.
-3. **Speed:** use 1× with participants. 10× and 60× are for walkthroughs; durations
+2. **Order:** the console shows the order for each participant ID, rotating every four
+   participants so baseline/Pause and message/plant each come first equally often:
+
+   | Participant | Conditions | Rewards within Pause |
+   |---|---|---|
+   | P01, P05, … | baseline, then Pause | message (A), then plant (B) |
+   | P02, P06, … | Pause, then baseline | plant (B), then message (A) |
+   | P03, P07, … | baseline, then Pause | plant (B), then message (A) |
+   | P04, P08, … | Pause, then baseline | message (A), then plant (B) |
+
+3. **Comparable tasks:** give the same task wording in both conditions and use the same
+   app (for example, "Open Loop to take a break") so the content and effort match.
+4. **After each condition:** ask verbally, outside the app, "Did this session feel
+   worthwhile?" and "Did you feel in control?" (Yes / Partly / No), and record the
+   answers in the console's Debrief section. Baseline has no reflection screen, so this
+   keeps both conditions measured the same way.
+5. **Speed:** use 1× with participants. 10× and 60× are for walkthroughs; durations
    logged at those speeds are simulated and are left out of the real-time averages.
-4. **Debrief (outside the app):** "What made you stop or continue?" and "Did the plant
-   feel encouraging, pressuring, or irrelevant?" Record both in the console's Debrief
-   section, then export the session log and the debrief CSV.
+6. **Debrief (at the end):** what confused them, what made them stop or continue, and
+   whether the plant felt encouraging, pressuring or irrelevant. Then export the
+   session log and the debrief CSV, and write up the session in `pilot-notes.md`.
 
 ## What the console shows
 
@@ -79,8 +92,9 @@ example_stops_at_start, weekly_goal, reflection, worthwhile, in_control`
 - `end_type` is `voluntary`, `declined` (chose not to open), `interrupted` or `unknown`.
   Declined and baseline sessions earn no reward and don't count as chosen stops.
 
-Debrief CSV (one row per participant): `participant_id, saved_at,
-what_made_you_stop_or_continue, plant_feeling, notes`
+Debrief CSV (one row per participant): `participant_id, saved_at, condition_order,
+reward_order, baseline_worthwhile, baseline_in_control, pause_worthwhile,
+pause_in_control, what_confused_you, what_made_you_stop_or_continue, plant_feeling, notes`
 
 ## Research notes
 
