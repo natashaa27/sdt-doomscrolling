@@ -145,6 +145,7 @@ participants.
 | v4 → v5 | Finishing returns home with a brief "You chose when to stop." (and the plant in B); no tap needed | The acknowledgement shouldn't cost another decision |
 | v4 → v5 | In-app reflection off by default; asked after the task instead | Keeps the exit short and measures both conditions the same way |
 | v4 → v5 | Pause explained once on first use; home bar labelled "Finish session" in each condition's first session | A simulated phone's tappable bar isn't obviously an exit |
+| v5 | Reminder switched on by default (10 minutes); participants can switch it off | So every participant reaches the reminder screen; a default is a nudge, so it stays the same for everyone |
 
 ### After the pilot
 

@@ -395,8 +395,8 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
         <p class="help">Switch halfway through each participant, and reverse the order for every second participant.</p></div>
       <div class="row"><span class="rl" id="lblRemind">Reminder starts</span>
         <div class="segc" role="group" aria-labelledby="lblRemind" data-setting="remind">
-          <button type="button" data-v="off">Off</button><button type="button" data-v="on">On (10 min)</button></div>
-        <p class="help">Whether "Remind me after 10 minutes" is switched on when the purpose screen opens. The participant can change it either way.</p></div>
+          <button type="button" data-v="on">On (10 min)</button><button type="button" data-v="off">Off</button></div>
+        <p class="help">Whether "Remind me after 10 minutes" is switched on when the purpose screen opens. The participant can switch it off. Starting it on is a nudge, so keep this the same for every participant.</p></div>
       <div class="row"><span class="rl" id="lblReflect">In-app reflection</span>
         <div class="segc" role="group" aria-labelledby="lblReflect" data-setting="reflect">
           <button type="button" data-v="off">Off: ask after the task</button><button type="button" data-v="on">On</button></div>
@@ -584,9 +584,9 @@ const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 
 const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
 
 /* ---------------- State ---------------- */
-const STORE = 'pause.v5';
+const STORE = 'pause.v6';
 const S = {
-  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on', remind:'off', reflect:'off'},
+  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on', remind:'on', reflect:'off'},
   week:{stops:0, goal:null, seed:0, intro:false, bar:{}},
   debrief:{}, db:{},
   sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()

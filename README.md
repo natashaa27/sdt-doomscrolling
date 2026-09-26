@@ -39,7 +39,7 @@ https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=1&reward=A
 | `reward` | `A`, `B` | `A` |
 | `pause` | `off` for the baseline condition | `on` |
 | `goal` | `5`, `10`, `15` (optional weekly goal) | none |
-| `remind` | `on` to start with the reminder switched on | `off` |
+| `remind` | `off` to start with the reminder switched off | `on` (10 min) |
 | `reflect` | `on` to show the reflection questions in the app | `off` |
 | `breath` | `on` for the 3-second breath | off |
 | `pid` | participant ID | `P01` |
