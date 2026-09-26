@@ -24,14 +24,16 @@ Design references, adapted:
      the line underneath says what will happen.
    - One button, "Open Loop". Choosing a purpose or reminder only changes the setting;
      the feed opens when the user taps "Open Loop".
-   - While scrolling, a small pill shows the purpose and time since the feed opened, and
-     a "Finish session" label points at the home bar (highlighted on first use).
+   - While scrolling, a small pill shows the purpose and time since the feed opened. A
+     "Finish session" button sits just above the home bar whenever the feed is open
+     (also after "5 more minutes" and after changing purpose, and in baseline). The feed
+     ends above it, so it never covers a post.
    - At the reminder time, the timer pauses and a check-in shows "You came here for a
      break. It's been 10 minutes." with "Finish for now" and "5 more minutes", and
      "Change my purpose" as a smaller link. Continuing adds five minutes; changing
      purpose keeps the elapsed time.
 2. **Reward the Exit**
-   - Finishing (the check-in button or the home bar) ends the session and returns to
+   - Finishing ("Finish session", "Finish for now" at the check-in, or the home bar) ends the session and returns to
      the home screen straight away. A card shows the plant and "You chose when to
      stop." for a few seconds and fades on its own.
    - One leaf per finished session, counted once. Continuing keeps existing growth.
@@ -132,6 +134,8 @@ example_stops_at_start, weekly_goal, reflection, worthwhile, in_control`
 - Decision times (`*_ms`) are real milliseconds.
 - `run_mode` is `real_time` (1×) or `accelerated_demo` (10× or 60×). Compare durations
   only from `real_time` sessions.
+- `finish_method` is `finish_button`, `checkpoint` or `home_bar` for voluntary finishes, so
+  you can see whether people find the button.
 - `interruption` is `call`, `class` or `left_page` (the page was hidden mid-session).
 - `duration_app_s`, clock times and `stop_within_1min_of_checkpoint_app_time` use app
   time: it runs at `time_speed` and pauses on Pause screens. At 1× it equals real time.

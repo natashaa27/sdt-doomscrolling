@@ -27,7 +27,7 @@ All in `presentation/screenshots/`, captured from the current prototype at phone
 | `01-home.png` | Simulated home screen; Loop is the only app that opens | Context |
 | `02-purpose-first-use-intro.png` | First use: one-line explanation of Pause, then "What brings you here?" | 1 |
 | `03-purpose-break-reminder-on.png` | Purpose chosen, reminder switched on, one "Open Loop" button | 1 |
-| `04-feed-first-use-finish-label.png` | Feed with the purpose pill; home bar labelled "Finish session" on first use | 1 |
+| `04-feed-finish-button.png` | Feed with the purpose pill and the "Finish session" button above the home bar | 1 |
 | `05-reminder-break.png` | Reminder: "You came here for a break. It's been 10 minutes." | 1 |
 | `06-change-purpose.png` | Change my purpose, with the elapsed session time kept | 1 |
 | `07-home-ack-A-planned.png` | Reward A on the home screen: "You chose when to stop." | 2 |
@@ -153,6 +153,7 @@ participants.
 | v6 | Leaving the page ends the session without a reward; each finish counted once | Only deliberate stops grow the plant |
 | v6 | Participant view is the default, with the plant reward on; console behind `?facilitator=1` | The plain link is the classroom demonstration |
 | v6 | Log records `run_mode` (`real_time` or `accelerated_demo`) | Keeps demo sessions out of duration comparisons |
+| v7 | A "Finish session" button sits above the home bar whenever the feed is open, in both conditions; the log records how each session was finished | People may not realise the home bar ends the session before the reminder |
 
 ### After the pilot
 

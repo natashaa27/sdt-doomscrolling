@@ -98,7 +98,7 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .splash[hidden]{display:none}
 .splash .tile{width:92px; height:92px; border-radius:24px; display:grid; place-items:center}
 .app-top{position:absolute; top:44px; left:0; right:0; height:52px; z-index:3; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#fff}
-.feed{position:absolute; left:0; right:0; top:96px; bottom:0; overflow-y:auto; overscroll-behavior:contain; padding-bottom:96px; background:#fff}
+.feed{position:absolute; left:0; right:0; top:96px; bottom:80px; overflow-y:auto; overscroll-behavior:contain; padding-bottom:12px; background:#fff}
 .feed::-webkit-scrollbar{display:none}
 .feed{scrollbar-width:none}
 
@@ -206,12 +206,12 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .ack-t{margin:4px 0 0; font-size:21px; font-weight:700}
 .ack-s{margin:6px 0 0; font-size:14.5px; color:var(--p-muted)}
 .ack .growth-cap{font-size:14.5px}
-.barlabel{position:absolute; left:50%; bottom:24px; z-index:9; transform:translateX(-50%); display:none; padding:9px 18px; border:0; border-radius:999px;
-  background:var(--p-teal); color:#fff; font-size:14.5px; font-weight:650; white-space:nowrap; box-shadow:0 8px 20px -8px rgba(0,0,0,.45)}
-.barlabel.on{display:block}
-.barlabel.quiet{padding:7px 15px; font-size:13.5px; background:rgba(30,42,48,.8)}
-.barlabel.quiet::after{background:rgba(30,42,48,.8)}
-.barlabel::after{content:""; position:absolute; left:50%; bottom:-5px; width:10px; height:10px; background:var(--p-teal); transform:translateX(-50%) rotate(45deg)}
+.exit-strip{position:absolute; left:0; right:0; bottom:0; height:80px; z-index:3; display:none; justify-content:center; align-items:flex-start;
+  padding-top:6px; background:#fff; border-top:1px solid #E6ECEB}
+.exit-strip.on{display:flex}
+.finish-btn{min-height:44px; padding:0 22px; border-radius:999px; border:1.5px solid #BFDCD7; background:var(--p-tint); color:var(--p-teal-2);
+  font-size:15px; font-weight:650; display:inline-flex; align-items:center; gap:8px}
+.finish-btn::before{content:""; width:10px; height:10px; border-radius:2px; background:currentColor; opacity:.85}
 .toast{position:absolute; left:50%; bottom:84px; transform:translateX(-50%); z-index:8; background:rgba(20,32,36,.9); color:#fff; font-size:13.5px;
   padding:9px 14px; border-radius:12px; width:max-content; max-width:86%; text-align:center; opacity:0; transition:opacity .2s; pointer-events:none}
 .toast.show{opacity:1}
@@ -298,13 +298,14 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <div class="layer home on" id="home">
         <div class="widget" aria-hidden="true"><div class="w-time" id="wTime">9:41</div><div class="w-date" id="wDate"></div></div>
         <div class="grid" id="appGrid"></div>
-        <p class="home-hint">To close an app, tap the bar at the bottom.</p>
+        <p class="home-hint">In Loop, tap Finish session whenever you want to stop.</p>
       </div>
 
       <div class="layer app" id="appLayer">
         <div class="splash" id="splash"><div class="tile" id="splashTile"></div></div>
         <div class="app-top" id="appTop"></div>
         <div class="feed" id="feed"></div>
+        <div class="exit-strip" id="exitStrip"><button class="finish-btn" id="finishBtn" type="button">Finish session</button></div>
       </div>
 
       <div class="layer bk" id="bk"></div>
@@ -312,7 +313,6 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <button class="notif" id="notif" type="button" aria-live="polite"></button>
       <div class="toast" id="toast" role="status"></div>
       <div class="ack" id="ack" role="status"></div>
-      <button class="barlabel" id="barLabel" type="button">Finish session</button>
       <button class="homebar" id="homebar" type="button" aria-label="Close app and go to the home screen"></button>
     </div>
   </div>
@@ -517,7 +517,7 @@ function save(){
 const el = {
   screen:$('#screen'), sbTime:$('#sbTime'), island:$('#island'), home:$('#home'), app:$('#appLayer'), splash:$('#splash'),
   splashTile:$('#splashTile'), appTop:$('#appTop'), feed:$('#feed'), bk:$('#bk'), call:$('#callLayer'),
-  notif:$('#notif'), toast:$('#toast'), homebar:$('#homebar'), ack:$('#ack'), barLabel:$('#barLabel')
+  notif:$('#notif'), toast:$('#toast'), homebar:$('#homebar'), ack:$('#ack'), exitStrip:$('#exitStrip'), finishBtn:$('#finishBtn')
 };
 
 /* ---------------- Time helpers ---------------- */
@@ -533,8 +533,7 @@ function updateChrome(){
   let light = false;
   if (s === 'home' || s === 'call') light = true;
   el.screen.classList.toggle('chrome-light', light);
-  el.barLabel.classList.toggle('on', s === 'app' && !!c);
-  el.barLabel.classList.toggle('quiet', !!c && !!(S.week.bar || {})[c.condition]);
+  el.exitStrip.classList.toggle('on', s === 'app' && !!c && !c.endType);
 }
 function showBk(html){ el.bk.innerHTML = html; el.bk.classList.add('on'); }
 function hideBk(){ el.bk.classList.remove('on'); el.bk.innerHTML = ''; }
@@ -691,7 +690,7 @@ function showCheckpoint(returning){
 function cpChoice(choice){
   const c = S.cur;
   c.checkpoints.push({title:c.cpTitle, choice, ms:Math.round(performance.now() - c.cpShownAt)});
-  if (choice === 'end') endSession('voluntary');
+  if (choice === 'end'){ c.finishVia = 'checkpoint'; endSession('voluntary'); }
   else if (choice === 'continue'){ c.cueEnd = c.elapsed + 5 * 60000; c.plan.ext++; openApp(); }
   else showPurpose('change');
 }
@@ -700,7 +699,6 @@ function endSession(type, interruption){
   const c = S.cur; if (!c || c.endType) return;
   clearTimers();
   c.endType = type; c.interruption = interruption || '';
-  if (c.startSim !== null || type !== 'declined'){ S.week.bar = S.week.bar || {}; S.week.bar[c.condition] = true; }
   c.endSim = S.sim; if (c.startSim === null) c.startSim = S.sim;
   c.speed = S.settings.speed; c.seed = S.week.seed || 0;
   if (type === 'voluntary' && c.condition === 'pause'){
@@ -736,12 +734,12 @@ function toRow(c){
     original_boundary_min:c.origCueMin ?? '',
     final_boundary_min:c.cueEnd != null ? +(c.cueEnd / 60000).toFixed(2) : '',
     time_speed:c.speed, run_mode:c.speed === 1 ? 'real_time' : 'accelerated_demo', duration_app_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
-    end_type:c.endType, interruption:c.interruption, within_boundary:c.within,
+    end_type:c.endType, finish_method:c.endType === 'voluntary' ? (c.finishVia || '') : '', interruption:c.interruption, within_boundary:c.within,
     reward_variant:c.rewardVariant, chosen_stops_after:c.stopsAfter, example_stops_at_start:c.seed, weekly_goal:c.goal,
     reflection:'', worthwhile:'', in_control:''
   };
 }
-const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','intro_shown','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','run_mode','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
+const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','intro_shown','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','run_mode','duration_app_s','end_time','end_type','finish_method','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
 
 /* ---------------- Exit screens ---------------- */
 function plantSVG(count, goal, animate){
@@ -840,17 +838,22 @@ function goHome(){
 }
 
 /* ---------------- Home bar ---------------- */
-el.barLabel.addEventListener('click', () => el.homebar.click());
+/* Visible exit while the feed is open: same voluntary stop as the home bar. */
+el.finishBtn.addEventListener('click', () => {
+  const c = S.cur;
+  if (S.screen !== 'app' || !c || c.endType) return;
+  c.finishVia = 'finish_button'; endSession('voluntary');
+});
 el.homebar.addEventListener('click', () => {
   const c = S.cur;
   switch (S.screen){
-    case 'app': endSession('voluntary'); break;
+    case 'app': if (!c.endType){ c.finishVia = 'home_bar'; endSession('voluntary'); } break;
     case 'checkpoint':
       c.checkpoints.push({title:c.cpTitle, choice:'home', ms:Math.round(performance.now() - c.cpShownAt)});
-      endSession('voluntary'); break;
+      c.finishVia = 'home_bar'; endSession('voluntary'); break;
     case 'purpose':
       if (c.startSim === null){ c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); }
-      else endSession('voluntary');
+      else { c.finishVia = 'home_bar'; endSession('voluntary'); }
       break;
     case 'breath': c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); break;
     case 'reflect': finishSession('skipped'); break;
