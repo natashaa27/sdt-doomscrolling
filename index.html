@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bookend prototype</title>
+<title>Pause Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -164,7 +164,7 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .pl i{position:absolute; inset:0 auto 0 0; background:#E3EEFB; z-index:0}
 .pl em,.pl b{position:relative; font-style:normal}
 
-/* Bookend layer */
+/* Pause layer */
 .bk{z-index:5}
 .bk-full{position:absolute; inset:0; background:#fff; padding:66px 24px 42px; display:flex; flex-direction:column; animation:fadeIn .22s ease-out}
 .bk-center{align-items:center; text-align:center}
@@ -336,7 +336,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
     <header class="c-head">
       <span class="c-mark" id="cMark"></span>
       <div>
-        <h1>Bookend test console</h1>
+        <h1>Pause test console</h1>
         <p>Hand the participant the phone on the left and run each task from here. The log survives a page reload but is cleared when this tab closes, so export it after each participant.</p>
       </div>
       <button class="btn" id="btnPView" type="button">Participant view</button>
@@ -396,7 +396,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <h2>Session log</h2>
       <div class="btns"><button class="btn fill" type="button" id="btnExport">Export CSV</button><button class="btn" type="button" id="btnCopy">Copy CSV</button><button class="btn quiet" type="button" id="btnClear">Clear log</button></div>
       <div class="table-wrap"><table id="logTable"></table></div>
-      <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length and clock times use the simulated clock, which pauses on Bookend screens.</p>
+      <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length and clock times use the simulated clock, which pauses on Pause screens.</p>
       <p class="help">For participant view on their own phone, host this file (for example on GitHub Pages) and add <b>?participant=1&amp;speed=10&amp;reward=A</b> to the link. Tap the phone's clock five times within three seconds to bring this console back.</p>
     </section>
   </aside>
@@ -525,11 +525,11 @@ const SV = {
   commentL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
   sendL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>'
 };
-const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h3v13h4v3H3z"/><path d="M21 4h-3v13h-4v3h7z"/><rect x="9" y="7" width="2.4" height="8" rx=".6" opacity=".55"/><rect x="12.6" y="9" width="2.4" height="6" rx=".6" opacity=".55"/></svg>`;
-const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Bookend</span></div>`;
+const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/><rect x="8.6" y="7.5" width="2.2" height="9" rx="1" fill="currentColor"/><rect x="13.2" y="7.5" width="2.2" height="9" rx="1" fill="currentColor"/></svg>`;
+const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
 
 /* ---------------- State ---------------- */
-const STORE = 'bookend.v2';
+const STORE = 'pause.v3';
 const S = {
   settings:{pid:'P01', weekStart:3, reward:'A', breath:false, speed:10},
   week:{stops:3, goal:null},
@@ -1087,7 +1087,7 @@ const downloadsP = (window.claude && typeof window.claude.use === 'function') ? 
 function showCsv(csv){ $('#csvText').value = csv; try{ $('#csvDialog').showModal(); }catch(e){ $('#csvDialog').setAttribute('open', ''); } $('#csvText').select(); }
 async function exportCSV(){
   if (!S.log.length){ consoleMsg('Nothing to export yet.'); return; }
-  const csv = toCSV(), filename = `bookend-log-${stamp()}.csv`;
+  const csv = toCSV(), filename = `pause-log-${stamp()}.csv`;
   if (downloadsP){
     const d = await downloadsP;
     if (d){

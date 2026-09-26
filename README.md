@@ -1,11 +1,11 @@
-# Bookend – doomscrolling prototype
+# Pause – doomscrolling prototype
 
 A clickable, mobile-sized prototype for a design-thinking project on doomscrolling.
-Bookend adds a small layer before and after a scrolling session so starting is a
+Pause adds a small layer before and after a scrolling session so starting is a
 conscious choice and stopping feels good. It never blocks the user.
 
-- `index.html`: **Bookend** (current version, served on GitHub Pages)
-- `pause.html`: **Pause** v2, the previous version, kept for comparison
+- `index.html`: **Pause v3** (current version, served on GitHub Pages)
+- `pause-v2.html`: **Pause v2**, the previous version, kept for comparison
 
 ## Run it
 
@@ -21,7 +21,7 @@ Tap the phone's clock five times within three seconds to show or hide the test c
 The log is kept in the tab's session storage: it survives a reload but is cleared when
 the tab closes. Export it after each participant.
 
-## What changed from Pause
+## What changed from v2
 
 - Purpose and time on one sheet; tapping a time opens the app (two taps).
 - "I don't need [app] right now" lets people back out; logged as `declined`, no reward.
@@ -45,14 +45,14 @@ the tab closes. Export it after each participant.
 
 ---
 
-# Pause (previous version, `pause.html`)
+# Pause v2 (previous version, `pause-v2.html`)
 
 ## Participant mode (real phone)
 
 Add `?participant=1` to the URL to hide the facilitator panel and show the phone
 view full-screen, e.g.
 
-    pause.html?participant=1&speed=10&reward=A
+    pause-v2.html?participant=1&speed=10&reward=A
 
 | Parameter | Values | Default |
 |---|---|---|
