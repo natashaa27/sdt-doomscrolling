@@ -125,45 +125,6 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .lp-cap{margin:2px 12px; font-size:14px}
 .lp-more{margin:2px 12px 16px; font-size:13.5px; color:#7A878D}
 
-/* Clips */
-.app-top.clips{background:transparent; justify-content:center; gap:18px; color:#fff; font-weight:650; font-size:16px; pointer-events:none}
-.app-top.clips span{opacity:.6}
-.app-top.clips span.on{opacity:1; border-bottom:2px solid #fff; padding-bottom:2px}
-.feed.clips{top:0; padding-bottom:0; scroll-snap-type:y mandatory; background:#000}
-.clip{height:100%; scroll-snap-align:start; scroll-snap-stop:always; position:relative; color:#fff; overflow:hidden}
-.clip-big{position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); font-size:130px; filter:drop-shadow(0 10px 20px rgba(0,0,0,.3))}
-.clip-meta{position:absolute; left:16px; right:84px; bottom:62px}
-.clip-meta p{margin:4px 0}
-.clip-h{font-weight:700; font-size:15px}
-.clip-t{font-size:15px; line-height:1.35}
-.clip-sound{font-size:13px; opacity:.85}
-.clip-rail{position:absolute; right:12px; bottom:70px; display:flex; flex-direction:column; gap:18px; align-items:center; font-size:12px; font-weight:600}
-.clip-rail button{background:none; border:0; color:#fff; padding:0; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:12px; font-weight:600}
-.clip-rail svg{stroke:#fff}
-.clip-prog{position:absolute; left:0; right:0; bottom:40px; height:3px; background:rgba(255,255,255,.25)}
-.clip-prog span{display:block; height:100%; width:0; background:#fff; animation:prog 9s linear infinite}
-@keyframes prog{to{width:100%}}
-
-/* Feed */
-.fd-word{font-size:22px; font-weight:800; color:#2F80ED; letter-spacing:-.4px}
-.fd-tabs{display:none}
-.fd-tabbar{display:flex; border-bottom:1px solid #EAEFF1; position:sticky; top:0; background:#fff; z-index:1}
-.fd-tabbar span{flex:1; text-align:center; padding:10px 0; font-size:14.5px; color:#6B787E; font-weight:600}
-.fd-tabbar span.on{color:#1E2A30; box-shadow:inset 0 -3px 0 #2F80ED}
-.fd-post{display:flex; gap:10px; padding:12px 14px; border-bottom:1px solid #EEF2F3}
-.fd-post .av{width:40px; height:40px; font-size:16px}
-.fd-body{flex:1; min-width:0}
-.fd-who{margin:0; font-size:14.5px}
-.fd-who span{color:#76848A}
-.fd-t{margin:3px 0 8px; font-size:15px; line-height:1.4}
-.fd-acts{display:flex; justify-content:space-between; max-width:260px; color:#76848A; font-size:13px}
-.fd-acts button{background:none; border:0; color:inherit; display:flex; gap:5px; align-items:center; padding:0; font-size:13px}
-.fd-acts svg{stroke:currentColor}
-.poll{margin:4px 0 10px; display:grid; gap:6px}
-.pl{position:relative; border:1px solid #DDE5E8; border-radius:8px; padding:7px 10px; display:flex; justify-content:space-between; font-size:14px; overflow:hidden}
-.pl i{position:absolute; inset:0 auto 0 0; background:#E3EEFB; z-index:0}
-.pl em,.pl b{position:relative; font-style:normal}
-
 /* Pause layer */
 .bk{z-index:5}
 .bk-full{position:absolute; inset:0; background:#fff; padding:66px 24px 42px; display:flex; flex-direction:column; animation:fadeIn .22s ease-out}
@@ -388,7 +349,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <div class="row"><span class="rl" id="lblPause">Pause layer</span>
         <div class="segc" role="group" aria-labelledby="lblPause" data-setting="pause">
           <button type="button" data-v="on">On</button><button type="button" data-v="off">Off (baseline)</button></div>
-        <p class="help">Baseline keeps the same apps, feed and home-bar exit but shows no purpose prompt, checkpoint, reward or reflection. Use it to see what Pause adds.</p></div>
+        <p class="help">Baseline keeps the same app, feed and home-bar exit but shows no purpose prompt, checkpoint, reward or reflection. Use it to see what Pause adds.</p></div>
       <div class="row"><span class="rl" id="lblReward">Exit reward</span>
         <div class="segc" role="group" aria-labelledby="lblReward" data-setting="reward">
           <button type="button" data-v="A">A: message</button><button type="button" data-v="B">B: message and growth</button></div>
@@ -414,7 +375,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
     <section>
       <h2>Events</h2>
       <div class="row"><span class="rl">Send a notification</span>
-        <div class="btns"><button class="btn" type="button" data-notify="loop">Loop</button><button class="btn" type="button" data-notify="clips">Clips</button><button class="btn" type="button" data-notify="feed">Feed</button></div>
+        <div class="btns"><button class="btn" type="button" data-notify="loop">Loop</button></div>
         <p class="help">Works from the home screen. Tapping it starts a session logged as opened from a notification.</p></div>
       <div class="row"><span class="rl">Interrupt the session</span>
         <div class="btns"><button class="btn" type="button" data-interrupt="call">Incoming call</button><button class="btn" type="button" data-interrupt="class">Class starting</button></div>
@@ -481,8 +442,6 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 /* ---------------- Content ---------------- */
 const ICONS = {
   loop:  '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3A2A00" stroke-width="2.2" stroke-linecap="round"><path d="M6 12c0-1.7 1.3-3 3-3 3 0 3 6 6 6 1.7 0 3-1.3 3-3s-1.3-3-3-3c-3 0-3 6-6 6-1.7 0-3-1.3-3-3z"/></svg>',
-  clips: '<svg width="30" height="30" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z" fill="#fff"/><path d="M5 5v14" stroke="#E86F9A" stroke-width="2.2" stroke-linecap="round"/></svg>',
-  feed:  '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg>',
   messages:'<svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 4c4.7 0 8 3 8 6.7s-3.3 6.7-8 6.7c-.9 0-1.7-.1-2.5-.3L5 19l1.2-3.3C4.8 14.5 4 12.7 4 10.7 4 7 7.3 4 12 4z"/></svg>',
   camera:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2A3439" stroke-width="2"><rect x="3.5" y="7" width="17" height="12" rx="3"/><circle cx="12" cy="13" r="3.3"/><path d="M9 7l1.2-2h3.6L15 7"/></svg>',
   calendar:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M9 3.5v4M15 3.5v4"/></svg>',
@@ -490,9 +449,7 @@ const ICONS = {
   settings:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/></svg>'
 };
 const APPS = {
-  loop:  {name:'Loop',  bg:'#F2B705'},
-  clips: {name:'Clips', bg:'#3B1E5A'},
-  feed:  {name:'Feed',  bg:'#2F80ED'}
+  loop:  {name:'Loop',  bg:'#F2B705'}
 };
 const INERT = [
   {k:'messages', name:'Messages', bg:'#34B566'}, {k:'camera', name:'Camera', bg:'#E6EAEB'},
@@ -505,9 +462,7 @@ const PURPOSES = [
 ];
 const P = Object.fromEntries(PURPOSES.map(p => [p.k, p]));
 const NOTIFS = {
-  loop:  {who:'Loop',  text:'Riya replied to your story'},
-  clips: {who:'Clips', text:'New clip from @chai.and.code'},
-  feed:  {who:'Feed',  text:'Trending near you: evening rain update'}
+  loop:  {who:'Loop',  text:'Riya replied to your story'}
 };
 const LOOP = [
   {h:'meera.eats', e:'🍛', t:'Homemade biryani, attempt three. This one finally worked.', g:['#F6C177','#E07A5F']},
@@ -529,56 +484,13 @@ const LOOP = [
   {h:'isha.sundays', e:'🧺', t:'Sunday reset: laundry, playlist, plan the week.', g:['#E0C3FC','#8EC5FC']},
   {h:'campus.memes', e:'💼', meme:"Case comp deadline in 2 hours.\nTeam: 'let's brainstorm first'", t:'Why are we like this.', g:['#FC5C7D','#6A82FB']}
 ];
-const CLIPS = [
-  {h:'chai.and.code', e:'🫖', t:'Rating every chai stall on campus, part 4', g:['#3E1E68','#E45A84']},
-  {h:'quick.cooks', e:'🍳', t:'60-second breakfast: poha edition', g:['#F7971E','#B24592']},
-  {h:'packlight', e:'🧳', t:'How to pack five days into one backpack', g:['#1D976C','#2C3E50']},
-  {h:'dogs.of.blr', e:'🐶', t:"He heard the word 'walk' from two rooms away", g:['#614385','#516395']},
-  {h:'money.minute', e:'📈', t:'Explaining NPV to my parents in 45 seconds', g:['#0F2027','#2C5364']},
-  {h:'tiny.homes', e:'🏠', t:'180 sq ft studio tour. Everything folds.', g:['#8E2DE2','#4A00E0']},
-  {h:'local.lens', e:'🚆', t:'The 8:14 local, a short documentary', g:['#373B44','#4286F4']},
-  {h:'sheet.tricks', e:'⌨️', t:'The spreadsheet shortcut that saved my internship', g:['#134E5E','#71B280']},
-  {h:'street.eats', e:'🌮', t:'Street food tier list, no mercy', g:['#DA4453','#89216B']},
-  {h:'lofi.rain', e:'🎧', t:'Rain and lo-fi for one hour', g:['#2C3E50','#4CA1AF']},
-  {h:'guess.the.song', e:'🎹', t:'Guess the song from the first note', g:['#FF416C','#8E2B4B']},
-  {h:'dance.daily', e:'💃', t:'Learning this routine in 7 days, day 3', g:['#B621FE','#1FD1F9']},
-  {h:'study.with.me', e:'⏳', t:'Study with me: 25 minutes, then a break', g:['#000428','#004E92']},
-  {h:'cat.physics', e:'🐈‍⬛', t:'This cat learned to open the fridge', g:['#403B4A','#8C8A6E']},
-  {h:'mini.facts', e:'🧠', t:"Octopuses have three hearts. Here's why.", g:['#141E30','#35577D']},
-  {h:'gym.notes', e:'💪', t:'Five mistakes everyone makes on leg day', g:['#232526','#5B6467']}
-];
-const FEED = [
-  {n:'Aditi R', h:'aditi_reads', t:'Hot take: 8 am classes should not exist.'},
-  {n:'City Traffic Desk', h:'traffic_desk', t:'Update from the flyover: yes, still.'},
-  {n:'Karan M', h:'karan_builds', t:'Things nobody tells you about your first internship, a thread (1/7)'},
-  {n:'Neha S', h:'nehaspeaks', t:'Settle this once and for all.', poll:[['Chai',64],['Coffee',36]]},
-  {n:'Dev P', h:'devwrites', t:"What's one app you deleted and never missed?"},
-  {n:'Meghna K', h:'meghna_k', t:'Bookmarking this to read later. (I will not read it later.)'},
-  {n:'Rahul V', h:'rahulv', t:'The best ideas arrive in the shower and leave with the towel.'},
-  {n:'Weather Desk', h:'rain_updates', t:'Light rain expected this evening. Carry an umbrella, not your laptop.'},
-  {n:'Priya N', h:'priya_n', t:'Library wifi at full speed is my love language.'},
-  {n:'Sid', h:'sid_on_markets', t:"Every finance class: 'assume a perfect market.' Every market: no."},
-  {n:'Tara', h:'tara_travels', t:'Booked the cheapest train. Regretting nothing yet.'},
-  {n:'Campus Life', h:'campuslife', t:'Best time to study?', poll:[['Early morning',22],['After dinner',41],['Night before the exam',37]]},
-  {n:'Omkar D', h:'omkar_d', t:'Group chats go quiet at 2 am because everyone is scrolling.'},
-  {n:'Zoya', h:'zoya_writes', t:'Reminder: drink water, text your mom back.'},
-  {n:'Vikram', h:'vik_codes', t:'Spent 3 hours automating a task that takes 4 minutes. Worth it.'},
-  {n:'Ira', h:'ira_reads', t:'Finished a book in one sitting. Forgot how good that feels.'}
-];
 const AV_COLORS = ['#127C71','#E07A5F','#6A82FB','#B24592','#3E8E41','#9D6B3E','#355C7D','#DA4453','#2F80ED','#8E2DE2'];
 const avColor = s => { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return AV_COLORS[h % AV_COLORS.length]; };
 const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
-const kfmt = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'K' : String(n);
 const SV = {
   heart:'<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
   comment:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
-  send:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>',
-  repost:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>',
-  heartS:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
-  commentS:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
-  heartL:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
-  commentL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
-  sendL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>'
+  send:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>'
 };
 const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/><rect x="8.6" y="7.5" width="2.2" height="9" rx="1" fill="currentColor"/><rect x="13.2" y="7.5" width="2.2" height="9" rx="1" fill="currentColor"/></svg>`;
 const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
@@ -627,8 +539,6 @@ function updateChrome(){
   const s = S.screen, c = S.cur, app = c && c.app;
   let light = false;
   if (s === 'home' || s === 'call') light = true;
-  else if (s === 'app') light = app === 'clips';
-  else if (s === 'purpose') light = app === 'clips' || (app === 'feed' && !c.built);
   el.screen.classList.toggle('chrome-light', light);
   el.barLabel.classList.toggle('on', s === 'app' && !!c && !(S.week.bar || {})[c.condition]);
 }
@@ -645,7 +555,7 @@ function buildHome(){
   $('#appGrid').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.open) startFlow(b.dataset.open, 'tap');
-    else toast('Only Loop, Clips and Feed open in this test.');
+    else toast('Only Loop opens in this test.');
   });
   const d = new Date();
   $('#wDate').textContent = d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long'});
@@ -1000,51 +910,30 @@ function nextItem(){
 }
 function buildApp(app){
   const c = S.cur; c.built = true;
-  FS.app = app; FS.pool = app === 'loop' ? LOOP : app === 'clips' ? CLIPS : FEED; FS.order = shuffle(FS.pool); FS.idx = 0;
+  FS.app = app; FS.pool = LOOP; FS.order = shuffle(FS.pool); FS.idx = 0;
   el.appTop.style.display = ''; el.feed.style.display = '';
   el.appTop.className = 'app-top ' + app;
   el.feed.className = 'feed ' + app;
   el.feed.scrollTop = 0;
-  if (app === 'loop'){
-    el.appTop.innerHTML = `<span class="lp-word">loop</span><span class="top-icons">${SV.heart}${SV.send}</span>`;
-    const names = ['Your story', 'meera', 'arjun', 'riya', 'kabir', 'sana', 'isha'];
-    el.feed.innerHTML = `<div class="stories">${names.map(n => `<span class="story"><span class="ring"><span style="background:${avColor(n)}">${n[0].toUpperCase()}</span></span>${n}</span>`).join('')}</div>`;
-  } else if (app === 'clips'){
-    el.appTop.innerHTML = `<span>Following</span><span class="on">For you</span>`;
-    el.feed.innerHTML = '';
-  } else {
-    el.appTop.innerHTML = `<span class="fd-word">Feed</span><span class="top-icons">${SV.send}</span>`;
-    el.feed.innerHTML = `<div class="fd-tabbar"><span class="on">For you</span><span>Following</span></div>`;
-  }
-  appendItems(app === 'clips' ? 4 : 6);
+  el.appTop.innerHTML = `<span class="lp-word">loop</span><span class="top-icons">${SV.heart}${SV.send}</span>`;
+  const names = ['Your story', 'meera', 'arjun', 'riya', 'kabir', 'sana', 'isha'];
+  el.feed.innerHTML = `<div class="stories">${names.map(n => `<span class="story"><span class="ring"><span style="background:${avColor(n)}">${n[0].toUpperCase()}</span></span>${n}</span>`).join('')}</div>`;
+  appendItems(6);
 }
 function appendItems(n){
   let html = '';
   for (let i = 0; i < n; i++){
     const p = nextItem();
-    if (FS.app === 'loop'){
-      html += `<article class="lp-post"><header><span class="av" style="background:${avColor(p.h)}">${p.h[0].toUpperCase()}</span><span class="lp-h">${p.h}</span><span class="lp-dots" aria-hidden="true">•••</span></header>
+    html += `<article class="lp-post"><header><span class="av" style="background:${avColor(p.h)}">${p.h[0].toUpperCase()}</span><span class="lp-h">${p.h}</span><span class="lp-dots" aria-hidden="true">•••</span></header>
         <div class="lp-img${p.meme ? ' has-meme' : ''}" style="background:linear-gradient(135deg,${p.g[0]},${p.g[1]})">${p.meme ? `<p class="meme">${esc(p.meme)}</p>` : ''}<span class="big" aria-hidden="true">${p.e}</span></div>
         <div class="acts"><button class="like" type="button" aria-label="Like">${SV.heart}</button><button type="button" aria-label="Comment">${SV.comment}</button><button type="button" aria-label="Share">${SV.send}</button></div>
         <p class="lp-likes">${rint(40, 4800).toLocaleString('en-IN')} likes</p><p class="lp-cap"><b>${p.h}</b> ${esc(p.t)}</p><p class="lp-more">View all ${rint(3, 180)} comments</p></article>`;
-    } else if (FS.app === 'clips'){
-      html += `<section class="clip" style="background:linear-gradient(165deg,${p.g[0]},${p.g[1]})"><span class="clip-big" aria-hidden="true">${p.e}</span>
-        <div class="clip-meta"><p class="clip-h">@${p.h}</p><p class="clip-t">${esc(p.t)}</p><p class="clip-sound">♫ original audio</p></div>
-        <div class="clip-rail"><button class="like" type="button" aria-label="Like">${SV.heartL}<span>${kfmt(rint(1200, 98000))}</span></button><button type="button" aria-label="Comments">${SV.commentL}<span>${kfmt(rint(40, 3200))}</span></button><button type="button" aria-label="Share">${SV.sendL}<span>Share</span></button></div>
-        <div class="clip-prog"><span></span></div></section>`;
-    } else {
-      const poll = p.poll ? `<div class="poll">${p.poll.map(([o, v]) => `<div class="pl"><i style="width:${v}%"></i><em>${o}</em><b>${v}%</b></div>`).join('')}</div>` : '';
-      const ago = ['2m', '9m', '14m', '38m', '1h', '2h', '3h', '5h'][rint(0, 7)];
-      html += `<article class="fd-post"><span class="av" style="background:${avColor(p.h)}">${p.n[0]}</span><div class="fd-body">
-        <p class="fd-who"><b>${esc(p.n)}</b> <span>@${p.h} · ${ago}</span></p><p class="fd-t">${esc(p.t)}</p>${poll}
-        <div class="fd-acts"><button type="button" aria-label="Reply">${SV.commentS}${rint(2, 90)}</button><button type="button" aria-label="Repost">${SV.repost}${rint(1, 400)}</button><button class="like" type="button" aria-label="Like">${SV.heartS}${rint(5, 2400)}</button></div></div></article>`;
-    }
   }
   el.feed.insertAdjacentHTML('beforeend', html);
 }
 el.feed.addEventListener('scroll', () => {
   if (S.screen !== 'app') return;
-  if (el.feed.scrollTop + el.feed.clientHeight > el.feed.scrollHeight - 900) appendItems(FS.app === 'clips' ? 3 : 5);
+  if (el.feed.scrollTop + el.feed.clientHeight > el.feed.scrollHeight - 900) appendItems(5);
 }, {passive:true});
 el.feed.addEventListener('click', e => { const b = e.target.closest('.like'); if (b) b.classList.toggle('on'); });
 
@@ -1099,7 +988,7 @@ const pLabel = k => (P[k] ? P[k].label : k);
 function renderWatch(){
   const pid = S.settings.pid, rows = S.log.filter(r => r.participant_id === pid && r.end_type !== 'unknown' && r.condition !== 'baseline');
   const box = $('#watch');
-  if (!rows.length){ box.innerHTML = `<p class="empty">No sessions yet for ${esc(pid)}. Ask them to open Loop, Clips or Feed.</p>`; return; }
+  if (!rows.length){ box.innerHTML = `<p class="empty">No sessions yet for ${esc(pid)}. Ask them to open Loop.</p>`; return; }
   const vals = rows.map(r => +r.purpose_decision_ms || 0);
   const max = Math.max(4000, ...vals);
   box.innerHTML = `<ol class="watch">${rows.map((r, i) => {

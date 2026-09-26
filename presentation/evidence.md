@@ -24,7 +24,7 @@ All in `presentation/screenshots/`, captured from the current prototype at phone
 
 | File | Shows | Prototype |
 |---|---|---|
-| `01-home.png` | Simulated home screen with Loop, Clips and Feed | Context |
+| `01-home.png` | Simulated home screen; Loop is the only app that opens | Context |
 | `02-purpose-first-use-intro.png` | First use: one-line explanation of Pause, then "What brings you here?" | 1 |
 | `03-purpose-break-reminder-on.png` | Purpose chosen, reminder switched on, one "Open Loop" button | 1 |
 | `04-feed-first-use-finish-label.png` | Feed with the purpose pill; home bar labelled "Finish session" on first use | 1 |
@@ -32,8 +32,8 @@ All in `presentation/screenshots/`, captured from the current prototype at phone
 | `06-change-purpose.png` | Change my purpose, with the elapsed session time kept | 1 |
 | `07-home-ack-A-planned.png` | Reward A on the home screen: "You chose when to stop." | 2 |
 | `08-purpose-later-use.png` | Purpose screen after the first use, without the explanation | 1 |
-| `09-feed-clips.png` | Clips, the full-screen video feed | Context |
-| `10-declined-toast.png` | "I don't need Clips right now" returns home with a short message | 1 |
+| `09-feed-loop-scrolled.png` | Loop feed further down, with the purpose pill still visible | 1 |
+| `10-declined-toast.png` | "I don't need Loop right now" returns home with a short message | 1 |
 | `11-home-ack-B-plant-first-stop.png` | Reward B after the first chosen stop | 2 |
 | `12-home-ack-B-plant-4-stops.png` | Reward B after four chosen stops | 2 |
 | `13-home-ack-B-goal-reached.png` | Reward B with an optional goal of 5 reached | 2 |
@@ -146,6 +146,7 @@ participants.
 | v4 → v5 | In-app reflection off by default; asked after the task instead | Keeps the exit short and measures both conditions the same way |
 | v4 → v5 | Pause explained once on first use; home bar labelled "Finish session" in each condition's first session | A simulated phone's tappable bar isn't obviously an exit |
 | v5 | Reminder switched on by default (10 minutes); participants can switch it off | So every participant reaches the reminder screen; a default is a nudge, so it stays the same for everyone |
+| v5 | One app (Loop) instead of three; Clips and Feed removed | One complete journey (open Loop → choose purpose → scroll → check-in → stop → plant) shows both prototypes without extra choices |
 
 ### After the pilot
 
@@ -200,6 +201,10 @@ changes habits.
 | **2. Iterate** | Change only what the pilot supports; re-test with 3–4 new participants | Revised prototype, "Changes after testing" table | Whether the fixes worked |
 | **3. Real-device prototype** | Trigger Pause when a chosen app opens. On iOS: a Shortcuts "App is opened" automation (the approach one sec uses), or the Screen Time API (FamilyControls, ManagedSettings, DeviceActivity). On Android: UsageStatsManager, or an AccessibilityService that detects the launch and shows an overlay | Installable prototype | Whether the flow works outside the lab |
 | **4. Field study** | 1 baseline week, then 1–2 weeks with Pause, on participants' own phones | Opens and session length from the OS, plus a short daily "worthwhile / in control" check | Whether unplanned scrolling actually goes down |
+
+**Other scrolling formats:** the pilot uses one image feed (Loop). Short-video and text
+feeds, where the reminder and exit may behave differently, are a later step once the
+single-app journey works.
 
 **Principles that stay fixed:** no blocking or hard limits, continuing is never
 penalised, no shaming language, data stays with the participant unless they consent

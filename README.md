@@ -15,6 +15,10 @@ The two interventions under test:
    "You chose when to stop." with no tap needed. Variant A is the message only;
    variant B adds a plant that grows a leaf for each stop you chose.
 
+The prototype has one app, Loop, so there is one complete journey: open Loop → choose
+purpose → scroll → check-in → stop → plant reward. Other scrolling formats (short
+video, text feeds) are a possible later step.
+
 Each screen asks one question and has one obvious next action. The first purpose
 screen explains Pause once, and the home bar is labelled "Finish session" during the
 first session in each condition.
