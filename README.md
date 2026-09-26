@@ -6,11 +6,18 @@ conscious choice and stopping feels good. It never blocks the user.
 
 The two interventions under test:
 
-1. **Purpose Sessions with Conscious Continue**: pick a purpose and a time before the
-   app opens; at the time you chose, a purpose-specific checkpoint offers End /
-   Continue for 5 minutes / Change my purpose.
-2. **Reward the Exit**: stopping by choice shows "You chose to stop." Variant A is the
-   message only; variant B adds a plant that grows a leaf for each stop you chose.
+1. **Purpose Sessions with Conscious Continue**: "What brings you here?" (Something
+   specific / Taking a break / Just browsing), an optional "Remind me after 10 minutes"
+   setting, then "Open Loop". At the reminder: "You came here for a break. It's been
+   10 minutes." with "Finish for now" and "5 more minutes", and "Change my purpose"
+   as a smaller link.
+2. **Reward the Exit**: a chosen stop returns to the home screen and briefly shows
+   "You chose when to stop." with no tap needed. Variant A is the message only;
+   variant B adds a plant that grows a leaf for each stop you chose.
+
+Each screen asks one question and has one obvious next action. The first purpose
+screen explains Pause once, and the home bar is labelled "Finish session" during the
+first session in each condition.
 
 Files:
 
@@ -32,6 +39,8 @@ https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=1&reward=A
 | `reward` | `A`, `B` | `A` |
 | `pause` | `off` for the baseline condition | `on` |
 | `goal` | `5`, `10`, `15` (optional weekly goal) | none |
+| `remind` | `on` to start with the reminder switched on | `off` |
+| `reflect` | `on` to show the reflection questions in the app | `off` |
 | `breath` | `on` for the 3-second breath | off |
 | `pid` | participant ID | `P01` |
 
@@ -57,7 +66,7 @@ the tab closes. Export it after each participant.
 
 3. **Comparable tasks:** give the same task wording in both conditions and use the same
    app (for example, "Open Loop to take a break") so the content and effort match.
-4. **After each condition:** ask verbally, outside the app, "Did this session feel
+4. **After each condition:** in-app reflection is off by default, so ask verbally, outside the app, "Did this session feel
    worthwhile?" and "Did you feel in control?" (Yes / Partly / No), and record the
    answers in the console's Debrief section. Baseline has no reflection screen, so this
    keeps both conditions measured the same way.
@@ -85,10 +94,13 @@ checkpoint_choices, checkpoint_decision_ms, stop_within_1min_of_checkpoint_app_t
 original_boundary_min, final_boundary_min, time_speed, duration_app_s, end_time,
 end_type, interruption, within_boundary, reward_variant, chosen_stops_after,
 example_stops_at_start, weekly_goal, reflection, worthwhile, in_control`
+(plus `intro_shown` after `breath_pause`)
 
 - Decision times (`*_ms`) are real milliseconds.
 - `duration_app_s`, clock times and `stop_within_1min_of_checkpoint_app_time` use app
   time: it runs at `time_speed` and pauses on Pause screens. At 1× it equals real time.
+- `reflection` is `after_task` when in-app reflection is off (the default), otherwise
+  `saved` or `skipped`.
 - `end_type` is `voluntary`, `declined` (chose not to open), `interrupted` or `unknown`.
   Declined and baseline sessions earn no reward and don't count as chosen stops.
 

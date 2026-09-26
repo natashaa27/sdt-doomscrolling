@@ -7,11 +7,13 @@ result.** Fill those sections only from `pilot-notes.md` and the exported CSVs.
 
 The two prototypes:
 
-1. **Purpose Sessions with Conscious Continue**: choose a purpose and a time before the
-   app opens. At the chosen time, a purpose-specific checkpoint offers End / Continue
-   for 5 minutes / Change my purpose.
-2. **Reward the Exit**: a chosen stop shows "You chose to stop." Variant A is the
-   message only. Variant B adds a plant that grows a leaf for each chosen stop.
+1. **Purpose Sessions with Conscious Continue**: "What brings you here?" with three
+   purposes and an optional "Remind me after 10 minutes" setting, then "Open Loop".
+   At the reminder: "You came here for a break. It's been 10 minutes." with "Finish
+   for now" and "5 more minutes", and "Change my purpose" as a smaller link.
+2. **Reward the Exit**: a chosen stop returns to the home screen and briefly shows
+   "You chose when to stop." with no tap needed. Variant A is the message only.
+   Variant B adds a plant that grows a leaf for each chosen stop.
 
 ---
 
@@ -23,19 +25,19 @@ All in `presentation/screenshots/`, captured from the current prototype at phone
 | File | Shows | Prototype |
 |---|---|---|
 | `01-home.png` | Simulated home screen with Loop, Clips and Feed | Context |
-| `02-purpose-prompt.png` | "What brings you to Loop?" with five purposes and time options | 1 |
-| `03-purpose-selected.png` | Purpose chosen; tapping a time opens the app | 1 |
-| `04-feed-loop-with-pill.png` | Feed with the live purpose-and-time pill at the top | 1 |
-| `05-checkpoint-break.png` | Checkpoint for a break: "Feeling rested?" | 1 |
+| `02-purpose-first-use-intro.png` | First use: one-line explanation of Pause, then "What brings you here?" | 1 |
+| `03-purpose-break-reminder-on.png` | Purpose chosen, reminder switched on, one "Open Loop" button | 1 |
+| `04-feed-first-use-finish-label.png` | Feed with the purpose pill; home bar labelled "Finish session" on first use | 1 |
+| `05-reminder-break.png` | Reminder: "You came here for a break. It's been 10 minutes." | 1 |
 | `06-change-purpose.png` | Change my purpose, with the elapsed session time kept | 1 |
-| `07-checkpoint-learn.png` | Checkpoint for learning: "Learned what you came for?" | 1 |
-| `08-reward-A-message.png` | Reward A: "You chose to stop." message only | 2 |
-| `09-reflection.png` | Optional reflection: worthwhile? in control? | 2 |
+| `07-home-ack-A-planned.png` | Reward A on the home screen: "You chose when to stop." | 2 |
+| `08-purpose-later-use.png` | Purpose screen after the first use, without the explanation | 1 |
+| `09-feed-clips.png` | Clips, the full-screen video feed | Context |
 | `10-declined-toast.png` | "I don't need Clips right now" returns home with a short message | 1 |
-| `11-feed-clips.png` | Clips, the full-screen video feed | Context |
-| `12-reward-B-plant-no-goal.png` | Reward B after the first chosen stop, no goal set | 2 |
-| `13-reward-B-plant-4-stops.png` | Reward B after four chosen stops | 2 |
-| `14-reward-B-plant-goal-reached.png` | Reward B with an optional goal of 5 reached | 2 |
+| `11-home-ack-B-plant-first-stop.png` | Reward B after the first chosen stop | 2 |
+| `12-home-ack-B-plant-4-stops.png` | Reward B after four chosen stops | 2 |
+| `13-home-ack-B-goal-reached.png` | Reward B with an optional goal of 5 reached | 2 |
+| `14-reflection-optional-in-app.png` | In-app reflection, off by default for the pilot | 2 |
 | `15-baseline-feed-no-pause.png` | Baseline condition: same feed, no Pause layer | Comparison |
 | `16-facilitator-console.png` | Test console used to run sessions (not shown to participants) | Method |
 
@@ -53,7 +55,7 @@ To refresh them after a design change, see "Updating the screenshots" at the end
   "Open Loop to take a break."
 - **Speed:** real time (1×).
 - **Measures:**
-  - after each condition, asked verbally: "Did this session feel worthwhile?" and
+  - after each condition, asked verbally outside the app (in-app reflection is off): "Did this session feel worthwhile?" and
     "Did you feel in control?" (Yes / Partly / No)
   - session log: purpose, time chosen, checkpoint choices, how the session ended,
     session length
@@ -138,6 +140,11 @@ participants.
 | v3 → v4 | Declining returns straight home | Removed an extra tap after the user had already decided |
 | v3 → v4 | Added a baseline condition with Pause off | Needed to see what the intervention adds |
 | v4 | Same worthwhile / in-control questions after both conditions; counterbalanced order | Makes baseline and Pause comparable |
+| v4 → v5 | Five purposes cut to three; the time is an optional "Remind me after…" setting; one explicit "Open Loop" button | One question and one obvious action per screen; choosing a time no longer opens the app by surprise |
+| v4 → v5 | Reminder names the purpose and time ("You came here for a break. It's been 10 minutes."); two main options, with "Change my purpose" as a link | Makes the main decision easy to scan and ties it to the user's own choice |
+| v4 → v5 | Finishing returns home with a brief "You chose when to stop." (and the plant in B); no tap needed | The acknowledgement shouldn't cost another decision |
+| v4 → v5 | In-app reflection off by default; asked after the task instead | Keeps the exit short and measures both conditions the same way |
+| v4 → v5 | Pause explained once on first use; home bar labelled "Finish session" in each condition's first session | A simulated phone's tappable bar isn't obviously an exit |
 
 ### After the pilot
 

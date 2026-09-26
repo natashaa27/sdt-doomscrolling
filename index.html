@@ -232,6 +232,28 @@ body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
 .notif .tile{width:38px; height:38px; border-radius:10px; display:grid; place-items:center}
 .notif b{display:block; font-size:14px}
 .notif .when{font-size:12px; color:var(--p-muted); align-self:start}
+.intro{margin:0 0 12px; padding:10px 14px; border-radius:14px; background:var(--p-tint); color:var(--p-teal-2); font-size:14.5px; line-height:1.4}
+.remind{border:1.5px solid var(--p-line); border-radius:14px; padding:6px 14px; margin:2px 0 16px}
+.rem-row{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:44px; padding:4px 0; background:none; border:0; color:var(--p-ink); font-size:15.5px; text-align:left}
+.sw{position:relative; flex:none; width:46px; height:28px; border-radius:14px; background:#C9D6D3; transition:background .15s}
+.sw::after{content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:transform .15s}
+.rem-row[aria-checked="true"] .sw{background:var(--p-teal)}
+.rem-row[aria-checked="true"] .sw::after{transform:translateX(18px)}
+.rem-mins{display:flex; gap:8px; padding:4px 0 8px}
+.rem-mins[hidden]{display:none}
+.rem-mins button{flex:1; min-height:38px; border-radius:999px; border:1.5px solid var(--p-line); background:#fff; color:var(--p-ink); font-size:14px}
+.rem-mins button[aria-pressed="true"]{border-color:var(--p-teal); background:var(--p-tint); color:var(--p-teal-2); font-weight:650}
+.ack{position:absolute; left:28px; right:28px; top:50%; z-index:7; transform:translateY(-50%); padding:22px 20px 20px; border-radius:24px; background:#fff; color:var(--p-ink);
+  text-align:center; box-shadow:0 24px 60px -24px rgba(0,0,0,.5); pointer-events:none; opacity:0; visibility:hidden; transition:opacity .3s, visibility 0s linear .3s}
+.ack.show{opacity:1; visibility:visible; transition:opacity .3s}
+.ack .plant{width:140px}
+.ack-t{margin:4px 0 0; font-size:21px; font-weight:700}
+.ack-s{margin:6px 0 0; font-size:14.5px; color:var(--p-muted)}
+.ack .growth-cap{font-size:14.5px}
+.barlabel{position:absolute; left:50%; bottom:24px; z-index:9; transform:translateX(-50%); display:none; padding:9px 18px; border:0; border-radius:999px;
+  background:var(--p-teal); color:#fff; font-size:14.5px; font-weight:650; white-space:nowrap; box-shadow:0 8px 20px -8px rgba(0,0,0,.45)}
+.barlabel.on{display:block}
+.barlabel::after{content:""; position:absolute; left:50%; bottom:-5px; width:10px; height:10px; background:var(--p-teal); transform:translateX(-50%) rotate(45deg)}
 .toast{position:absolute; left:50%; bottom:84px; transform:translateX(-50%); z-index:8; background:rgba(20,32,36,.9); color:#fff; font-size:13.5px;
   padding:9px 14px; border-radius:12px; width:max-content; max-width:86%; text-align:center; opacity:0; transition:opacity .2s; pointer-events:none}
 .toast.show{opacity:1}
@@ -331,6 +353,8 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
       <div class="layer call" id="callLayer"></div>
       <button class="notif" id="notif" type="button" aria-live="polite"></button>
       <div class="toast" id="toast" role="status"></div>
+      <div class="ack" id="ack" role="status"></div>
+      <button class="barlabel" id="barLabel" type="button">Finish session</button>
       <button class="homebar" id="homebar" type="button" aria-label="Close app and go to the home screen"></button>
     </div>
   </div>
@@ -369,6 +393,14 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
         <div class="segc" role="group" aria-labelledby="lblReward" data-setting="reward">
           <button type="button" data-v="A">A: message</button><button type="button" data-v="B">B: message and growth</button></div>
         <p class="help">Switch halfway through each participant, and reverse the order for every second participant.</p></div>
+      <div class="row"><span class="rl" id="lblRemind">Reminder starts</span>
+        <div class="segc" role="group" aria-labelledby="lblRemind" data-setting="remind">
+          <button type="button" data-v="off">Off</button><button type="button" data-v="on">On (10 min)</button></div>
+        <p class="help">Whether "Remind me after 10 minutes" is switched on when the purpose screen opens. The participant can change it either way.</p></div>
+      <div class="row"><span class="rl" id="lblReflect">In-app reflection</span>
+        <div class="segc" role="group" aria-labelledby="lblReflect" data-setting="reflect">
+          <button type="button" data-v="off">Off: ask after the task</button><button type="button" data-v="on">On</button></div>
+        <p class="help">Keep off for the pilot and ask the two questions verbally after each condition. When on, the questions appear after a chosen stop.</p></div>
       <div class="row"><span class="rl" id="lblBreath">Before the prompt</span>
         <div class="segc" role="group" aria-labelledby="lblBreath" data-setting="breath">
           <button type="button" data-v="off">Straight to purpose</button><button type="button" data-v="on">3-second breath first</button></div>
@@ -467,19 +499,11 @@ const INERT = [
   {k:'calendar', name:'Calendar', bg:'#FFFFFF'}, {k:'maps', name:'Maps', bg:'#3E8E7E'}, {k:'settings', name:'Settings', bg:'#7D8B90'}
 ];
 const PURPOSES = [
-  {k:'reply',  icon:'💬', label:'Reply to someone',          short:'Replying', phrase:'to reply to someone'},
-  {k:'check',  icon:'🔎', label:'Check something specific',  short:'Checking', phrase:'to check something'},
-  {k:'learn',  icon:'📚', label:'Learn something',           short:'Learning', phrase:'to learn something'},
-  {k:'break',  icon:'☕', label:'Take a break',              short:'Break',    phrase:'for a break'},
-  {k:'browse', icon:'🌀', label:'Just browsing',             short:'Browsing', phrase:'to browse'}
+  {k:'check',  icon:'🔎', label:'Something specific', short:'Specific', came:'for something specific'},
+  {k:'break',  icon:'☕', label:'Taking a break',     short:'Break',    came:'for a break'},
+  {k:'browse', icon:'🌀', label:'Just browsing',      short:'Browsing', came:'to browse'}
 ];
 const P = Object.fromEntries(PURPOSES.map(p => [p.k, p]));
-/* Wording rotates between checkpoints so the prompt doesn't go stale (one sec rotates interventions for the same reason). */
-const CP_TITLES = {
-  reply:['Done replying?','Still replying?'], check:['Found what you needed?','Still checking?'],
-  learn:['Learned what you came for?','Still learning?'], break:['Feeling rested?','Still on your break?'],
-  browse:['Still enjoying this?','Still in the mood for this?']
-};
 const NOTIFS = {
   loop:  {who:'Loop',  text:'Riya replied to your story'},
   clips: {who:'Clips', text:'New clip from @chai.and.code'},
@@ -560,10 +584,10 @@ const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 
 const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Pause</span></div>`;
 
 /* ---------------- State ---------------- */
-const STORE = 'pause.v4';
+const STORE = 'pause.v5';
 const S = {
-  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on'},
-  week:{stops:0, goal:null, seed:0},
+  settings:{pid:'P01', weekStart:0, reward:'A', breath:false, speed:1, pause:'on', remind:'off', reflect:'off'},
+  week:{stops:0, goal:null, seed:0, intro:false, bar:{}},
   debrief:{}, db:{},
   sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()
 };
@@ -588,7 +612,7 @@ function save(){
 const el = {
   screen:$('#screen'), sbTime:$('#sbTime'), island:$('#island'), home:$('#home'), app:$('#appLayer'), splash:$('#splash'),
   splashTile:$('#splashTile'), appTop:$('#appTop'), feed:$('#feed'), bk:$('#bk'), call:$('#callLayer'),
-  notif:$('#notif'), toast:$('#toast'), homebar:$('#homebar')
+  notif:$('#notif'), toast:$('#toast'), homebar:$('#homebar'), ack:$('#ack'), barLabel:$('#barLabel')
 };
 
 /* ---------------- Time helpers ---------------- */
@@ -606,6 +630,7 @@ function updateChrome(){
   else if (s === 'app') light = app === 'clips';
   else if (s === 'purpose') light = app === 'clips' || (app === 'feed' && !c.built);
   el.screen.classList.toggle('chrome-light', light);
+  el.barLabel.classList.toggle('on', s === 'app' && !!c && !(S.week.bar || {})[c.condition]);
 }
 function showBk(html){ el.bk.innerHTML = html; el.bk.classList.add('on'); }
 function hideBk(){ el.bk.classList.remove('on'); el.bk.innerHTML = ''; }
@@ -629,7 +654,7 @@ function buildHome(){
 /* ---------------- Session flow ---------------- */
 function startFlow(app, trigger){
   if (S.cur || S.screen !== 'home') return;
-  hideNotif();
+  hideNotif(); hideAck();
   S.sessionN++;
   S.cur = {
     id: S.settings.pid + '-' + S.sessionN + '-' + Math.random().toString(36).slice(2, 6),
@@ -637,7 +662,7 @@ function startFlow(app, trigger){
     breath:S.settings.pause !== 'off' && S.settings.breath ? 'on' : 'off',
     purpose:null, history:[], purposeMs:null, promptMs:null, cueMin:null, origCueMin:null, cueEnd:null, plan:null,
     startSim:null, elapsed:0, checkpoints:[], cpShows:0, cpTitle:'', cpShownAt:0, lastCp:null, built:false,
-    endType:null, interruption:'', within:'', stop1:'', rewardVariant:'none', stopsAfter:'', goal:'', row:null
+    endType:null, interruption:'', within:'', stop1:'', rewardVariant:'none', stopsAfter:'', goal:'', intro:false, row:null
   };
   el.app.classList.add('on');
   el.splash.hidden = false;
@@ -673,30 +698,45 @@ function showPurpose(mode){
   setScreen('purpose');
   const shownAt = performance.now(); c.pShownAt = shownAt;
   let picked = null, firstPick = null;
+  let remOn = mode === 'open' ? S.settings.remind === 'on' : c.cueEnd != null;
+  let remMin = (c.plan && c.plan.min) || 10;
+  const intro = mode === 'open' && !S.week.intro;
+  if (intro){ S.week.intro = true; c.intro = true; save(); }
   showBk(`<div class="bk-sheet-wrap"><div class="bk-sheet" role="dialog" aria-modal="true" aria-labelledby="pTitle">
     ${mark()}
-    <h1 class="p-title" id="pTitle">${mode === 'open' ? 'What brings you to ' + a + '?' : 'What are you here for now?'}</h1>
-    <div>${PURPOSES.map(p => `<button class="opt" type="button" data-p="${p.k}" aria-pressed="false"><span class="opt-ic" aria-hidden="true">${p.icon}</span><span>${p.label}</span></button>`).join('')}</div>
+    ${intro ? `<p class="intro">Choose why you're opening an app. Pause will check in when you want.</p>` : ''}
+    <h1 class="p-title" id="pTitle">${mode === 'open' ? 'What brings you here?' : 'What are you here for now?'}</h1>
+    <div>${PURPOSES.map(p => `<button class="opt" type="button" data-p="${p.k}" aria-pressed="${mode !== 'open' && c.purpose === p.k}"><span class="opt-ic" aria-hidden="true">${p.icon}</span><span>${p.label}</span></button>`).join('')}</div>
     <p class="okay">Just browsing is okay.</p>
-    <p class="chips-label" id="chipsLabel">${mode === 'open' ? 'Open ' + a + ' for' : 'Keep going for'}</p>
-    <div class="chips" id="chips" role="group" aria-labelledby="chipsLabel" aria-disabled="true">
-      ${[5, 10, 15, 0].map(m => `<button class="chip-btn" type="button" data-min="${m}" disabled>${m ? m + ' min' : 'No timer'}</button>`).join('')}
+    <div class="remind">
+      <button class="rem-row" type="button" id="remSw" role="switch" aria-checked="${remOn}"><span>Remind me after <b id="remMin">${remMin}</b> minutes</span><span class="sw" aria-hidden="true"></span></button>
+      <div class="rem-mins" id="remMins" role="group" aria-label="Reminder time"${remOn ? '' : ' hidden'}>${[5, 10, 15].map(m => `<button type="button" data-rm="${m}" aria-pressed="${m === remMin}">${m} min</button>`).join('')}</div>
     </div>
+    <button class="primary" type="button" id="openBtn"${mode === 'open' ? ' disabled' : ''}>${mode === 'open' ? 'Open ' + a : 'Back to ' + a}</button>
     ${mode === 'open'
       ? `<button class="linkbtn center" type="button" data-act="decline">I don't need ${a} right now</button>`
       : `<button class="linkbtn center" type="button" data-act="back">Go back</button>`}
   </div></div>`);
+  if (mode !== 'open') picked = c.purpose;
   $$('.opt', el.bk).forEach(b => b.addEventListener('click', () => {
     if (firstPick === null) firstPick = Math.round(performance.now() - shownAt);
     picked = b.dataset.p;
     $$('.opt', el.bk).forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
-    const chips = $('#chips'); chips.setAttribute('aria-disabled', 'false');
-    $$('button', chips).forEach(x => x.disabled = false);
+    $('#openBtn').disabled = false;
   }));
-  $$('.chip-btn', el.bk).forEach(ch => ch.addEventListener('click', () => {
+  $('#remSw').addEventListener('click', () => {
+    remOn = !remOn;
+    $('#remSw').setAttribute('aria-checked', String(remOn));
+    $('#remMins').hidden = !remOn;
+  });
+  $$('[data-rm]', el.bk).forEach(b => b.addEventListener('click', () => {
+    remMin = +b.dataset.rm; $('#remMin').textContent = remMin;
+    $$('[data-rm]', el.bk).forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+  }));
+  $('#openBtn').addEventListener('click', () => {
     if (!picked) return;
-    applyPurpose(mode, picked, +ch.dataset.min, firstPick, Math.round(performance.now() - shownAt));
-  }));
+    applyPurpose(mode, picked, remOn ? remMin : 0, firstPick, Math.round(performance.now() - shownAt));
+  });
   const dec = el.bk.querySelector('[data-act=decline]');
   if (dec) dec.addEventListener('click', () => { c.purposeMs = firstPick; c.promptMs = Math.round(performance.now() - shownAt); endSession('declined'); });
   const back = el.bk.querySelector('[data-act=back]');
@@ -705,7 +745,8 @@ function showPurpose(mode){
 
 function applyPurpose(mode, k, min, pickMs, totalMs){
   const c = S.cur;
-  c.purpose = k; c.history.push(k); c.plan = {min, ext:0};
+  if (mode === 'open' || k !== c.purpose) c.history.push(k);
+  c.purpose = k; c.plan = {min, ext:0};
   if (mode === 'open'){
     c.purposeMs = pickMs; c.promptMs = totalMs;
     c.cueMin = min || 'none'; c.origCueMin = min || '';
@@ -735,17 +776,17 @@ function showCheckpoint(returning){
   const c = S.cur;
   setScreen('checkpoint');
   el.island.classList.remove('on');
-  if (!returning){ c.cpShows++; c.lastCp = c.elapsed; c.cpTitle = CP_TITLES[c.purpose][(c.cpShows - 1) % 2]; }
+  if (!returning){ c.cpShows++; c.lastCp = c.elapsed; }
   c.cpShownAt = performance.now();
-  const sub = `You planned ${c.plan.min} minutes ${P[c.purpose].phrase}.` + (c.plan.ext ? ` Then you added ${c.plan.ext * 5} more.` : '');
+  c.cpTitle = `You came here ${P[c.purpose].came}.`;
+  const mins = Math.round(c.elapsed / 60000);
   showBk(`<div class="bk-full" role="dialog" aria-modal="true" aria-labelledby="cpTitle">${mark()}
     <h1 class="cp-title" id="cpTitle">${c.cpTitle}</h1>
-    <p class="cp-sub">${sub}</p>
+    <p class="cp-sub">It's been ${mins} minute${mins === 1 ? '' : 's'}.</p>
     <div class="spacer"></div>
-    <button class="eq" type="button" data-cp="end">End my session</button>
-    <button class="eq" type="button" data-cp="continue">Continue for 5 minutes</button>
-    <button class="eq" type="button" data-cp="change">Change my purpose</button>
-    <p class="foot">You stay in control.</p></div>`);
+    <button class="eq" type="button" data-cp="end">Finish for now</button>
+    <button class="eq" type="button" data-cp="continue">5 more minutes</button>
+    <button class="linkbtn center" type="button" data-cp="change">Change my purpose</button></div>`);
   $$('[data-cp]', el.bk).forEach(b => b.addEventListener('click', () => cpChoice(b.dataset.cp)));
 }
 
@@ -761,6 +802,7 @@ function endSession(type, interruption){
   const c = S.cur; if (!c || c.endType) return;
   clearTimers();
   c.endType = type; c.interruption = interruption || '';
+  if (c.startSim !== null || type !== 'declined'){ S.week.bar = S.week.bar || {}; S.week.bar[c.condition] = true; }
   c.endSim = S.sim; if (c.startSim === null) c.startSim = S.sim;
   c.speed = S.settings.speed; c.seed = S.week.seed || 0;
   if (type === 'voluntary' && c.condition === 'pause'){
@@ -771,17 +813,19 @@ function endSession(type, interruption){
   if (c.checkpoints.length) c.stop1 = (type === 'voluntary' && c.lastCp != null && c.elapsed - c.lastCp <= 60000) ? 'yes' : 'no';
   el.island.classList.remove('on');
   el.call.classList.remove('on');
-  c.row = toRow(c); S.log.push(c.row); save(); renderConsole();
+  c.row = toRow(c);
+  if (type === 'voluntary' && c.condition === 'pause') c.row.reflection = S.settings.reflect === 'on' ? '' : 'after_task';
+  S.log.push(c.row); save(); renderConsole();
   if (c.condition === 'baseline') goHome();
-  else if (type === 'voluntary') showReward();
+  else if (type === 'voluntary'){ if (S.settings.reflect === 'on') showReflection(); else finishSession(); }
   else if (type === 'declined') declineHome();
-  else if (type === 'interrupted') showEnded(interruption);
+  else if (type === 'interrupted') endedHome(interruption);
   else goHome();
 }
 
 function toRow(c){
   return {
-    participant_id:c.pid, session_number:c.n, session_id:c.id, condition:c.condition, app:APPS[c.app].name, trigger:c.trigger, breath_pause:c.breath,
+    participant_id:c.pid, session_number:c.n, session_id:c.id, condition:c.condition, app:APPS[c.app].name, trigger:c.trigger, breath_pause:c.breath, intro_shown:c.intro ? 'yes' : 'no',
     purpose:c.purpose || '', purpose_history:c.history.join('>'),
     purpose_decision_ms:c.purposeMs ?? '', prompt_total_ms:c.promptMs ?? '',
     time_cue_min:c.cueMin ?? '', start_time:fmtHMS(c.startSim),
@@ -798,7 +842,7 @@ function toRow(c){
     reflection:'', worthwhile:'', in_control:''
   };
 }
-const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
+const COLS = ['participant_id','session_number','session_id','condition','app','trigger','breath_pause','intro_shown','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint_app_time','original_boundary_min','final_boundary_min','time_speed','duration_app_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','example_stops_at_start','weekly_goal','reflection','worthwhile','in_control'];
 
 /* ---------------- Exit screens ---------------- */
 function plantSVG(count, goal, animate){
@@ -824,33 +868,31 @@ function plantSVG(count, goal, animate){
     <path d="M68 ${base} H132 L124 212 H76 Z" fill="#D6E0DE"/><rect x="63" y="${base - 6}" width="74" height="11" rx="3.5" fill="#BFCDCA"/>
   </svg>`;
 }
-function growthBlock(animate){
+function growthCaption(){
   const count = S.week.stops, goal = S.week.goal, seed = S.week.seed || 0;
   const cap = !goal ? `${count} stop${count === 1 ? '' : 's'} you chose this week`
     : count < goal ? `${count} of ${goal} stops you chose this week` : `${count} stops you chose this week. Goal reached.`;
   const note = seed ? `<p class="growth-note">Includes ${seed} example stop${seed === 1 ? '' : 's'} from earlier in the week.</p>` : '';
-  return `<div class="growth">${plantSVG(count, goal, animate)}<p class="growth-cap">${cap}</p>${note}</div>`;
+  return `<p class="growth-cap">${cap}</p>${note}`;
 }
-function showReward(){
-  const c = S.cur;
-  setScreen('reward');
-  const sub = c.cueEnd != null ? 'You stopped when you planned to.' : 'You ended this on your terms.';
-  const extra = c.rewardVariant === 'B' ? growthBlock(true) : '';
-  showBk(`<div class="bk-full">${mark()}
-    <h1 class="r-title">You chose to stop.</h1>
-    <p class="r-sub">${sub}</p>
-    ${extra}
-    <div class="spacer"></div>
-    <button class="primary" type="button" data-act="home">Back to my day</button>
-    <button class="linkbtn center" type="button" data-act="reflect">Reflect for a moment</button></div>`);
-  el.bk.querySelector('[data-act=home]').addEventListener('click', () => finishSession('not_opened'));
-  el.bk.querySelector('[data-act=reflect]').addEventListener('click', showReflection);
+/* Acknowledgement on the home screen after a chosen stop: no tap needed, fades on its own. */
+function showAck(c){
+  const plant = c.rewardVariant === 'B';
+  const timed = c.cueEnd != null && c.within === 'yes';
+  el.ack.innerHTML = `${plant ? plantSVG(S.week.stops, S.week.goal, true) : ''}
+    <p class="ack-t">You chose when to stop.</p>
+    ${timed ? '<p class="ack-s">You stopped when you planned to.</p>' : ''}
+    ${plant ? growthCaption() : ''}`;
+  el.ack.classList.add('show');
+  clearTimeout(T.ack); T.ack = setTimeout(hideAck, plant ? 3600 : 2600);
 }
+function hideAck(){ el.ack.classList.remove('show'); }
 function showReflection(){
   const c = S.cur;
   setScreen('reflect');
   const seg = q => `<div class="seg" data-q="${q}">${['Yes', 'Partly', 'No'].map(v => `<button type="button" aria-pressed="false" data-v="${v.toLowerCase()}">${v}</button>`).join('')}</div>`;
   showBk(`<div class="bk-full">${mark()}
+    <p class="ack-s" style="margin:0 0 4px">You chose when to stop.</p>
     <fieldset class="q"><legend>Did this session feel worthwhile?</legend>${seg('worthwhile')}</fieldset>
     <fieldset class="q"><legend>Did you feel in control?</legend>${seg('control')}</fieldset>
     <div class="spacer"></div>
@@ -869,31 +911,26 @@ function showReflection(){
 }
 function finishSession(status, ans){
   const c = S.cur;
-  if (c && c.row){
+  if (c && c.row && status){
     c.row.reflection = status;
     if (ans){ c.row.worthwhile = ans.worthwhile || ''; c.row.in_control = ans.control || ''; }
     save();
   }
   goHome();
+  if (c && c.endType === 'voluntary' && c.condition === 'pause') showAck(c);
 }
 function declineHome(){
   const a = APPS[S.cur.app].name;
   goHome();
   toast(`Okay. ${a} will be here when you need it.`);
 }
-function showEnded(kind){
-  const a = APPS[S.cur.app].name;
-  setScreen('ended');
-  const why = kind === 'call' ? 'a call came in' : 'your class is starting';
-  showBk(`<div class="bk-full bk-center">${mark()}<div class="spacer"></div>
-    <h1 class="n-title">Session ended</h1><p class="r-sub">${a} closed because ${why}.</p>
-    <button class="primary soft" type="button" data-act="home">Back to home</button><div class="spacer"></div></div>`);
-  el.bk.querySelector('[data-act=home]').addEventListener('click', goHome);
+function endedHome(kind){
+  goHome();
+  toast(kind === 'call' ? 'Session ended because a call came in.' : 'Session ended because your class is starting.');
 }
 function goHome(){
   clearTimers();
   const c = S.cur;
-  if (c && c.row && c.endType === 'voluntary' && c.condition === 'pause' && !c.row.reflection){ c.row.reflection = 'not_opened'; save(); }
   S.cur = null;
   hideBk(); el.call.classList.remove('on'); el.call.innerHTML = '';
   el.app.classList.remove('on'); el.feed.innerHTML = ''; el.appTop.innerHTML = '';
@@ -903,6 +940,7 @@ function goHome(){
 }
 
 /* ---------------- Home bar ---------------- */
+el.barLabel.addEventListener('click', () => el.homebar.click());
 el.homebar.addEventListener('click', () => {
   const c = S.cur;
   switch (S.screen){
@@ -915,9 +953,7 @@ el.homebar.addEventListener('click', () => {
       else endSession('voluntary');
       break;
     case 'breath': c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); break;
-    case 'reward': finishSession('not_opened'); break;
     case 'reflect': finishSession('skipped'); break;
-    case 'ended': goHome(); break;
     default: break;
   }
 });
@@ -1102,7 +1138,7 @@ function renderTotals(){
   const vol = pz.filter(r => r.end_type === 'voluntary');
   const intr = all.filter(r => r.end_type === 'interrupted').length;
   const saved = vol.filter(r => r.reflection === 'saved').length, skipped = vol.filter(r => r.reflection === 'skipped').length;
-  const notOpened = vol.filter(r => r.reflection === 'not_opened').length;
+  const after = vol.filter(r => r.reflection === 'after_task').length;
   const real = all.filter(r => r.end_type !== 'declined' && +r.time_speed === 1);
   const fast = all.filter(r => r.end_type !== 'declined' && +r.time_speed !== 1).length;
   $('#totals').innerHTML = `
@@ -1111,7 +1147,7 @@ function renderTotals(){
     <div><dt>Stopped within 1 minute of a checkpoint</dt><dd>${stop1} of ${withCp.length}<small>${pct(stop1, withCp.length)}, measured in app time</small></dd></div>
     <div><dt>Chose to stop</dt><dd>${vol.length}<small>${intr} interrupted, which get no reward</small></dd></div>
     <div><dt>Average session length, real time only</dt><dd>${avgLen(real.filter(r => r.condition !== 'baseline'))} / ${avgLen(real.filter(r => r.condition === 'baseline'))}<small>Pause / baseline, 1× sessions only${fast ? `; ${fast} faster session${fast === 1 ? '' : 's'} left out` : ''}</small></dd></div>
-    <div><dt>Reflection</dt><dd>${saved} saved<small>${skipped} skipped, ${notOpened} not opened</small></dd></div>`;
+    <div><dt>In-app reflection</dt><dd>${saved} saved<small>${skipped} skipped; ${after} asked after the task instead</small></dd></div>`;
 }
 function renderTable(){
   const head = ['ID', '#', 'Condition', 'App', 'Opened', 'Purpose', 'Choose (ms)', 'Cue', 'Checkpoints', 'End', 'Within', 'Reward', 'Stops', 'Reflection', 'Worthwhile', 'In control'];
@@ -1169,7 +1205,7 @@ function newParticipant(){
   else if (S.cur) goHome();
   const m = /^(.*?)(\d+)$/.exec(S.settings.pid);
   if (m) S.settings.pid = m[1] + String(+m[2] + 1).padStart(m[2].length, '0');
-  S.sessionN = 0; S.week = {stops:S.settings.weekStart, goal:null, seed:S.settings.weekStart};
+  S.sessionN = 0; S.week = {stops:S.settings.weekStart, goal:null, seed:S.settings.weekStart, intro:false, bar:{}};
   hideNotif(); loadDebrief(); save(); goHome();
   consoleMsg(`Ready for ${S.settings.pid}.`);
 }
@@ -1246,6 +1282,8 @@ if (qs.get('speed') && [1, 10, 60].includes(+qs.get('speed'))) S.settings.speed 
 if (qs.get('reward') && /^[AB]$/i.test(qs.get('reward'))) S.settings.reward = qs.get('reward').toUpperCase();
 if (qs.get('breath')) S.settings.breath = qs.get('breath') === '1' || qs.get('breath') === 'on';
 if (qs.get('pause')) S.settings.pause = qs.get('pause') === 'off' ? 'off' : 'on';
+if (qs.get('remind')) S.settings.remind = qs.get('remind') === 'on' ? 'on' : 'off';
+if (qs.get('reflect')) S.settings.reflect = qs.get('reflect') === 'on' ? 'on' : 'off';
 if (qs.get('goal') && [5, 10, 15].includes(+qs.get('goal'))) S.week.goal = +qs.get('goal');
 if (qs.get('pid')){ S.settings.pid = qs.get('pid'); S.sessionN = S.log.filter(r => r.participant_id === S.settings.pid).length; }
 if (qs.get('participant') === '1') setPView(true);
