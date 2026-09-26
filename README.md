@@ -1,21 +1,58 @@
-# Pause – doomscrolling prototype
+# Bookend – doomscrolling prototype
 
 A clickable, mobile-sized prototype for a design-thinking project on doomscrolling.
-Pause adds a small layer before and after a scrolling session so starting is a
+Bookend adds a small layer before and after a scrolling session so starting is a
 conscious choice and stopping feels good. It never blocks the user.
+
+- `index.html`: **Bookend** (current version, served on GitHub Pages)
+- `pause.html`: **Pause** v2, the previous version, kept for comparison
 
 ## Run it
 
-Open `index.html` in any modern browser. No build step, backend or login.
-The phone (390 × 844) sits on the left and the facilitator panel on the right.
-The phone scales down to fit smaller laptop screens.
+Open `index.html` in a browser, or use the Pages site:
+https://natashaa27.github.io/sdt-doomscrolling/
+
+For a participant's own phone:
+https://natashaa27.github.io/sdt-doomscrolling/?participant=1&speed=10&reward=A
+
+URL options: `participant=1`, `speed=1|10|60`, `reward=A|B`, `breath=on`, `pid=P07`.
+Tap the phone's clock five times within three seconds to show or hide the test console.
+
+The log is kept in the tab's session storage: it survives a reload but is cleared when
+the tab closes. Export it after each participant.
+
+## What changed from Pause
+
+- Purpose and time on one sheet; tapping a time opens the app (two taps).
+- "I don't need [app] right now" lets people back out; logged as `declined`, no reward.
+- Optional 3-second breath before the prompt (off by default).
+- Full-screen checkpoint whose question depends on the purpose and alternates
+  between two wordings ("Feeling rested?" / "Still on your break?").
+- Live pill at the top shows purpose and time.
+- Reward B: a plant that grows a leaf per chosen stop and flowers at a weekly goal the
+  participant sets. It never shrinks.
+- Close the app with the home bar at the bottom of the phone.
+- Console: dismissal watch (purpose picks under 1 s, same purpose repeated), running
+  totals, auto-save, CSV export/copy.
+
+## Benchmarks shown in the console
+
+- one sec: participants closed the target app again in 36% of opening attempts
+  ([Grüning et al., PNAS 2023](https://www.pnas.org/doi/10.1073/pnas.2213114120)).
+- Wellspent: RCT of full-screen quit/continue reminders
+  ([JMIR mHealth 2026](https://mhealth.jmir.org/2026/1/e56824)). The share of reminders
+  followed by a stop has not been checked yet, so no figure is shown.
+
+---
+
+# Pause (previous version, `pause.html`)
 
 ## Participant mode (real phone)
 
 Add `?participant=1` to the URL to hide the facilitator panel and show the phone
 view full-screen, e.g.
 
-    index.html?participant=1&speed=10&reward=A
+    pause.html?participant=1&speed=10&reward=A
 
 | Parameter | Values | Default |
 |---|---|---|

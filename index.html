@@ -3,1016 +3,1185 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pause Prototype</title>
+<title>Bookend prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Phone (Pause app) palette: fixed, always light by design */
-    --teal: #127C71;
-    --teal-dark: #0E6158;
-    --teal-soft: #E7F2F0;
-    --teal-line: #BFDCD7;
-    --ink: #1E2A30;
-    --ink-muted: #56666D;
-    --line: #E1E8E7;
-    --ph: #EDF1F1;
-    --ph-2: #E2E8E8;
-    --white: #FFFFFF;
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F2F5F4; --ink:#1E2A30; --muted:#5B6B72; --rule:#D3DDDB; --field:#FFFFFF;
+  --accent:#127C71; --accent-ink:#FFFFFF; --flag:#9A5410; --flag-bg:#FBEBD9; --ok:#127C71; --ok-bg:#E3F2EF;
+  --device:#11191C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#142023; --ink:#E3ECEA; --muted:#9DB2AF; --rule:#2B3D41; --field:#1B2B2F;
+    --accent:#4DB6A8; --accent-ink:#0E1A1C; --flag:#F0B070; --flag-bg:#3A2A18; --ok:#6CCBBE; --ok-bg:#183633;
+    --device:#050809;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#142023; --ink:#E3ECEA; --muted:#9DB2AF; --rule:#2B3D41; --field:#1B2B2F;
+  --accent:#4DB6A8; --accent-ink:#0E1A1C; --flag:#F0B070; --flag-bg:#3A2A18; --ok:#6CCBBE; --ok-bg:#183633;
+  --device:#050809;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0; min-height:100%; background:var(--bg); color:var(--ink);
+  font-family:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size:15px; line-height:1.5}
+button{font:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 
-    /* Facilitator panel palette: follows the viewer's theme */
-    --bg: #F3F6F6;
-    --panel: #FFFFFF;
-    --panel-2: #F6F9F9;
-    --text: #1E2A30;
-    --text-muted: #5A6A70;
-    --border: #DCE5E4;
-    --accent: #127C71;
-    --accent-ink: #FFFFFF;
-    --accent-soft: #E7F2F0;
-    --bezel: #1E2A30;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #11191C;
-      --panel: #182226;
-      --panel-2: #1D292E;
-      --text: #E4ECEC;
-      --text-muted: #9DB0B2;
-      --border: #2B3A3F;
-      --accent: #4FB8AB;
-      --accent-ink: #0E1A1C;
-      --accent-soft: #1D3633;
-      --bezel: #05090A;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #11191C;
-    --panel: #182226;
-    --panel-2: #1D292E;
-    --text: #E4ECEC;
-    --text-muted: #9DB0B2;
-    --border: #2B3A3F;
-    --accent: #4FB8AB;
-    --accent-ink: #0E1A1C;
-    --accent-soft: #1D3633;
-    --bezel: #05090A;
-    color-scheme: dark;
-  }
+/* ---------- Page layout ---------- */
+.stage{display:grid; grid-template-columns:auto minmax(0,760px); gap:48px; justify-content:center; align-items:start;
+  max-width:1320px; margin:0 auto; padding:24px}
+.device{position:sticky; top:24px; height:min(860px, calc(100vh - 48px)); min-height:600px; aspect-ratio:400/860;
+  background:var(--device); border-radius:56px; padding:11px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06) inset, 0 40px 70px -40px rgba(10,40,45,.55)}
+@supports (height:100dvh){ .device{height:min(860px, calc(100dvh - 48px))} }
+@media (max-width:980px){
+  .stage{grid-template-columns:minmax(0,1fr); justify-items:center; gap:32px; padding:16px}
+  .device{position:relative; top:auto; height:auto; min-height:0; width:min(100%,400px)}
+  .console{width:100%}
+}
+body.pview .console{display:none}
+body.pview .stage{grid-template-columns:minmax(0,1fr); justify-items:center}
+@media (max-width:600px){
+  body.pview{height:100%; overflow:hidden}
+  body.pview .stage{padding:0; height:100%}
+  body.pview .device{height:100%; width:100%; aspect-ratio:auto; padding:0; border-radius:0; box-shadow:none; background:none; position:static}
+  body.pview .screen{border-radius:0}
+}
 
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    padding-inline: 16px;
-    padding-block: 16px;
-  }
-  button { font: inherit; cursor: pointer; }
-  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-    outline: 3px solid var(--teal-line);
-    outline-offset: 2px;
-  }
-  [hidden] { display: none !important; }
+/* ---------- Phone ---------- */
+.screen{
+  --p-ink:#1E2A30; --p-teal:#127C71; --p-teal-2:#0E6259; --p-tint:#E7F3F1; --p-muted:#5B6B72; --p-line:#DCE5E3;
+  position:relative; width:100%; height:100%; border-radius:45px; overflow:hidden; background:#fff; isolation:isolate;
+  font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; color:var(--p-ink); line-height:1.35;
+  -webkit-tap-highlight-color:transparent}
+.layer{position:absolute; inset:0; display:none}
+.layer.on{display:block}
 
-  .stage {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    align-items: flex-start;
-    justify-content: center;
-    max-width: 1440px;
-    margin: 0 auto;
-  }
+.statusbar{position:absolute; top:0; left:0; right:0; height:44px; z-index:9; display:flex; align-items:center; justify-content:space-between;
+  padding:0 22px 0 30px; font-size:15px; font-weight:600; color:var(--p-ink); pointer-events:none}
+.statusbar .sb-time{pointer-events:auto; user-select:none; min-width:44px}
+.sb-icons{display:flex; gap:4px; align-items:center}
+.sb-icons svg{display:block}
+.screen.chrome-light .statusbar{color:#fff}
+.island{position:absolute; top:9px; left:50%; transform:translateX(-50%); z-index:10; height:27px; display:none; align-items:center; gap:5px;
+  padding:0 11px; border-radius:999px; background:#1E2A30; color:#fff; font-size:12px; font-weight:600; white-space:nowrap; max-width:calc(100% - 180px); overflow:hidden;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14); font-variant-numeric:tabular-nums}
+.island.on{display:flex}
+.island .i-t{color:#9FE3D8}
 
-  /* ---------- Phone frame ---------- */
-  .phone-col { flex: 0 0 auto; max-width: 100%; }
-  .phone {
-    width: 418px;
-    max-width: 100%;
-    padding: 14px;
-    border-radius: 56px;
-    background: var(--bezel);
-    box-shadow: 0 20px 50px rgba(15, 30, 35, .18);
-  }
-  .screen {
-    position: relative;
-    width: 390px;
-    max-width: 100%;
-    height: 844px;
-    border-radius: 42px;
-    overflow: hidden;
-    background: var(--white);
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-  }
-  .statusbar {
-    flex: 0 0 auto;
-    height: 48px;
-    padding: 14px 30px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-    position: relative;
-    z-index: 5;
-  }
-  .statusbar .notch {
-    position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
-    width: 120px; height: 32px; border-radius: 20px; background: #0B1113;
-  }
-  .statusbar .sys { display: flex; gap: 6px; align-items: center; }
-  .statusbar .sys span { display: block; background: var(--ink); border-radius: 2px; }
-  .view { flex: 1 1 auto; position: relative; min-height: 0; display: flex; flex-direction: column; }
+.homebar{position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:210px; height:30px; z-index:9; background:none; border:0; padding:0; color:var(--p-ink)}
+.homebar::after{content:""; position:absolute; left:50%; bottom:8px; width:134px; height:5px; border-radius:3px; background:currentColor; transform:translateX(-50%)}
+.screen.chrome-light .homebar{color:#fff}
 
-  /* ---------- Home ---------- */
-  .home { flex: 1; background: linear-gradient(180deg, #F5F9F8 0%, #E9F2F0 100%); padding: 24px 24px 32px; display: flex; flex-direction: column; }
-  .home .clock { text-align: center; margin-top: 28px; }
-  .home .clock .t { font-size: 64px; font-weight: 300; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1; }
-  .home .clock .d { margin-top: 8px; color: var(--ink-muted); font-size: 16px; }
-  .apps { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 8px 40px; }
-  .app-btn { background: none; border: 0; padding: 6px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--ink); border-radius: 18px; }
-  .app-icon { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(30, 42, 48, .12); }
-  .app-icon svg { width: 36px; height: 36px; }
-  .app-btn .n { font-size: 14px; font-weight: 500; }
-  .icon-loop { background: #3F5560; }
-  .icon-clips { background: #6A5B8C; }
-  .icon-feed { background: #B06A3B; }
-  .home-hint { text-align: center; color: var(--ink-muted); font-size: 13px; }
+/* home */
+.home{z-index:1; background:linear-gradient(165deg,#17323A 0%,#1C5E58 52%,#7FB9AF 100%); color:#fff; padding:64px 22px 0}
+.widget{padding:14px 6px 22px}
+.widget .w-time{font-size:62px; font-weight:250; letter-spacing:-1px; line-height:1; font-variant-numeric:tabular-nums}
+.widget .w-date{font-size:15px; opacity:.85; margin-top:6px}
+.grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px 10px; justify-items:center}
+.ic{display:flex; flex-direction:column; align-items:center; gap:6px; background:none; border:0; color:#fff; padding:0; width:72px}
+.ic .tile{width:60px; height:60px; border-radius:15px; display:grid; place-items:center; box-shadow:0 4px 10px -4px rgba(0,0,0,.35)}
+.ic .lab{font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.ic.inert .tile{opacity:.92}
+.home-hint{position:absolute; left:0; right:0; bottom:40px; text-align:center; font-size:12.5px; opacity:.8}
 
-  .notif {
-    position: absolute; top: 6px; left: 10px; right: 10px; z-index: 10;
-    background: rgba(255, 255, 255, .96);
-    border: 1px solid var(--line);
-    border-radius: 22px; padding: 12px 14px;
-    box-shadow: 0 8px 24px rgba(30, 42, 48, .16);
-    display: flex; gap: 12px; align-items: center; text-align: left; color: var(--ink);
-    width: calc(100% - 20px);
-    animation: drop .35s ease-out;
-  }
-  .notif .app-icon { width: 40px; height: 40px; border-radius: 11px; flex: 0 0 auto; }
-  .notif .app-icon svg { width: 22px; height: 22px; }
-  .notif b { display: block; font-size: 14px; }
-  .notif small { color: var(--ink-muted); font-size: 13px; }
-  @keyframes drop { from { transform: translateY(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* app layer */
+.app{z-index:2; background:#fff}
+.splash{position:absolute; inset:0; display:grid; place-items:center}
+.splash[hidden]{display:none}
+.splash .tile{width:92px; height:92px; border-radius:24px; display:grid; place-items:center}
+.app-top{position:absolute; top:44px; left:0; right:0; height:52px; z-index:3; display:flex; align-items:center; justify-content:space-between; padding:0 16px; background:#fff}
+.feed{position:absolute; left:0; right:0; top:96px; bottom:0; overflow-y:auto; overscroll-behavior:contain; padding-bottom:34px; background:#fff}
+.feed::-webkit-scrollbar{display:none}
+.feed{scrollbar-width:none}
 
-  /* ---------- Pause screens (shared) ---------- */
-  .pause { flex: 1; display: flex; flex-direction: column; padding: 20px 24px 28px; background: var(--white); overflow-y: auto; }
-  .brand { display: flex; align-items: center; gap: 8px; color: var(--teal); font-weight: 600; font-size: 14px; letter-spacing: .04em; }
-  .brand .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--teal); }
-  .brand .ctx { color: var(--ink-muted); font-weight: 400; letter-spacing: 0; }
-  .pause h1 { font-size: 28px; line-height: 1.2; margin: 28px 0 6px; font-weight: 650; text-wrap: balance; letter-spacing: -.3px; }
-  .pause .sub { color: var(--ink-muted); font-size: 16px; margin: 0 0 20px; }
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .opt {
-    min-height: 54px; width: 100%;
-    border: 1.5px solid var(--line); border-radius: 16px; background: var(--white);
-    color: var(--ink); font-size: 17px; text-align: left; padding: 12px 16px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    transition: border-color .15s, background .15s;
-  }
-  .opt .tick { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--teal-line); flex: 0 0 auto; display: grid; place-items: center; }
-  .opt[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); }
-  .opt[aria-pressed="true"] .tick { background: var(--teal); border-color: var(--teal); }
-  .opt[aria-pressed="true"] .tick::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
-  .okay { margin: 12px 2px 0; color: var(--ink-muted); font-size: 15px; }
-  .label { margin: 24px 0 10px; font-size: 13px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .06em; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip {
-    min-height: 44px; padding: 8px 16px; border-radius: 999px;
-    border: 1.5px solid var(--line); background: var(--white); color: var(--ink); font-size: 15px;
-  }
-  .chip[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); font-weight: 600; }
-  .spacer { flex: 1 1 auto; min-height: 20px; }
-  .btn {
-    min-height: 56px; width: 100%; border-radius: 16px; font-size: 17px; font-weight: 600;
-    border: 1.5px solid var(--teal); background: var(--white); color: var(--teal-dark); padding: 12px 16px;
-  }
-  .btn.primary { background: var(--teal); color: #fff; }
-  .btn:disabled { background: var(--ph); border-color: var(--ph-2); color: #7C8B90; cursor: default; }
-  .btn-stack { display: flex; flex-direction: column; gap: 10px; }
-  .link { background: none; border: 0; color: var(--ink-muted); font-size: 15px; padding: 12px; margin-top: 4px; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
-  .foot { text-align: center; color: var(--ink-muted); font-size: 14px; margin-top: 14px; }
+/* Loop */
+.lp-word{font-size:26px; font-weight:800; letter-spacing:-.8px}
+.top-icons{display:flex; gap:18px}
+.stories{display:flex; gap:14px; padding:6px 14px 12px; overflow-x:auto; border-bottom:1px solid #EEF1F1; scrollbar-width:none}
+.story{display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11.5px; color:#44525A; flex:none}
+.story .ring{width:62px; height:62px; border-radius:50%; padding:2.5px; background:conic-gradient(#F2B705,#E86F4E,#127C71,#F2B705)}
+.story .ring span{display:grid; place-items:center; width:100%; height:100%; border-radius:50%; border:2.5px solid #fff; font-weight:700; color:#fff; font-size:20px}
+.lp-post header{display:flex; align-items:center; gap:10px; padding:10px 12px}
+.av{width:32px; height:32px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; font-size:14px; flex:none}
+.lp-h{font-weight:650; font-size:14px; flex:1}
+.lp-dots{color:#8A979C; letter-spacing:1px}
+.lp-img{aspect-ratio:1/1; display:grid; place-items:center; position:relative; overflow:hidden}
+.lp-img .big{font-size:110px; filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+.lp-img .meme{position:absolute; top:18px; left:18px; right:18px; margin:0; color:#fff; font-weight:800; font-size:19px; line-height:1.25; white-space:pre-line; text-shadow:0 2px 6px rgba(0,0,0,.35)}
+.lp-img.has-meme .big{margin-top:70px}
+.acts{display:flex; gap:16px; padding:10px 12px 4px}
+.acts button{background:none; border:0; padding:0; color:#1E2A30}
+.like.on svg{fill:#E0474C; stroke:#E0474C}
+.lp-likes{margin:2px 12px; font-size:14px; font-weight:650}
+.lp-cap{margin:2px 12px; font-size:14px}
+.lp-more{margin:2px 12px 16px; font-size:13.5px; color:#7A878D}
 
-  /* ---------- Feed ---------- */
-  .feed-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; background: #F7F9F9; }
-  .feed-head { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 10px; background: #F7F9F9; border-bottom: 1px solid var(--line); }
-  .feed-head .appname { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; }
-  .feed-head .app-icon { width: 30px; height: 30px; border-radius: 9px; box-shadow: none; }
-  .feed-head .app-icon svg { width: 17px; height: 17px; }
-  .pchip {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12.5px; color: var(--teal-dark); background: var(--teal-soft);
-    border-radius: 999px; padding: 5px 10px; font-variant-numeric: tabular-nums; white-space: nowrap;
-    max-width: 200px; overflow: hidden; text-overflow: ellipsis;
-  }
-  .pchip .d { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex: 0 0 auto; }
-  .feed { flex: 1; overflow-y: auto; padding: 12px 12px 90px; display: flex; flex-direction: column; gap: 12px; overscroll-behavior: contain; }
-  .card { background: var(--white); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); }
-  .card .top { display: flex; align-items: center; gap: 10px; }
-  .card .av { width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto; display: grid; place-items: center; font-size: 15px; font-weight: 700; color: #fff; }
-  .card .who { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
-  .card .who b { font-size: 15px; }
-  .card .who small { font-size: 13px; color: var(--ink-muted); }
-  .card p { margin: 0; font-size: 15.5px; line-height: 1.45; color: var(--ink); }
-  .card .media { position: relative; border-radius: 12px; display: flex; align-items: flex-end; padding: 10px 12px; color: rgba(255,255,255,.95); font-size: 13px; font-weight: 500; }
-  .card .media .play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(0,0,0,.28); display: grid; place-items: center; }
-  .card .media .dur { position: absolute; right: 10px; bottom: 10px; background: rgba(0,0,0,.4); border-radius: 6px; padding: 1px 6px; font-variant-numeric: tabular-nums; }
-  .card .acts { display: flex; gap: 20px; font-size: 13px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
-  .close-bar { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 20px 22px; background: linear-gradient(180deg, rgba(247,249,249,0) 0%, #F7F9F9 40%); display: flex; justify-content: center; }
-  .close-btn { min-height: 50px; padding: 10px 28px; border-radius: 999px; background: var(--ink); color: #fff; border: 0; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(30, 42, 48, .2); }
+/* Clips */
+.app-top.clips{background:transparent; justify-content:center; gap:18px; color:#fff; font-weight:650; font-size:16px; pointer-events:none}
+.app-top.clips span{opacity:.6}
+.app-top.clips span.on{opacity:1; border-bottom:2px solid #fff; padding-bottom:2px}
+.feed.clips{top:0; padding-bottom:0; scroll-snap-type:y mandatory; background:#000}
+.clip{height:100%; scroll-snap-align:start; scroll-snap-stop:always; position:relative; color:#fff; overflow:hidden}
+.clip-big{position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); font-size:130px; filter:drop-shadow(0 10px 20px rgba(0,0,0,.3))}
+.clip-meta{position:absolute; left:16px; right:84px; bottom:62px}
+.clip-meta p{margin:4px 0}
+.clip-h{font-weight:700; font-size:15px}
+.clip-t{font-size:15px; line-height:1.35}
+.clip-sound{font-size:13px; opacity:.85}
+.clip-rail{position:absolute; right:12px; bottom:70px; display:flex; flex-direction:column; gap:18px; align-items:center; font-size:12px; font-weight:600}
+.clip-rail button{background:none; border:0; color:#fff; padding:0; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:12px; font-weight:600}
+.clip-rail svg{stroke:#fff}
+.clip-prog{position:absolute; left:0; right:0; bottom:40px; height:3px; background:rgba(255,255,255,.25)}
+.clip-prog span{display:block; height:100%; width:0; background:#fff; animation:prog 9s linear infinite}
+@keyframes prog{to{width:100%}}
 
-  /* ---------- Checkpoint sheet ---------- */
-  .scrim { position: absolute; inset: 0; background: rgba(30, 42, 48, .28); z-index: 20; display: flex; align-items: flex-end; animation: fade .3s ease-out; }
-  .sheet { width: 100%; background: var(--white); border-radius: 28px 28px 0 0; padding: 24px 24px 30px; animation: rise .35s ease-out; }
-  .sheet h1 { margin-top: 18px; }
-  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes rise { from { transform: translateY(30px); } to { transform: none; } }
+/* Feed */
+.fd-word{font-size:22px; font-weight:800; color:#2F80ED; letter-spacing:-.4px}
+.fd-tabs{display:none}
+.fd-tabbar{display:flex; border-bottom:1px solid #EAEFF1; position:sticky; top:0; background:#fff; z-index:1}
+.fd-tabbar span{flex:1; text-align:center; padding:10px 0; font-size:14.5px; color:#6B787E; font-weight:600}
+.fd-tabbar span.on{color:#1E2A30; box-shadow:inset 0 -3px 0 #2F80ED}
+.fd-post{display:flex; gap:10px; padding:12px 14px; border-bottom:1px solid #EEF2F3}
+.fd-post .av{width:40px; height:40px; font-size:16px}
+.fd-body{flex:1; min-width:0}
+.fd-who{margin:0; font-size:14.5px}
+.fd-who span{color:#76848A}
+.fd-t{margin:3px 0 8px; font-size:15px; line-height:1.4}
+.fd-acts{display:flex; justify-content:space-between; max-width:260px; color:#76848A; font-size:13px}
+.fd-acts button{background:none; border:0; color:inherit; display:flex; gap:5px; align-items:center; padding:0; font-size:13px}
+.fd-acts svg{stroke:currentColor}
+.poll{margin:4px 0 10px; display:grid; gap:6px}
+.pl{position:relative; border:1px solid #DDE5E8; border-radius:8px; padding:7px 10px; display:flex; justify-content:space-between; font-size:14px; overflow:hidden}
+.pl i{position:absolute; inset:0 auto 0 0; background:#E3EEFB; z-index:0}
+.pl em,.pl b{position:relative; font-style:normal}
 
-  /* ---------- Exit ---------- */
-  .exit-mark { width: 64px; height: 64px; border-radius: 50%; background: var(--teal-soft); display: grid; place-items: center; margin-top: 48px; }
-  .exit-mark.neutral { background: var(--ph); }
-  .exit-mark svg { width: 30px; height: 30px; }
-  .progress { margin-top: 28px; border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-  .progress .row { display: flex; gap: 16px; align-items: center; }
-  .ring { width: 84px; height: 84px; flex: 0 0 auto; }
-  .ring .fill { transition: none; }
-  .ring.animate .fill { animation: ringfill .8s ease-out 1; }
-  @keyframes ringfill { from { stroke-dashoffset: var(--full); } }
-  .progress .stat { font-size: 17px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.35; }
-  .progress .cap { font-size: 14px; color: var(--ink-muted); }
-  .progress .goal-q { font-size: 16px; font-weight: 600; margin: 0; }
-  .progress .chip { min-height: 44px; padding: 6px 16px; font-size: 15px; }
-  .progress .link { align-self: flex-start; padding: 4px 0; min-height: 32px; margin: 0; font-size: 14px; }
-  .pause .sub + .sub { margin-top: -12px; }
+/* Bookend layer */
+.bk{z-index:5}
+.bk-full{position:absolute; inset:0; background:#fff; padding:66px 24px 42px; display:flex; flex-direction:column; animation:fadeIn .22s ease-out}
+.bk-center{align-items:center; text-align:center}
+.bk-sheet-wrap{position:absolute; inset:0; background:rgba(16,28,32,.38); display:flex; align-items:flex-end}
+.bk-sheet{width:100%; background:#fff; border-radius:26px 26px 0 0; padding:16px 20px 36px; max-height:92%; overflow-y:auto; animation:sheetUp .3s cubic-bezier(.2,.8,.2,1)}
+.mark{display:flex; align-items:center; gap:6px; color:var(--p-teal); font-size:13px; font-weight:650; margin-bottom:12px}
+.bk-center .mark{justify-content:center}
+.mark svg{display:block}
+.p-title{font-size:23px; line-height:1.2; margin:0 0 14px; font-weight:700; letter-spacing:-.2px}
+.opt{display:flex; gap:12px; align-items:center; width:100%; min-height:50px; padding:10px 14px; margin-bottom:8px; border:1.5px solid var(--p-line); border-radius:14px;
+  background:#fff; color:var(--p-ink); font-size:16px; text-align:left}
+.opt .opt-ic{font-size:20px; width:26px; text-align:center}
+.opt[aria-pressed="true"]{border-color:var(--p-teal); background:var(--p-tint); font-weight:600}
+.okay{margin:4px 2px 16px; color:var(--p-muted); font-size:14px}
+.chips-label{margin:0 2px 8px; font-size:14px; font-weight:650}
+.chips{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.chip-btn{min-height:46px; border-radius:999px; border:1.5px solid var(--p-teal); background:#fff; color:var(--p-teal); font-weight:650; font-size:14px; padding:0 2px; white-space:nowrap}
+.chip-btn:disabled{border-color:var(--p-line); color:#A3B0B4; cursor:default}
+.chips:not([aria-disabled="true"]) .chip-btn{animation:nudge .3s ease-out}
+.linkbtn{background:none; border:0; color:var(--p-muted); text-decoration:underline; text-underline-offset:3px; font-size:15px; padding:12px 8px; margin-top:6px}
+.linkbtn.center{display:block; margin-left:auto; margin-right:auto}
+.spacer{flex:1}
+.cp-title{font-size:30px; line-height:1.15; margin:14px 0 10px; font-weight:750; letter-spacing:-.4px}
+.cp-sub{font-size:17px; color:var(--p-muted); margin:0}
+.eq{width:100%; min-height:54px; border:1.5px solid var(--p-teal); border-radius:14px; background:#fff; color:var(--p-teal); font-size:17px; font-weight:650; margin-bottom:10px}
+.foot{margin:8px 0 0; text-align:center; color:var(--p-muted); font-size:14px}
+.primary{width:100%; min-height:54px; border:0; border-radius:14px; background:var(--p-teal); color:#fff; font-size:17px; font-weight:650}
+.primary.soft{background:var(--p-tint); color:var(--p-teal-2); width:auto; padding:0 28px; margin-top:26px}
+.r-title{font-size:32px; line-height:1.1; margin:14px 0 8px; font-weight:750; letter-spacing:-.5px}
+.r-sub{font-size:17px; color:var(--p-muted); margin:0}
+.growth{margin-top:18px; display:flex; flex-direction:column; align-items:center}
+.plant{width:190px; height:auto}
+.growth-cap{margin:6px 0 0; font-size:15.5px; font-weight:600; color:var(--p-teal-2); text-align:center}
+.goal{margin-top:26px}
+.goal-q{margin:0 0 10px; font-size:16px; font-weight:600}
+.goal .chips{grid-template-columns:repeat(3,1fr)}
+.q{border:0; padding:0; margin:18px 0 0}
+.q legend{font-size:18px; font-weight:650; margin-bottom:10px; padding:0}
+.seg{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.seg button{min-height:48px; border-radius:12px; border:1.5px solid var(--p-line); background:#fff; color:var(--p-ink); font-size:16px}
+.seg button[aria-pressed="true"]{border-color:var(--p-teal); background:var(--p-tint); color:var(--p-teal-2); font-weight:650}
+.primary:disabled{background:#C9D6D3; cursor:default}
+.d-title{font-size:30px; margin:18px 0 8px; font-weight:750}
+.n-title{font-size:26px; margin:18px 0 8px; font-weight:700; color:#3C4A50}
+.breath{width:170px; height:170px; display:grid; place-items:center; margin:48px auto 18px}
+.breath span{width:150px; height:150px; border-radius:50%; background:var(--p-tint); border:2px solid var(--p-teal); animation:breathe 3s ease-in-out forwards}
+.breath-text{font-size:20px; font-weight:650; margin:0 0 4px}
+.muted{color:var(--p-muted); margin:0}
 
-  /* ---------- Reflection ---------- */
-  .q { font-size: 17px; font-weight: 600; margin: 22px 0 10px; }
-  .seg { display: flex; gap: 8px; }
-  .seg .chip { flex: 1; }
-  .vstack { display: flex; flex-direction: column; gap: 8px; }
-  .vstack .chip { text-align: left; border-radius: 14px; padding: 10px 16px; min-height: 48px; }
+/* call + notifications + toast */
+.call{z-index:6; background:linear-gradient(180deg,#1D2B30,#0F171A); color:#fff; text-align:center; padding-top:120px}
+.call .who{font-size:34px; font-weight:400; margin:0}
+.call .sub{opacity:.75; margin:6px 0 0}
+.call .btns{position:absolute; left:0; right:0; bottom:110px; display:flex; justify-content:space-around}
+.call .btns button{width:74px; height:74px; border-radius:50%; border:0; color:#fff; font-size:28px; display:grid; place-items:center}
+.call .decline{background:#E0474C}
+.call .accept{background:#2FB45A}
+.call .btns label{display:block; margin-top:8px; font-size:13px; opacity:.85}
+.notif{position:absolute; top:48px; left:10px; right:10px; z-index:8; display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center;
+  padding:12px; border-radius:20px; background:rgba(248,250,250,.94); color:var(--p-ink); border:0; text-align:left; font-size:14px;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35); transform:translateY(calc(-100% - 70px)); visibility:hidden;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s}
+.notif.show{transform:none; visibility:visible; transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.notif .tile{width:38px; height:38px; border-radius:10px; display:grid; place-items:center}
+.notif b{display:block; font-size:14px}
+.notif .when{font-size:12px; color:var(--p-muted); align-self:start}
+.toast{position:absolute; left:50%; bottom:56px; transform:translateX(-50%); z-index:8; background:rgba(20,32,36,.9); color:#fff; font-size:13.5px;
+  padding:9px 14px; border-radius:12px; width:max-content; max-width:86%; text-align:center; opacity:0; transition:opacity .2s; pointer-events:none}
+.toast.show{opacity:1}
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(48px); opacity:.2}to{transform:none; opacity:1}}
+@keyframes breathe{0%{transform:scale(.5)} 50%{transform:scale(1)} 100%{transform:scale(.55)}}
+@keyframes nudge{0%{transform:scale(.96)}100%{transform:none}}
+.leaf-new{animation:leafIn .75s cubic-bezier(.2,.8,.2,1) both}
+@keyframes leafIn{from{transform:scale(0); opacity:0}to{transform:scale(1); opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  .clip-prog span{animation:none; width:35%}
+}
 
-  /* ---------- Facilitator panel ---------- */
-  .panel { flex: 1 1 520px; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: 16px; }
-  .panel header h2 { margin: 0; font-size: 20px; }
-  .panel header p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; max-width: 65ch; }
-  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-  .box h3 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
-  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
-  .ctrl { display: flex; flex-direction: column; gap: 6px; }
-  .ctrl > span { font-size: 13px; color: var(--text-muted); }
-  .segc { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--panel-2); width: max-content; max-width: 100%; }
-  .segc button { border: 0; background: transparent; color: var(--text); padding: 8px 14px; min-height: 38px; font-size: 14px; border-right: 1px solid var(--border); }
-  .segc button:last-child { border-right: 0; }
-  .segc button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
-  .hint { font-size: 12.5px; color: var(--text-muted); }
-  .row-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .fbtn { border: 1px solid var(--border); background: var(--panel-2); color: var(--text); border-radius: 10px; padding: 8px 14px; min-height: 38px; font-size: 14px; }
-  .fbtn.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-  .fbtn:disabled { opacity: .45; cursor: default; }
-  .panel input[type="text"], .panel input[type="number"], .panel select, .panel textarea {
-    font: inherit; font-size: 14px; color: var(--text); background: var(--panel-2);
-    border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-height: 38px;
-  }
-  .panel input[type="text"] { width: 110px; }
-  .panel input[type="number"] { width: 90px; }
-  .live { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
-  .live div { background: var(--panel-2); border-radius: 10px; padding: 8px 10px; min-width: 0; }
-  .live small { display: block; font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
-  .live b { display: block; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 360px; overflow-y: auto; }
-  table { border-collapse: collapse; font-size: 12.5px; width: max-content; min-width: 100%; }
-  th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  th { position: sticky; top: 0; background: var(--panel-2); color: var(--text-muted); font-weight: 600; z-index: 1; }
-  tr.active td { background: var(--accent-soft); font-style: italic; }
-  .empty { padding: 16px; color: var(--text-muted); font-size: 14px; }
-  #csvOut { width: 100%; min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
-  .status-msg { font-size: 13px; color: var(--text-muted); }
-
-  /* ---------- Participant mode (?participant=1): phone view fills the real screen ---------- */
-  html.pmode, html.pmode body { height: 100%; background: var(--white); }
-  html.pmode body { padding: 0; }
-  html.pmode .stage { display: block; max-width: none; height: 100%; }
-  html.pmode .phone-col, html.pmode .phone { width: 100%; height: 100%; }
-  html.pmode .phone { padding: 0; border-radius: 0; background: var(--white); box-shadow: none; }
-  html.pmode .screen { width: 100%; height: 100%; border-radius: 0; }
-  html.pmode .statusbar { display: none; }
-  html.pmode .view { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
-  html.pmode .panel { display: none; }
-  html.pmode.show-panel .panel { display: flex; position: fixed; inset: 0; z-index: 100; overflow-y: auto; background: var(--bg); padding: 16px; }
-  .panel-close { display: none; }
-  html.pmode .panel-close { display: inline-block; }
+/* ---------- Console ---------- */
+.console{padding:6px 0 60px}
+.c-head{display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:start; padding-bottom:18px}
+.c-head h1{margin:0; font-size:24px; line-height:1.2}
+.c-head p{margin:4px 0 0; color:var(--muted); max-width:62ch}
+.c-mark{color:var(--accent); padding-top:4px}
+.console section{border-top:1px solid var(--rule); padding:18px 0 6px}
+.console h2{margin:0 0 6px; font-size:17px}
+.help{color:var(--muted); font-size:14px; margin:4px 0 10px; max-width:70ch}
+.row{display:grid; grid-template-columns:210px minmax(0,1fr); gap:6px 14px; align-items:center; margin:10px 0}
+.row > label, .row > .rl{font-weight:700; font-size:14.5px}
+.row .help{grid-column:2; margin:0}
+@media (max-width:620px){ .row{grid-template-columns:1fr} .row .help{grid-column:1} }
+.inp{padding:8px 10px; border:1.5px solid var(--rule); border-radius:9px; background:var(--field); color:var(--ink); font:inherit; width:150px}
+.segc{display:inline-flex; flex-wrap:wrap; border:1.5px solid var(--rule); border-radius:10px; overflow:hidden; width:max-content; max-width:100%}
+.segc button{padding:8px 13px; background:var(--field); color:var(--ink); border:0; border-right:1px solid var(--rule); font-size:14px}
+.segc button:last-child{border-right:0}
+.segc button[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink); font-weight:700}
+.btns{display:flex; flex-wrap:wrap; gap:8px}
+.btn{padding:8px 14px; border-radius:10px; border:1.5px solid var(--accent); background:transparent; color:var(--accent); font-weight:700; font-size:14px}
+.btn.fill{background:var(--accent); color:var(--accent-ink)}
+.btn.quiet{border-color:var(--rule); color:var(--ink); font-weight:400}
+.msg{min-height:22px; margin:8px 0 0; font-size:14px; color:var(--accent); font-weight:700}
+.now{font-size:14px; color:var(--muted); margin:8px 0 0}
+.now b{color:var(--ink)}
+.watch{list-style:none; margin:6px 0 0; padding:0; display:grid; gap:12px}
+.watch li{display:grid; grid-template-columns:92px minmax(0,1fr) 64px; gap:2px 12px; align-items:center}
+.w-n{font-weight:700; font-size:14px}
+.w-bar{height:10px; border-radius:5px; background:color-mix(in srgb, var(--rule) 70%, transparent); overflow:hidden}
+.w-bar span{display:block; height:100%; background:var(--accent); border-radius:5px}
+.w-bar.fast span{background:var(--flag)}
+.w-v{font-variant-numeric:tabular-nums; font-size:14px; text-align:right}
+.w-meta{grid-column:2 / 4; font-size:13.5px; color:var(--muted); display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.flag{font-style:normal; font-size:12.5px; padding:1px 8px; border-radius:999px; background:var(--flag-bg); color:var(--flag); font-weight:700}
+.flag.ok{background:var(--ok-bg); color:var(--ok)}
+.flag.soft{background:transparent; color:var(--muted); border:1px solid var(--rule); font-weight:400}
+.empty{color:var(--muted); margin:6px 0}
+.totals{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px 24px; margin:8px 0 0}
+.totals div{border-left:3px solid var(--rule); padding-left:12px}
+.totals dt{font-size:13.5px; color:var(--muted)}
+.totals dd{margin:2px 0 0; font-size:20px; font-weight:700; font-variant-numeric:tabular-nums}
+.totals dd small{display:block; font-size:12.5px; color:var(--muted); font-weight:400; line-height:1.35}
+.table-wrap{overflow-x:auto; margin-top:12px; border:1px solid var(--rule); border-radius:10px}
+table{border-collapse:collapse; width:100%; font-size:13px; font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap}
+th{font-weight:700; color:var(--muted); background:color-mix(in srgb, var(--rule) 30%, transparent)}
+tr:last-child td{border-bottom:0}
+dialog{border:1px solid var(--rule); border-radius:14px; background:var(--bg); color:var(--ink); max-width:min(720px,92vw); width:100%}
+dialog textarea{width:100%; height:260px; font-family:ui-monospace, Menlo, Consolas, monospace; font-size:12px; background:var(--field); color:var(--ink); border:1px solid var(--rule); border-radius:8px; padding:8px}
+dialog::backdrop{background:rgba(10,20,22,.45)}
 </style>
 </head>
 <body>
 <div class="stage">
-  <div class="phone-col" id="phoneCol">
-    <div class="phone" aria-label="Simulated phone">
-      <div class="screen" id="screen">
-        <div class="statusbar"><span id="sbTime">9:41</span><div class="notch"></div>
-          <div class="sys" aria-hidden="true"><span style="width:3px;height:6px"></span><span style="width:3px;height:8px"></span><span style="width:3px;height:10px"></span><span style="width:22px;height:11px;border-radius:3px;margin-left:4px"></span></div>
-        </div>
-        <div class="view" id="view"></div>
+  <div class="device" id="device">
+    <div class="screen" id="screen" data-screen="home">
+      <div class="statusbar" id="statusbar">
+        <span class="sb-time" id="sbTime" title="Tap five times within three seconds to show or hide the test console">9:41</span>
+        <span class="sb-icons" aria-hidden="true">
+          <svg width="16" height="10" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="8.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="11" rx="1" fill="currentColor"/></svg>
+          <svg width="16" height="11" viewBox="0 0 16 11"><path d="M8 10.5l2.2-2.6a3.2 3.2 0 00-4.4 0zM3.4 5.8l1.3 1.5a5 5 0 016.6 0l1.3-1.5a7 7 0 00-9.2 0zM1 3.1l1.3 1.5a8.7 8.7 0 0111.4 0L15 3.1a10.7 10.7 0 00-14 0z" fill="currentColor"/></svg>
+          <svg width="23" height="11" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="1.8" fill="currentColor"/><rect x="23.5" y="4" width="1.8" height="4" rx=".9" fill="currentColor" opacity=".45"/></svg>
+        </span>
       </div>
+      <div class="island" id="island" aria-live="off"></div>
+
+      <div class="layer home on" id="home">
+        <div class="widget" aria-hidden="true"><div class="w-time" id="wTime">9:41</div><div class="w-date" id="wDate"></div></div>
+        <div class="grid" id="appGrid"></div>
+        <p class="home-hint">To close an app, tap the bar at the bottom.</p>
+      </div>
+
+      <div class="layer app" id="appLayer">
+        <div class="splash" id="splash"><div class="tile" id="splashTile"></div></div>
+        <div class="app-top" id="appTop"></div>
+        <div class="feed" id="feed"></div>
+      </div>
+
+      <div class="layer bk" id="bk"></div>
+      <div class="layer call" id="callLayer"></div>
+      <button class="notif" id="notif" type="button" aria-live="polite"></button>
+      <div class="toast" id="toast" role="status"></div>
+      <button class="homebar" id="homebar" type="button" aria-label="Close app and go to the home screen"></button>
     </div>
   </div>
 
-  <aside class="panel" aria-label="Facilitator panel">
-    <header>
-      <div class="row-actions" style="justify-content:space-between"><h2>Facilitator panel</h2><button class="fbtn panel-close" id="panelClose">Back to phone view</button></div>
-      <p>Run the participant on the phone. Set variants here before each task. Everything stays in this browser tab; export the log before closing it.</p>
+  <aside class="console" id="console" aria-label="Test console">
+    <header class="c-head">
+      <span class="c-mark" id="cMark"></span>
+      <div>
+        <h1>Bookend test console</h1>
+        <p>Hand the participant the phone on the left and run each task from here. The log survives a page reload but is cleared when this tab closes, so export it after each participant.</p>
+      </div>
+      <button class="btn" id="btnPView" type="button">Participant view</button>
     </header>
 
-    <section class="box">
-      <h3>Participant</h3>
-      <div class="row-actions">
-        <label class="ctrl"><span>Participant ID</span><input type="text" id="pidInput" value="P01"></label>
-        <label class="ctrl"><span>Chosen stops at week start</span><input type="number" id="weekSeed" min="0" step="1" value="3"></label>
-        <div class="ctrl"><span>&nbsp;</span><button class="fbtn" id="newParticipant">New participant</button></div>
-      </div>
-      <div class="hint">New participant ends any open session (logged as <i>unknown</i>), resets the weekly count and goal (the next participant sets their own), and returns to the home screen.</div>
+    <section>
+      <h2>Participant</h2>
+      <div class="row"><label for="pid">Participant ID</label><input class="inp" id="pid" autocomplete="off"></div>
+      <div class="row"><label for="weekStart">Stops at week start</label><input class="inp" id="weekStart" type="number" min="0" max="50">
+        <p class="help">Seeds the plant in reward B so it doesn't start empty. Applies from the next new participant.</p></div>
+      <div class="row"><span class="rl">Next participant</span><div class="btns"><button class="btn fill" id="btnNew" type="button">New participant</button></div>
+        <p class="help">Ends any open session (logged as unknown), moves to the next ID, resets their weekly stops and goal, and returns to the home screen.</p></div>
     </section>
 
-    <section class="box">
-      <h3>Conditions</h3>
-      <div class="grid2">
-        <div class="ctrl"><span>Purpose prompt</span>
-          <div class="segc" id="promptSeg"><button data-v="A" aria-pressed="true">A · full list</button><button data-v="B" aria-pressed="false">B · short</button></div>
-        </div>
-        <div class="ctrl"><span>Exit reward</span>
-          <div class="segc" id="rewardSeg"><button data-v="A" aria-pressed="true">A · message</button><button data-v="B" aria-pressed="false">B · + progress</button></div>
-        </div>
-        <div class="ctrl"><span>Time speed</span>
-          <div class="segc" id="speedSeg"><button data-v="1" aria-pressed="true">1×</button><button data-v="10" aria-pressed="false">10×</button><button data-v="60" aria-pressed="false">60×</button></div>
-          <span class="hint">At 60×, a 10-minute cue arrives after 10 seconds.</span>
-        </div>
-      </div>
+    <section>
+      <h2>Conditions</h2>
+      <div class="row"><span class="rl" id="lblReward">Exit reward</span>
+        <div class="segc" role="group" aria-labelledby="lblReward" data-setting="reward">
+          <button type="button" data-v="A">A: message</button><button type="button" data-v="B">B: message and growth</button></div>
+        <p class="help">Switch halfway through each participant, and reverse the order for every second participant.</p></div>
+      <div class="row"><span class="rl" id="lblBreath">Before the prompt</span>
+        <div class="segc" role="group" aria-labelledby="lblBreath" data-setting="breath">
+          <button type="button" data-v="off">Straight to purpose</button><button type="button" data-v="on">3-second breath first</button></div>
+        <p class="help">The breath is borrowed from one sec and Pause Point. Keep it off this round; it's here for a later comparison.</p></div>
+      <div class="row"><span class="rl" id="lblSpeed">Time speed</span>
+        <div class="segc" role="group" aria-labelledby="lblSpeed" data-setting="speed">
+          <button type="button" data-v="1">1×</button><button type="button" data-v="10">10×</button><button type="button" data-v="60">60×</button></div>
+        <p class="help" id="speedHelp"></p></div>
     </section>
 
-    <section class="box">
-      <h3>Events</h3>
-      <div class="row-actions">
-        <select id="notifApp" aria-label="App for notification"><option>Loop</option><option selected>Clips</option><option>Feed</option></select>
-        <button class="fbtn" id="simNotif">Simulate notification</button>
-      </div>
-      <div class="row-actions">
-        <select id="interruptKind" aria-label="Interruption type"><option value="call">Incoming call</option><option value="class">Class starting</option></select>
-        <button class="fbtn" id="simInterrupt">Simulate interruption</button>
-      </div>
-      <div class="live" id="live"></div>
+    <section>
+      <h2>Events</h2>
+      <div class="row"><span class="rl">Send a notification</span>
+        <div class="btns"><button class="btn" type="button" data-notify="loop">Loop</button><button class="btn" type="button" data-notify="clips">Clips</button><button class="btn" type="button" data-notify="feed">Feed</button></div>
+        <p class="help">Works from the home screen. Tapping it starts a session logged as opened from a notification.</p></div>
+      <div class="row"><span class="rl">Interrupt the session</span>
+        <div class="btns"><button class="btn" type="button" data-interrupt="call">Incoming call</button><button class="btn" type="button" data-interrupt="class">Class starting</button></div>
+        <p class="help">Ends the session without a reward, so you can check nobody gets credit for a stop they didn't choose.</p></div>
+      <div class="row"><span class="rl">Something went wrong</span>
+        <div class="btns"><button class="btn quiet" type="button" id="btnUnknown">End open session as unknown</button></div></div>
+      <p class="now" id="nowLine"></p>
+      <p class="msg" id="msg" role="status"></p>
     </section>
 
-    <section class="box">
-      <h3>Session log</h3>
-      <div class="row-actions">
-        <button class="fbtn accent" id="exportCsv">Export CSV</button>
-        <button class="fbtn" id="copyCsv">Copy CSV</button>
-        <span class="status-msg" id="csvMsg" role="status"></span>
-      </div>
-      <div class="table-wrap" id="logWrap"></div>
-      <textarea id="csvOut" readonly hidden aria-label="CSV text"></textarea>
-      <div class="hint">One row per session. Feed content is never logged. Session times use the simulated clock, so <i>end_time</i> = <i>start_time</i> + simulated duration; that clock pauses while the checkpoint or purpose screen is showing. Decision times (<i>*_decision_ms</i>) are real milliseconds and ignore time speed and pausing.</div>
+    <section>
+      <h2>Dismissal watch</h2>
+      <p class="help">How long this participant takes to pick a purpose, in real seconds. The warning sign is times falling session after session and the same purpose picked every time.</p>
+      <div id="watch"></div>
+    </section>
+
+    <section>
+      <h2>Totals</h2>
+      <dl class="totals" id="totals"></dl>
+    </section>
+
+    <section>
+      <h2>Session log</h2>
+      <div class="btns"><button class="btn fill" type="button" id="btnExport">Export CSV</button><button class="btn" type="button" id="btnCopy">Copy CSV</button><button class="btn quiet" type="button" id="btnClear">Clear log</button></div>
+      <div class="table-wrap"><table id="logTable"></table></div>
+      <p class="help">One row per session, newest first; the CSV has every column. Feed content is never logged. Decision times are real milliseconds. Session length and clock times use the simulated clock, which pauses on Bookend screens.</p>
+      <p class="help">For participant view on their own phone, host this file (for example on GitHub Pages) and add <b>?participant=1&amp;speed=10&amp;reward=A</b> to the link. Tap the phone's clock five times within three seconds to bring this console back.</p>
     </section>
   </aside>
 </div>
 
+<dialog id="csvDialog">
+  <p style="margin-top:0"><b>Copy the log</b><br><span class="help">Downloads aren't available here. Select all and copy this text into a .csv file.</span></p>
+  <textarea id="csvText" readonly></textarea>
+  <div class="btns" style="margin-top:10px"><button class="btn fill" type="button" id="csvClose">Close</button></div>
+</dialog>
+
 <script>
-(() => {
-  "use strict";
+(function(){
+'use strict';
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // ---------- Config ----------
-  const APPS = {
-    Loop:  { cls: "icon-loop",  feedStart: 0,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>', notif: "3 new posts from people you follow" },
-    Clips: { cls: "icon-clips", feedStart: 8,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M10 9l5 3-5 3z" fill="#fff"/></svg>', notif: "A new clip is trending near you" },
-    Feed:  { cls: "icon-feed",  feedStart: 16, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="6" rx="2"/><path d="M4 15h16M4 19h10"/></svg>', notif: "Someone mentioned you in a comment" }
+/* ---------------- Content ---------------- */
+const ICONS = {
+  loop:  '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3A2A00" stroke-width="2.2" stroke-linecap="round"><path d="M6 12c0-1.7 1.3-3 3-3 3 0 3 6 6 6 1.7 0 3-1.3 3-3s-1.3-3-3-3c-3 0-3 6-6 6-1.7 0-3-1.3-3-3z"/></svg>',
+  clips: '<svg width="30" height="30" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z" fill="#fff"/><path d="M5 5v14" stroke="#E86F9A" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  feed:  '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg>',
+  messages:'<svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 4c4.7 0 8 3 8 6.7s-3.3 6.7-8 6.7c-.9 0-1.7-.1-2.5-.3L5 19l1.2-3.3C4.8 14.5 4 12.7 4 10.7 4 7 7.3 4 12 4z"/></svg>',
+  camera:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2A3439" stroke-width="2"><rect x="3.5" y="7" width="17" height="12" rx="3"/><circle cx="12" cy="13" r="3.3"/><path d="M9 7l1.2-2h3.6L15 7"/></svg>',
+  calendar:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M9 3.5v4M15 3.5v4"/></svg>',
+  maps:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 21s-6-5.3-6-10a6 6 0 1112 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>',
+  settings:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/></svg>'
+};
+const APPS = {
+  loop:  {name:'Loop',  bg:'#F2B705'},
+  clips: {name:'Clips', bg:'#3B1E5A'},
+  feed:  {name:'Feed',  bg:'#2F80ED'}
+};
+const INERT = [
+  {k:'messages', name:'Messages', bg:'#34B566'}, {k:'camera', name:'Camera', bg:'#E6EAEB'},
+  {k:'calendar', name:'Calendar', bg:'#FFFFFF'}, {k:'maps', name:'Maps', bg:'#3E8E7E'}, {k:'settings', name:'Settings', bg:'#7D8B90'}
+];
+const PURPOSES = [
+  {k:'reply',  icon:'💬', label:'Reply to someone',          short:'Replying', phrase:'to reply to someone'},
+  {k:'check',  icon:'🔎', label:'Check something specific',  short:'Checking', phrase:'to check something'},
+  {k:'learn',  icon:'📚', label:'Learn something',           short:'Learning', phrase:'to learn something'},
+  {k:'break',  icon:'☕', label:'Take a break',              short:'Break',    phrase:'for a break'},
+  {k:'browse', icon:'🌀', label:'Just browsing',             short:'Browsing', phrase:'to browse'}
+];
+const P = Object.fromEntries(PURPOSES.map(p => [p.k, p]));
+/* Wording rotates between checkpoints so the prompt doesn't go stale (one sec rotates interventions for the same reason). */
+const CP_TITLES = {
+  reply:['Done replying?','Still replying?'], check:['Found what you needed?','Still checking?'],
+  learn:['Learned what you came for?','Still learning?'], break:['Feeling rested?','Still on your break?'],
+  browse:['Still enjoying this?','Still in the mood for this?']
+};
+const NOTIFS = {
+  loop:  {who:'Loop',  text:'Riya replied to your story'},
+  clips: {who:'Clips', text:'New clip from @chai.and.code'},
+  feed:  {who:'Feed',  text:'Trending near you: evening rain update'}
+};
+const LOOP = [
+  {h:'meera.eats', e:'🍛', t:'Homemade biryani, attempt three. This one finally worked.', g:['#F6C177','#E07A5F']},
+  {h:'arjun.frames', e:'🌅', t:'Sea face at 6:40 pm. No filter needed.', g:['#FF9A8B','#6A82FB']},
+  {h:'campus.memes', e:'🦉', meme:"Me: I'll sleep early tonight.\nAlso me at 1:47 am:", t:'Tag the friend who replies at 2 am.', g:['#2B3A55','#556B8D']},
+  {h:'weekend.trails', e:'⛰️', t:'6 am start, zero regrets. Worth every step.', g:['#A8E063','#3E8E41']},
+  {h:'desk.plants', e:'🪴', t:'My pothos survived exam week. Barely.', g:['#D4FC79','#7CC08F']},
+  {h:'nikhil.clicks', e:'🌧️', t:'Monsoon view from the hostel window.', g:['#89A7B1','#3E5C76']},
+  {h:'chai.stories', e:'☕', t:'Cutting chai at 4 pm, the only meeting that matters.', g:['#E6B980','#9D6B3E']},
+  {h:'campus.memes', e:'📊', meme:'Group project: 5 members.\nPeople who read the brief: 1', t:'Every single time.', g:['#FFB347','#EF476F']},
+  {h:'street.cats.club', e:'🐈', t:'Supervisor on duty outside the canteen.', g:['#B8C6F5','#D9DEE6']},
+  {h:'ananya.sketches', e:'✏️', t:'New sketchbook page. Trying ink wash this month.', g:['#F3E9DD','#C9B09A']},
+  {h:'food.diaries', e:'🥭', t:'Mango season is back and so am I.', g:['#FFE259','#FFA751']},
+  {h:'kabir.reads', e:'📚', t:'Library corner, 11 pm. Two more chapters.', g:['#355C7D','#6C5B7B']},
+  {h:'campus.memes', e:'🧑‍🏫', meme:"When the prof says 'one quick question'\nat 5:59 pm", t:'Class ends at 6. Theoretically.', g:['#11998E','#38C98A']},
+  {h:'riya.travels', e:'✈️', t:'Airports at 4 am hit different.', g:['#1F3B4D','#2C5364']},
+  {h:'sana.brews', e:'🎨', t:"First try at latte art. It's a heart. Trust me.", g:['#D1913C','#FFD194']},
+  {h:'rohan.cooks', e:'🥟', t:'Made pani puri at home. The kitchen did not survive.', g:['#F7971E','#FFD200']},
+  {h:'isha.sundays', e:'🧺', t:'Sunday reset: laundry, playlist, plan the week.', g:['#E0C3FC','#8EC5FC']},
+  {h:'campus.memes', e:'💼', meme:"Case comp deadline in 2 hours.\nTeam: 'let's brainstorm first'", t:'Why are we like this.', g:['#FC5C7D','#6A82FB']}
+];
+const CLIPS = [
+  {h:'chai.and.code', e:'🫖', t:'Rating every chai stall on campus, part 4', g:['#3E1E68','#E45A84']},
+  {h:'quick.cooks', e:'🍳', t:'60-second breakfast: poha edition', g:['#F7971E','#B24592']},
+  {h:'packlight', e:'🧳', t:'How to pack five days into one backpack', g:['#1D976C','#2C3E50']},
+  {h:'dogs.of.blr', e:'🐶', t:"He heard the word 'walk' from two rooms away", g:['#614385','#516395']},
+  {h:'money.minute', e:'📈', t:'Explaining NPV to my parents in 45 seconds', g:['#0F2027','#2C5364']},
+  {h:'tiny.homes', e:'🏠', t:'180 sq ft studio tour. Everything folds.', g:['#8E2DE2','#4A00E0']},
+  {h:'local.lens', e:'🚆', t:'The 8:14 local, a short documentary', g:['#373B44','#4286F4']},
+  {h:'sheet.tricks', e:'⌨️', t:'The spreadsheet shortcut that saved my internship', g:['#134E5E','#71B280']},
+  {h:'street.eats', e:'🌮', t:'Street food tier list, no mercy', g:['#DA4453','#89216B']},
+  {h:'lofi.rain', e:'🎧', t:'Rain and lo-fi for one hour', g:['#2C3E50','#4CA1AF']},
+  {h:'guess.the.song', e:'🎹', t:'Guess the song from the first note', g:['#FF416C','#8E2B4B']},
+  {h:'dance.daily', e:'💃', t:'Learning this routine in 7 days, day 3', g:['#B621FE','#1FD1F9']},
+  {h:'study.with.me', e:'⏳', t:'Study with me: 25 minutes, then a break', g:['#000428','#004E92']},
+  {h:'cat.physics', e:'🐈‍⬛', t:'This cat learned to open the fridge', g:['#403B4A','#8C8A6E']},
+  {h:'mini.facts', e:'🧠', t:"Octopuses have three hearts. Here's why.", g:['#141E30','#35577D']},
+  {h:'gym.notes', e:'💪', t:'Five mistakes everyone makes on leg day', g:['#232526','#5B6467']}
+];
+const FEED = [
+  {n:'Aditi R', h:'aditi_reads', t:'Hot take: 8 am classes should not exist.'},
+  {n:'City Traffic Desk', h:'traffic_desk', t:'Update from the flyover: yes, still.'},
+  {n:'Karan M', h:'karan_builds', t:'Things nobody tells you about your first internship, a thread (1/7)'},
+  {n:'Neha S', h:'nehaspeaks', t:'Settle this once and for all.', poll:[['Chai',64],['Coffee',36]]},
+  {n:'Dev P', h:'devwrites', t:"What's one app you deleted and never missed?"},
+  {n:'Meghna K', h:'meghna_k', t:'Bookmarking this to read later. (I will not read it later.)'},
+  {n:'Rahul V', h:'rahulv', t:'The best ideas arrive in the shower and leave with the towel.'},
+  {n:'Weather Desk', h:'rain_updates', t:'Light rain expected this evening. Carry an umbrella, not your laptop.'},
+  {n:'Priya N', h:'priya_n', t:'Library wifi at full speed is my love language.'},
+  {n:'Sid', h:'sid_on_markets', t:"Every finance class: 'assume a perfect market.' Every market: no."},
+  {n:'Tara', h:'tara_travels', t:'Booked the cheapest train. Regretting nothing yet.'},
+  {n:'Campus Life', h:'campuslife', t:'Best time to study?', poll:[['Early morning',22],['After dinner',41],['Night before the exam',37]]},
+  {n:'Omkar D', h:'omkar_d', t:'Group chats go quiet at 2 am because everyone is scrolling.'},
+  {n:'Zoya', h:'zoya_writes', t:'Reminder: drink water, text your mom back.'},
+  {n:'Vikram', h:'vik_codes', t:'Spent 3 hours automating a task that takes 4 minutes. Worth it.'},
+  {n:'Ira', h:'ira_reads', t:'Finished a book in one sitting. Forgot how good that feels.'}
+];
+const AV_COLORS = ['#127C71','#E07A5F','#6A82FB','#B24592','#3E8E41','#9D6B3E','#355C7D','#DA4453','#2F80ED','#8E2DE2'];
+const avColor = s => { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return AV_COLORS[h % AV_COLORS.length]; };
+const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const kfmt = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'K' : String(n);
+const SV = {
+  heart:'<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
+  comment:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
+  send:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>',
+  repost:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>',
+  heartS:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
+  commentS:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
+  heartL:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
+  commentL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"/></svg>',
+  sendL:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>'
+};
+const MARK_SVG = (size=20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 4h3v13h4v3H3z"/><path d="M21 4h-3v13h-4v3h7z"/><rect x="9" y="7" width="2.4" height="8" rx=".6" opacity=".55"/><rect x="12.6" y="9" width="2.4" height="6" rx=".6" opacity=".55"/></svg>`;
+const mark = () => `<div class="mark">${MARK_SVG(18)}<span>Bookend</span></div>`;
+
+/* ---------------- State ---------------- */
+const STORE = 'bookend.v2';
+const S = {
+  settings:{pid:'P01', weekStart:3, reward:'A', breath:false, speed:10},
+  week:{stops:3, goal:null},
+  sessionN:0, screen:'home', cur:null, log:[], sim:Date.now()
+};
+const T = {}; // timers
+function clearTimers(){ for (const k in T){ clearTimeout(T[k]); delete T[k]; } }
+
+function load(){
+  try{
+    const d = JSON.parse(sessionStorage.getItem(STORE) || 'null');
+    if (!d) return;
+    if (d.settings) Object.assign(S.settings, d.settings);
+    if (d.week) S.week = d.week;
+    if (typeof d.sessionN === 'number') S.sessionN = d.sessionN;
+    if (Array.isArray(d.log)) S.log = d.log;
+  }catch(e){}
+}
+function save(){
+  try{ sessionStorage.setItem(STORE, JSON.stringify({settings:S.settings, week:S.week, sessionN:S.sessionN, log:S.log})); }catch(e){}
+}
+
+const el = {
+  screen:$('#screen'), sbTime:$('#sbTime'), island:$('#island'), home:$('#home'), app:$('#appLayer'), splash:$('#splash'),
+  splashTile:$('#splashTile'), appTop:$('#appTop'), feed:$('#feed'), bk:$('#bk'), call:$('#callLayer'),
+  notif:$('#notif'), toast:$('#toast'), homebar:$('#homebar')
+};
+
+/* ---------------- Time helpers ---------------- */
+const pad = n => String(n).padStart(2, '0');
+const fmtHM = ms => { const d = new Date(ms); return d.getHours() + ':' + pad(d.getMinutes()); };
+const fmtHMS = ms => { if (ms == null) return ''; const d = new Date(ms); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); };
+const mmss = ms => { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + pad(s % 60); };
+
+/* ---------------- Screen chrome ---------------- */
+function setScreen(name){ S.screen = name; el.screen.dataset.screen = name; updateChrome(); }
+function updateChrome(){
+  const s = S.screen, c = S.cur, app = c && c.app;
+  let light = false;
+  if (s === 'home' || s === 'call') light = true;
+  else if (s === 'app') light = app === 'clips';
+  else if (s === 'purpose') light = app === 'clips' || (app === 'feed' && !c.built);
+  el.screen.classList.toggle('chrome-light', light);
+}
+function showBk(html){ el.bk.innerHTML = html; el.bk.classList.add('on'); }
+function hideBk(){ el.bk.classList.remove('on'); el.bk.innerHTML = ''; }
+function toast(text){ el.toast.textContent = text; el.toast.classList.add('show'); clearTimeout(T.toast); T.toast = setTimeout(() => el.toast.classList.remove('show'), 2200); }
+
+/* ---------------- Home ---------------- */
+function buildHome(){
+  const tile = (k, bg) => `<span class="tile" style="background:${bg}">${ICONS[k]}</span>`;
+  const main = Object.entries(APPS).map(([k, a]) => `<button class="ic" type="button" data-open="${k}">${tile(k, a.bg)}<span class="lab">${a.name}</span></button>`);
+  const inert = INERT.map(a => `<button class="ic inert" type="button" data-inert="1">${tile(a.k, a.bg)}<span class="lab">${a.name}</span></button>`);
+  $('#appGrid').innerHTML = main.concat(inert).join('');
+  $('#appGrid').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.open) startFlow(b.dataset.open, 'tap');
+    else toast('Only Loop, Clips and Feed open in this test.');
+  });
+  const d = new Date();
+  $('#wDate').textContent = d.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long'});
+}
+
+/* ---------------- Session flow ---------------- */
+function startFlow(app, trigger){
+  if (S.cur || S.screen !== 'home') return;
+  hideNotif();
+  S.sessionN++;
+  S.cur = {
+    id: S.settings.pid + '-' + S.sessionN + '-' + Math.random().toString(36).slice(2, 6),
+    n:S.sessionN, pid:S.settings.pid, app, trigger, breath:S.settings.breath ? 'on' : 'off',
+    purpose:null, history:[], purposeMs:null, promptMs:null, cueMin:null, origCueMin:null, cueEnd:null, plan:null,
+    startSim:null, elapsed:0, checkpoints:[], cpShows:0, cpTitle:'', cpShownAt:0, lastCp:null, built:false,
+    endType:null, interruption:'', within:'', stop1:'', rewardVariant:'none', stopsAfter:'', goal:'', row:null
   };
-  // noun: used on the exit screen ("Your break ended on your terms.")
-  // phrase: used on the checkpoint ("You planned 10 minutes to take a break.")
-  const PURPOSES = {
-    A: [
-      { label: "Reply to someone",         noun: "reply session",    phrase: "reply to someone" },
-      { label: "Check something specific", noun: "check-in",         phrase: "check something specific" },
-      { label: "Learn something",          noun: "learning session", phrase: "learn something" },
-      { label: "Take a break",             noun: "break",            phrase: "take a break" },
-      { label: "Just browsing",            noun: "browsing session", phrase: "browse" }
-    ],
-    B: [
-      { label: "Something specific", noun: "check-in",         phrase: "check something specific" },
-      { label: "A break",            noun: "break",            phrase: "take a break" },
-      { label: "Just browsing",      noun: "browsing session", phrase: "browse" }
-    ]
+  el.app.classList.add('on');
+  el.splash.hidden = false;
+  el.splash.style.background = APPS[app].bg;
+  el.splashTile.innerHTML = ICONS[app];
+  el.splashTile.style.background = 'rgba(255,255,255,.18)';
+  el.appTop.innerHTML = ''; el.appTop.className = 'app-top'; el.appTop.style.display = 'none';
+  el.feed.innerHTML = ''; el.feed.style.display = 'none';
+  if (S.settings.breath) showBreath(); else showPurpose('open');
+  renderConsole();
+}
+
+function showBreath(){
+  const a = APPS[S.cur.app].name;
+  setScreen('breath');
+  S.cur.pShownAt = performance.now();
+  showBk(`<div class="bk-full bk-center">${mark()}
+    <div class="breath" aria-hidden="true"><span></span></div>
+    <p class="breath-text" id="breathText">Breathe in</p>
+    <p class="muted">Opening ${a}</p>
+    <div class="spacer"></div>
+    <button class="linkbtn" type="button" data-act="decline">I don't need ${a} right now</button></div>`);
+  el.bk.querySelector('[data-act=decline]').addEventListener('click', () => {
+    S.cur.promptMs = Math.round(performance.now() - S.cur.pShownAt); endSession('declined');
+  });
+  T.b1 = setTimeout(() => { const t = $('#breathText'); if (t) t.textContent = 'Breathe out'; }, 1500);
+  T.b2 = setTimeout(() => { if (S.screen === 'breath') showPurpose('open'); }, 3000);
+}
+
+function showPurpose(mode){
+  const c = S.cur, a = APPS[c.app].name;
+  setScreen('purpose');
+  const shownAt = performance.now(); c.pShownAt = shownAt;
+  let picked = null, firstPick = null;
+  showBk(`<div class="bk-sheet-wrap"><div class="bk-sheet" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+    ${mark()}
+    <h1 class="p-title" id="pTitle">${mode === 'open' ? 'What brings you to ' + a + '?' : 'What are you here for now?'}</h1>
+    <div>${PURPOSES.map(p => `<button class="opt" type="button" data-p="${p.k}" aria-pressed="false"><span class="opt-ic" aria-hidden="true">${p.icon}</span><span>${p.label}</span></button>`).join('')}</div>
+    <p class="okay">Just browsing is okay.</p>
+    <p class="chips-label" id="chipsLabel">${mode === 'open' ? 'Open ' + a + ' for' : 'Keep going for'}</p>
+    <div class="chips" id="chips" role="group" aria-labelledby="chipsLabel" aria-disabled="true">
+      ${[5, 10, 15, 0].map(m => `<button class="chip-btn" type="button" data-min="${m}" disabled>${m ? m + ' min' : 'No timer'}</button>`).join('')}
+    </div>
+    ${mode === 'open'
+      ? `<button class="linkbtn center" type="button" data-act="decline">I don't need ${a} right now</button>`
+      : `<button class="linkbtn center" type="button" data-act="back">Go back</button>`}
+  </div></div>`);
+  $$('.opt', el.bk).forEach(b => b.addEventListener('click', () => {
+    if (firstPick === null) firstPick = Math.round(performance.now() - shownAt);
+    picked = b.dataset.p;
+    $$('.opt', el.bk).forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    const chips = $('#chips'); chips.setAttribute('aria-disabled', 'false');
+    $$('button', chips).forEach(x => x.disabled = false);
+  }));
+  $$('.chip-btn', el.bk).forEach(ch => ch.addEventListener('click', () => {
+    if (!picked) return;
+    applyPurpose(mode, picked, +ch.dataset.min, firstPick, Math.round(performance.now() - shownAt));
+  }));
+  const dec = el.bk.querySelector('[data-act=decline]');
+  if (dec) dec.addEventListener('click', () => { c.purposeMs = firstPick; c.promptMs = Math.round(performance.now() - shownAt); endSession('declined'); });
+  const back = el.bk.querySelector('[data-act=back]');
+  if (back) back.addEventListener('click', () => showCheckpoint(true));
+}
+
+function applyPurpose(mode, k, min, pickMs, totalMs){
+  const c = S.cur;
+  c.purpose = k; c.history.push(k); c.plan = {min, ext:0};
+  if (mode === 'open'){
+    c.purposeMs = pickMs; c.promptMs = totalMs;
+    c.cueMin = min || 'none'; c.origCueMin = min || '';
+    c.cueEnd = min ? min * 60000 : null; c.startSim = S.sim;
+  } else {
+    c.cueEnd = min ? c.elapsed + min * 60000 : null;
+  }
+  openApp();
+}
+
+function openApp(){
+  const c = S.cur;
+  setScreen('app'); hideBk();
+  el.splash.hidden = true;
+  if (!c.built) buildApp(c.app);
+  el.island.classList.add('on');
+  updateIsland(); updateChrome(); renderNow();
+}
+
+function updateIsland(){
+  const c = S.cur; if (!c || !c.purpose) return;
+  const p = P[c.purpose];
+  el.island.innerHTML = `<span>${p.icon} ${p.short}</span><span class="i-t">${mmss(c.elapsed)}${c.cueEnd != null ? '/' + mmss(c.cueEnd) : ''}</span>`;
+}
+
+function showCheckpoint(returning){
+  const c = S.cur;
+  setScreen('checkpoint');
+  el.island.classList.remove('on');
+  if (!returning){ c.cpShows++; c.lastCp = c.elapsed; c.cpTitle = CP_TITLES[c.purpose][(c.cpShows - 1) % 2]; }
+  c.cpShownAt = performance.now();
+  const sub = `You planned ${c.plan.min} minutes ${P[c.purpose].phrase}.` + (c.plan.ext ? ` Then you added ${c.plan.ext * 5} more.` : '');
+  showBk(`<div class="bk-full" role="dialog" aria-modal="true" aria-labelledby="cpTitle">${mark()}
+    <h1 class="cp-title" id="cpTitle">${c.cpTitle}</h1>
+    <p class="cp-sub">${sub}</p>
+    <div class="spacer"></div>
+    <button class="eq" type="button" data-cp="end">End my session</button>
+    <button class="eq" type="button" data-cp="continue">Continue for 5 minutes</button>
+    <button class="eq" type="button" data-cp="change">Change my purpose</button>
+    <p class="foot">You stay in control.</p></div>`);
+  $$('[data-cp]', el.bk).forEach(b => b.addEventListener('click', () => cpChoice(b.dataset.cp)));
+}
+
+function cpChoice(choice){
+  const c = S.cur;
+  c.checkpoints.push({title:c.cpTitle, choice, ms:Math.round(performance.now() - c.cpShownAt)});
+  if (choice === 'end') endSession('voluntary');
+  else if (choice === 'continue'){ c.cueEnd = c.elapsed + 5 * 60000; c.plan.ext++; openApp(); }
+  else showPurpose('change');
+}
+
+function endSession(type, interruption){
+  const c = S.cur; if (!c || c.endType) return;
+  clearTimers();
+  c.endType = type; c.interruption = interruption || '';
+  c.endSim = S.sim; if (c.startSim === null) c.startSim = S.sim;
+  if (type === 'voluntary'){
+    c.within = c.cueEnd != null ? (c.elapsed <= c.cueEnd + 1000 ? 'yes' : 'no') : '';
+    c.rewardVariant = S.settings.reward;
+    S.week.stops++; c.stopsAfter = S.week.stops; c.goal = S.week.goal || '';
+  }
+  if (c.checkpoints.length) c.stop1 = (type === 'voluntary' && c.lastCp != null && c.elapsed - c.lastCp <= 60000) ? 'yes' : 'no';
+  el.island.classList.remove('on');
+  el.call.classList.remove('on');
+  c.row = toRow(c); S.log.push(c.row); save(); renderConsole();
+  if (type === 'voluntary') showReward();
+  else if (type === 'declined') showDeclined();
+  else if (type === 'interrupted') showEnded(interruption);
+  else goHome();
+}
+
+function toRow(c){
+  return {
+    participant_id:c.pid, session_number:c.n, session_id:c.id, app:APPS[c.app].name, trigger:c.trigger, breath_pause:c.breath,
+    purpose:c.purpose || '', purpose_history:c.history.join('>'),
+    purpose_decision_ms:c.purposeMs ?? '', prompt_total_ms:c.promptMs ?? '',
+    time_cue_min:c.cueMin ?? '', start_time:fmtHMS(c.startSim),
+    checkpoint_count:c.checkpoints.length,
+    checkpoint_titles:c.checkpoints.map(x => x.title).join('|'),
+    checkpoint_choices:c.checkpoints.map(x => x.choice).join('|'),
+    checkpoint_decision_ms:c.checkpoints.map(x => x.ms).join('|'),
+    stop_within_1min_of_checkpoint:c.stop1,
+    original_boundary_min:c.origCueMin ?? '',
+    final_boundary_min:c.cueEnd != null ? +(c.cueEnd / 60000).toFixed(2) : '',
+    duration_sim_s:Math.round(c.elapsed / 1000), end_time:fmtHMS(c.endSim),
+    end_type:c.endType, interruption:c.interruption, within_boundary:c.within,
+    reward_variant:c.rewardVariant, chosen_stops_after:c.stopsAfter, weekly_goal:c.goal,
+    reflection:'', worthwhile:'', in_control:''
   };
-  const CUES = [5, 10, 15, "none"];
-  const CONTINUE_MIN = 5;
-  const GOAL_OPTIONS = [5, 10, 15, 20];
-  const COLS = ["participant_id","session_id","session_number","app","trigger","prompt_variant","purpose","time_cue_chosen",
-    "purpose_decision_ms","start_time","checkpoint_count","checkpoint_choice","checkpoint_choices","checkpoint_decision_ms",
-    "final_boundary","end_time","end_type","within_boundary","reward_variant_shown",
-    "reflection_skipped","worthwhile","felt_in_control","time_speed","sim_duration_s"];
+}
+const COLS = ['participant_id','session_number','session_id','app','trigger','breath_pause','purpose','purpose_history','purpose_decision_ms','prompt_total_ms','time_cue_min','start_time','checkpoint_count','checkpoint_titles','checkpoint_choices','checkpoint_decision_ms','stop_within_1min_of_checkpoint','original_boundary_min','final_boundary_min','duration_sim_s','end_time','end_type','interruption','within_boundary','reward_variant','chosen_stops_after','weekly_goal','reflection','worthwhile','in_control'];
 
-  // Sample posts for the feed. Invented people and accounts; the list loops so the feed never runs out.
-  const POSTS = [
-    { n: "Mina Okafor", h: "minabakes", t: "Third try at sourdough and it finally has holes in it. The starter is called Gerald now.", m: "Bread on a cooling rack" },
-    { n: "Campus Library", h: "uni_library", t: "Quiet floors stay open until midnight during exam weeks. Bring a water bottle, leave the crisps at home." },
-    { n: "Theo Lindqvist", h: "theo.walks", t: "Took the long way home along the canal. Forty minutes, no regrets.", m: "Canal at dusk" },
-    { n: "Priya S.", h: "priyadraws", t: "Daily sketch #112: the old tram stop by the market.", m: "Pencil sketch of a tram stop" },
-    { n: "Study Tips Daily", h: "studytipsdaily", t: "The two-minute rule: if a task takes less than two minutes, do it now instead of adding it to a list." },
-    { n: "Jonas Weber", h: "jonasw", t: "Does anyone know if the bike repair workshop still runs on Thursdays?" },
-    { n: "Leafy Corner", h: "leafycorner", t: "Your pothos doesn't need more water. It needs more light. It's always the light.", m: "Trailing plant on a shelf" },
-    { n: "Amara Diallo", h: "amara.runs", t: "5 km before my 9 am lecture. Slow, but done." },
-    { n: "Recipe Minute", h: "recipeminute", t: "Lemon pasta: zest, juice, butter, parmesan and a splash of pasta water. That's the whole recipe.", m: "Lemon pasta in a bowl" },
-    { n: "Sam Ortega", h: "samortega", t: "Group project update: we have a name, a logo and zero slides. Progress." },
-    { n: "Night Sky Club", h: "nightskyclub", t: "Clear skies tonight after 10 pm. The brightest 'star' in the east is actually a planet.", m: "Night sky over rooftops" },
-    { n: "Hana Kim", h: "hanakim", t: "Found a second-hand copy of the book I've wanted for months, with someone's notes in the margins." },
-    { n: "City Transit", h: "citytransit", t: "Line 4 runs every 10 minutes this weekend because of track work. Plan a little extra time." },
-    { n: "Felix Moreau", h: "felixcooks", t: "Batch-cooked lentil soup for the week. Future me says thanks.", m: "Pot of lentil soup" },
-    { n: "Inês Carvalho", h: "ines.c", t: "Unpopular opinion: rainy Sundays are the best Sundays." },
-    { n: "Language Swap", h: "languageswap", t: "Word of the day (Portuguese): saudade, a longing for something or someone you love." },
-    { n: "Oli Brennan", h: "olibrennan", t: "My cat has decided the keyboard is the warmest place in the flat.", m: "Cat asleep on a laptop" },
-    { n: "Maker Space", h: "makerspace_uni", t: "Open build night on Friday. Bring a broken thing, leave with a fixed thing." },
-    { n: "Ravi Menon", h: "ravimenon", t: "Does anyone else's handwriting get worse every semester?" },
-    { n: "Trail Notes", h: "trailnotes", t: "Short loop, big view: 3.2 km, 180 m of climbing, and a bench at the top.", m: "Bench on a hilltop" },
-    { n: "Lucía Romero", h: "lucia.r", t: "Finally cleaned my desk. Found three pens, a library card and a to-do list from March." },
-    { n: "Tiny Facts", h: "tinyfacts", t: "Octopuses have three hearts. Two pump blood to the gills, one to the rest of the body." },
-    { n: "Noah Fischer", h: "noahf", t: "Made a 90-minute focus playlist with no lyrics. Link in my profile.", m: "Headphones on a desk" },
-    { n: "Community Garden", h: "communitygarden", t: "Tomatoes are ready. Take what you'll eat and leave some for the next person.", m: "Tomatoes on the vine" }
-  ];
-  const AV_COLORS = ["#3F6F8F", "#7A5C99", "#A86A3D", "#3E7F5C", "#8C4F5E", "#51707A", "#6E6A3A", "#4B5E9A"];
-  const MEDIA_TONES = [["#9DB7C4", "#5E7F8E"], ["#C9B79C", "#8E7456"], ["#A9C3A5", "#5F7F5B"], ["#B8A9C9", "#6F5E8E"], ["#C4A3A3", "#8E5E5E"], ["#A3B9C4", "#46606E"]];
-
-  // ---------- URL options (?participant=1&speed=10&reward=A) ----------
-  const params = new URLSearchParams(location.search);
-  const truthy = v => v != null && !/^(0|false|no|off)$/i.test(v);
-  const pmode = truthy(params.get("participant"));
-  const urlSpeed = Number(params.get("speed"));
-  const urlReward = (params.get("reward") || "").toUpperCase();
-  const urlPrompt = (params.get("prompt") || "").toUpperCase();
-
-  // ---------- State ----------
-  const state = {
-    pid: params.get("id") || "P01", pNum: 1, sessionCounter: 0,
-    promptVariant: urlPrompt === "B" ? "B" : "A",
-    rewardVariant: urlReward === "B" ? "B" : "A",
-    speed: urlSpeed > 0 ? urlSpeed : 1,
-    weekSeed: 3, weekStops: 3, weeklyGoal: null,
-    sessions: [], current: null,
-    screen: "home", notif: null
-  };
-
-  const $ = (s, r = document) => r.querySelector(s);
-  const view = $("#view");
-  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const icon = name => `<span class="app-icon ${APPS[name].cls}" aria-hidden="true">${APPS[name].svg}</span>`;
-  const mmss = ms => { const t = Math.floor(ms / 1000); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
-  const fmtMin = ms => String(Math.round(ms / 6000) / 10);
-  const last = arr => arr[arr.length - 1];
-
-  // ---------- Session lifecycle ----------
-  function startSession(app, trigger) {
-    if (state.current) endSession("unknown");
-    state.notif = null;
-    state.sessionCounter++;
-    const s = {
-      participant_id: state.pid,
-      session_id: `${state.pid}-S${String(state.sessionCounter).padStart(2, "0")}`,
-      session_number: state.sessionCounter,
-      app, trigger, prompt_variant: state.promptVariant,
-      purposes: [], nouns: [], phrases: [], purpose_decisions: [],
-      time_cue_chosen: "", start: null, opened: false, elapsedMs: 0,
-      boundaryMs: null, cueMin: null, extended: false,
-      checkpoint_count: 0, checkpoint_choices: [], checkpoint_decisions: [],
-      end: null, end_type: "", within_boundary: "", reward_variant_shown: "",
-      reflection_skipped: "", worthwhile: "", felt_in_control: "", status: "active",
-      feedPos: APPS[app].feedStart
-    };
-    state.sessions.push(s);
-    state.current = s;
-    showPrompt(false);
-    renderLog();
+/* ---------------- Exit screens ---------------- */
+function plantSVG(count, goal, animate){
+  const n = Math.max(0, Math.min(count, goal));
+  const base = 168, spacing = 116 / goal;
+  const top = base - 14 - Math.max(0, n - 1) * spacing - 14;
+  const rx = Math.max(10, 18 - goal * 0.5), ry = rx * 0.42;
+  let leaves = '';
+  for (let i = 0; i < n; i++){
+    const y = base - 14 - i * spacing, side = i % 2 ? 1 : -1;
+    const cx = 100 + side * (rx - 1), rot = side * -26;
+    const cls = animate && i === n - 1 && count <= goal ? ' class="leaf-new"' : '';
+    leaves += `<g${cls} style="transform-origin:100px ${y}px"><ellipse cx="${cx}" cy="${y}" rx="${rx}" ry="${ry}" fill="${i % 2 ? '#3FA394' : '#127C71'}" transform="rotate(${rot} 100 ${y})"/></g>`;
   }
-
-  function endSession(type) {
-    const s = state.current;
-    if (!s) return null;
-    s.end_type = type;
-    s.end = s.start ? new Date(s.start.getTime() + s.elapsedMs) : new Date();
-    if (s.opened && s.boundaryMs != null) s.within_boundary = s.elapsedMs <= s.boundaryMs + 500 ? "yes" : "no";
-    s.speed = state.speed;
-    s.status = "done";
-    state.current = null;
-    renderLog();
-    return s;
+  const flower = count >= goal
+    ? `<g${animate && count === goal ? ' class="leaf-new"' : ''} style="transform-origin:100px ${top}px">${[0, 72, 144, 216, 288].map(a => `<ellipse cx="100" cy="${top - 9}" rx="5.5" ry="9" fill="#F6C85F" transform="rotate(${a} 100 ${top})"/>`).join('')}<circle cx="100" cy="${top}" r="5" fill="#E8875B"/></g>`
+    : '';
+  const mid = (base + top) / 2;
+  return `<svg class="plant" viewBox="0 0 200 220" role="img" aria-label="A plant with ${n} leaves${count >= goal ? ' and a flower' : ''}">
+    <path d="M100 ${base} C 96 ${mid + 12}, 104 ${mid - 12}, 100 ${top}" stroke="#2E7D6F" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    ${leaves}${flower}
+    <path d="M68 ${base} H132 L124 212 H76 Z" fill="#D6E0DE"/><rect x="63" y="${base - 6}" width="74" height="11" rx="3.5" fill="#BFCDCA"/>
+  </svg>`;
+}
+function growthBlock(animate){
+  const c = S.cur, count = S.week.stops, goal = S.week.goal;
+  const cap = count < goal ? `${count} of ${goal} stops you chose this week` : `${count} stops you chose this week. Goal reached.`;
+  return `<div class="growth">${plantSVG(count, goal, animate)}<p class="growth-cap">${cap}</p></div>`;
+}
+function goalBlock(){
+  return `<div class="goal" id="goalBox"><p class="goal-q">Set a weekly goal: how many times do you want to stop on your own?</p>
+    <div class="chips">${[5, 10, 15].map(g => `<button class="chip-btn" type="button" data-goal="${g}">${g}</button>`).join('')}</div></div>`;
+}
+function showReward(){
+  const c = S.cur;
+  setScreen('reward');
+  const sub = c.cueEnd != null ? 'You stopped when you planned to.' : 'You ended this on your terms.';
+  const extra = c.rewardVariant === 'B' ? `<div id="growthSlot">${S.week.goal ? growthBlock(true) : goalBlock()}</div>` : '';
+  showBk(`<div class="bk-full">${mark()}
+    <h1 class="r-title">You chose to stop.</h1>
+    <p class="r-sub">${sub}</p>
+    ${extra}
+    <div class="spacer"></div>
+    <button class="primary" type="button" data-act="home">Back to my day</button>
+    <button class="linkbtn center" type="button" data-act="reflect">Reflect for a moment</button></div>`);
+  el.bk.querySelector('[data-act=home]').addEventListener('click', () => finishSession('not_opened'));
+  el.bk.querySelector('[data-act=reflect]').addEventListener('click', showReflection);
+  $$('[data-goal]', el.bk).forEach(b => b.addEventListener('click', () => {
+    S.week.goal = +b.dataset.goal; c.goal = S.week.goal;
+    if (c.row) c.row.weekly_goal = c.goal;
+    save(); renderConsole();
+    $('#growthSlot').innerHTML = growthBlock(true);
+  }));
+}
+function showReflection(){
+  const c = S.cur;
+  setScreen('reflect');
+  const seg = q => `<div class="seg" data-q="${q}">${['Yes', 'Partly', 'No'].map(v => `<button type="button" aria-pressed="false" data-v="${v.toLowerCase()}">${v}</button>`).join('')}</div>`;
+  showBk(`<div class="bk-full">${mark()}
+    <fieldset class="q"><legend>Did this session feel worthwhile?</legend>${seg('worthwhile')}</fieldset>
+    <fieldset class="q"><legend>Did you feel in control?</legend>${seg('control')}</fieldset>
+    <div class="spacer"></div>
+    <button class="primary" type="button" data-act="save" disabled>Save</button>
+    <button class="linkbtn center" type="button" data-act="skip">Skip</button>
+    <p class="foot">Your reflection stays private.</p></div>`);
+  const ans = {};
+  $$('.seg', el.bk).forEach(g => g.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    ans[g.dataset.q] = b.dataset.v;
+    $$('button', g).forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    el.bk.querySelector('[data-act=save]').disabled = false;
+  }));
+  el.bk.querySelector('[data-act=save]').addEventListener('click', () => finishSession('saved', ans));
+  el.bk.querySelector('[data-act=skip]').addEventListener('click', () => finishSession('skipped'));
+}
+function finishSession(status, ans){
+  const c = S.cur;
+  if (c && c.row){
+    c.row.reflection = status;
+    if (ans){ c.row.worthwhile = ans.worthwhile || ''; c.row.in_control = ans.control || ''; }
+    save();
   }
+  goHome();
+}
+function showDeclined(){
+  const a = APPS[S.cur.app].name;
+  setScreen('declined');
+  showBk(`<div class="bk-full bk-center">${mark()}<div class="spacer"></div>
+    <h1 class="d-title">Okay.</h1><p class="r-sub">${a} will be here when you need it.</p>
+    <button class="primary soft" type="button" data-act="home">Back to home</button><div class="spacer"></div></div>`);
+  el.bk.querySelector('[data-act=home]').addEventListener('click', goHome);
+  T.dec = setTimeout(() => { if (S.screen === 'declined') goHome(); }, 2600);
+}
+function showEnded(kind){
+  const a = APPS[S.cur.app].name;
+  setScreen('ended');
+  const why = kind === 'call' ? 'a call came in' : 'your class is starting';
+  showBk(`<div class="bk-full bk-center">${mark()}<div class="spacer"></div>
+    <h1 class="n-title">Session ended</h1><p class="r-sub">${a} closed because ${why}.</p>
+    <button class="primary soft" type="button" data-act="home">Back to home</button><div class="spacer"></div></div>`);
+  el.bk.querySelector('[data-act=home]').addEventListener('click', goHome);
+}
+function goHome(){
+  clearTimers();
+  const c = S.cur;
+  if (c && c.row && c.endType === 'voluntary' && !c.row.reflection){ c.row.reflection = 'not_opened'; save(); }
+  S.cur = null;
+  hideBk(); el.call.classList.remove('on'); el.call.innerHTML = '';
+  el.app.classList.remove('on'); el.feed.innerHTML = ''; el.appTop.innerHTML = '';
+  el.island.classList.remove('on');
+  setScreen('home');
+  renderConsole();
+}
 
-  function closeApp() {
-    const s = endSession("voluntary");
-    if (s.within_boundary === "no") { showExitNeutral(s, "closed"); return; }
-    s.reward_variant_shown = state.rewardVariant;
-    state.weekStops++; // every voluntary stop within the cue counts, timed or untimed
-    renderLog();
-    showReward(s);
+/* ---------------- Home bar ---------------- */
+el.homebar.addEventListener('click', () => {
+  const c = S.cur;
+  switch (S.screen){
+    case 'app': endSession('voluntary'); break;
+    case 'checkpoint':
+      c.checkpoints.push({title:c.cpTitle, choice:'home', ms:Math.round(performance.now() - c.cpShownAt)});
+      endSession('voluntary'); break;
+    case 'purpose':
+      if (c.startSim === null){ c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); }
+      else endSession('voluntary');
+      break;
+    case 'breath': c.promptMs = Math.round(performance.now() - c.pShownAt); endSession('declined'); break;
+    case 'reward': finishSession('not_opened'); break;
+    case 'reflect': finishSession('skipped'); break;
+    case 'declined': case 'ended': goHome(); break;
+    default: break;
   }
+});
 
-  // ---------- Screens ----------
-  function setScreen(name, html) {
-    state.screen = name;
-    view.innerHTML = html;
-    renderLive();
+/* ---------------- Notifications and interruptions ---------------- */
+function notify(app){
+  if (S.screen !== 'home' || S.cur){ consoleMsg('Go back to the home screen first. A notification starts a new session.'); return; }
+  const n = NOTIFS[app];
+  el.notif.innerHTML = `<span class="tile" style="background:${APPS[app].bg}">${ICONS[app].replace(/width="\d+" height="\d+"/, 'width="22" height="22"')}</span><span><b>${n.who}</b>${n.text}</span><span class="when">now</span>`;
+  el.notif.dataset.app = app;
+  el.notif.classList.add('show');
+  clearTimeout(T.notif); T.notif = setTimeout(hideNotif, 7000);
+  consoleMsg(`Notification sent from ${APPS[app].name}.`);
+}
+function hideNotif(){ el.notif.classList.remove('show'); }
+el.notif.addEventListener('click', () => { const a = el.notif.dataset.app; if (a && S.screen === 'home' && !S.cur) startFlow(a, 'notification'); });
+
+function interrupt(kind){
+  const c = S.cur;
+  if (!c || c.startSim === null || c.endType){ consoleMsg('Interruptions work once an app is open.'); return; }
+  if (kind === 'call'){
+    setScreen('call');
+    el.island.classList.remove('on');
+    el.call.innerHTML = `<p class="sub">Incoming call</p><p class="who">Maa</p><p class="sub">mobile</p>
+      <div class="btns"><div><button class="decline" type="button" aria-label="Decline">✕</button><label>Decline</label></div>
+      <div><button class="accept" type="button" aria-label="Accept">✓</button><label>Accept</label></div></div>`;
+    el.call.classList.add('on');
+    $$('button', el.call).forEach(b => b.addEventListener('click', () => endSession('interrupted', 'call')));
+  } else {
+    el.notif.innerHTML = `<span class="tile" style="background:#fff">${ICONS.calendar.replace(/width="\d+" height="\d+"/, 'width="22" height="22"')}</span><span><b>Calendar</b>Class starts in 2 minutes</span><span class="when">now</span>`;
+    el.notif.dataset.app = '';
+    el.notif.classList.add('show');
+    T.cls = setTimeout(() => { hideNotif(); endSession('interrupted', 'class'); }, 1800);
   }
+  consoleMsg(kind === 'call' ? 'Call shown. Either button ends the session.' : 'Class reminder shown. The session ends in a moment.');
+}
 
-  let clockTaps = [];
-  function showHome() {
-    const n = state.notif;
-    setScreen("home", `
-      <div class="home">
-        ${n ? `<button class="notif" id="notif">${icon(n)}<span><b>${n}</b><small>${esc(APPS[n].notif)}</small></span></button>` : ""}
-        <div class="clock" id="homeClock"><div class="t" id="homeTime"></div><div class="d" id="homeDate"></div></div>
-        <div class="apps">
-          ${Object.keys(APPS).map(a => `<button class="app-btn" data-app="${a}">${icon(a)}<span class="n">${a}</span></button>`).join("")}
-        </div>
-        <div class="home-hint">Tap an app to open it</div>
-      </div>`);
-    view.querySelectorAll(".app-btn").forEach(b => b.onclick = () => startSession(b.dataset.app, "tap"));
-    if (n) $("#notif").onclick = () => startSession(n, "notification");
-    // Participant mode: tapping the clock 5 times within 3 seconds opens the facilitator panel.
-    $("#homeClock").onclick = () => {
-      if (!pmode) return;
-      const now = performance.now();
-      clockTaps = clockTaps.filter(t => now - t < 3000).concat(now);
-      if (clockTaps.length >= 5) { clockTaps = []; document.documentElement.classList.add("show-panel"); }
-    };
-    tickClock();
+/* ---------------- Simulated apps ---------------- */
+const FS = {order:[], idx:0, pool:null, app:null};
+function shuffle(a){ const b = a.slice(); for (let i = b.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
+function nextItem(){
+  if (FS.idx >= FS.order.length){ FS.order = shuffle(FS.pool); FS.idx = 0; }
+  return FS.order[FS.idx++];
+}
+function buildApp(app){
+  const c = S.cur; c.built = true;
+  FS.app = app; FS.pool = app === 'loop' ? LOOP : app === 'clips' ? CLIPS : FEED; FS.order = shuffle(FS.pool); FS.idx = 0;
+  el.appTop.style.display = ''; el.feed.style.display = '';
+  el.appTop.className = 'app-top ' + app;
+  el.feed.className = 'feed ' + app;
+  el.feed.scrollTop = 0;
+  if (app === 'loop'){
+    el.appTop.innerHTML = `<span class="lp-word">loop</span><span class="top-icons">${SV.heart}${SV.send}</span>`;
+    const names = ['Your story', 'meera', 'arjun', 'riya', 'kabir', 'sana', 'isha'];
+    el.feed.innerHTML = `<div class="stories">${names.map(n => `<span class="story"><span class="ring"><span style="background:${avColor(n)}">${n[0].toUpperCase()}</span></span>${n}</span>`).join('')}</div>`;
+  } else if (app === 'clips'){
+    el.appTop.innerHTML = `<span>Following</span><span class="on">For you</span>`;
+    el.feed.innerHTML = '';
+  } else {
+    el.appTop.innerHTML = `<span class="fd-word">Feed</span><span class="top-icons">${SV.send}</span>`;
+    el.feed.innerHTML = `<div class="fd-tabbar"><span class="on">For you</span><span>Following</span></div>`;
   }
-
-  function showPrompt(isChange) {
-    const s = state.current;
-    const variant = isChange ? state.promptVariant : s.prompt_variant;
-    const list = PURPOSES[variant];
-    const shownAt = performance.now();
-    let purpose = null, cue = "none";
-    const title = variant === "A" ? "What brings you here?" : "Why are you opening this?";
-    setScreen("prompt", `
-      <div class="pause">
-        <div class="brand"><span class="dot"></span>Pause <span class="ctx">· ${isChange ? "change purpose" : "before " + esc(s.app) + " opens"}</span></div>
-        <h1>${title}</h1>
-        <div class="options" role="group" aria-label="Purpose">
-          ${list.map((p, i) => `<button class="opt" data-i="${i}" aria-pressed="false"><span>${p.label}</span><span class="tick"></span></button>`).join("")}
-        </div>
-        <p class="okay">Just browsing is okay.</p>
-        <div class="label">Time cue <span style="text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
-        <div class="chips" role="group" aria-label="Time cue">
-          ${CUES.map(c => `<button class="chip" data-c="${c}" aria-pressed="${c === "none"}">${c === "none" ? "No timer" : c + " min"}</button>`).join("")}
-        </div>
-        <div class="spacer"></div>
-        <button class="btn primary" id="openBtn" disabled>${isChange ? "Back to my app" : "Open my app"}</button>
-        ${isChange ? "" : `<button class="link" id="notNow">Not now</button>`}
-      </div>`);
-    view.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-      view.querySelectorAll(".opt").forEach(o => o.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-      purpose = list[+b.dataset.i];
-      $("#openBtn").disabled = false;
-    });
-    view.querySelectorAll(".chip").forEach(b => b.onclick = () => {
-      view.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-      cue = b.dataset.c === "none" ? "none" : +b.dataset.c;
-    });
-    $("#openBtn").onclick = () => {
-      if (!purpose) return;
-      s.purpose_decisions.push(Math.round(performance.now() - shownAt));
-      if (!isChange) {
-        s.start = new Date();
-        s.time_cue_chosen = cue === "none" ? "none" : String(cue);
-        s.opened = true;
-      }
-      s.purposes.push(purpose.label);
-      s.nouns.push(purpose.noun);
-      s.phrases.push(purpose.phrase);
-      s.cueMin = cue === "none" ? null : cue;
-      s.boundaryMs = cue === "none" ? null : s.elapsedMs + cue * 60000;
-      s.extended = false;
-      showFeed();
-      renderLog();
-    };
-    if (!isChange) $("#notNow").onclick = () => { endSession("voluntary"); showHome(); };
-  }
-
-  function postHTML(i, video) {
-    const p = POSTS[i % POSTS.length];
-    const k = i * 7 + 3;
-    const color = AV_COLORS[k % AV_COLORS.length];
-    const tone = MEDIA_TONES[k % MEDIA_TONES.length];
-    const ago = ["4m", "12m", "38m", "1h", "2h", "3h", "5h", "8h"][k % 8];
-    const hasMedia = video || p.m;
-    const h = video ? 360 : [180, 220, 260][k % 3];
-    const dur = `0:${String(12 + (k * 13) % 47).padStart(2, "0")}`;
-    return `<article class="card">
-      <div class="top"><div class="av" style="background:${color}" aria-hidden="true">${esc(p.n[0])}</div>
-        <div class="who"><b>${esc(p.n)}</b><small>@${esc(p.h)} · ${ago}</small></div></div>
-      <p>${esc(p.t)}</p>
-      ${hasMedia ? `<div class="media" role="img" aria-label="${esc(p.m || "Video clip")}" style="height:${h}px;background:linear-gradient(160deg, ${tone[0]}, ${tone[1]})">
-        ${video ? `<span class="play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="#fff"/></svg></span><span class="dur">${dur}</span>` : ""}
-        <span>${esc(p.m || "")}</span></div>` : ""}
-      <div class="acts" aria-hidden="true"><span>♡ ${3 + (k * 17) % 240}</span><span>Reply ${(k * 5) % 31}</span><span>Share</span></div>
-    </article>`;
-  }
-
-  function showFeed() {
-    const s = state.current;
-    const video = s.app === "Clips";
-    const more = n => { let h = ""; for (let j = 0; j < n; j++) h += postHTML(s.feedPos++, video); return h; };
-    setScreen("feed", `
-      <div class="feed-wrap">
-        <div class="feed-head">
-          <div class="appname">${icon(s.app)}${esc(s.app)}</div>
-          <span class="pchip" id="pchip" title="Your purpose and time in app"><span class="d"></span><span id="pchipText"></span></span>
-        </div>
-        <div class="feed" id="feed" aria-label="${esc(s.app)} feed (sample posts)">${more(8)}</div>
-        <div class="close-bar"><button class="close-btn" id="closeApp">Close app</button></div>
-      </div>`);
-    const feed = $("#feed");
-    feed.addEventListener("scroll", () => {
-      if (feed.scrollTop + feed.clientHeight > feed.scrollHeight - 900) feed.insertAdjacentHTML("beforeend", more(6));
-    });
-    $("#closeApp").onclick = closeApp;
-    updateChip();
-  }
-
-  function updateChip() {
-    const s = state.current, el = $("#pchipText");
-    if (!s || !el) return;
-    el.textContent = `${last(s.purposes)} · ${mmss(s.elapsedMs)}`;
-  }
-
-  function showCheckpoint() {
-    const s = state.current;
-    s.checkpoint_count++;
-    state.screen = "checkpoint";
-    const shownAt = performance.now();
-    const sub = s.extended
-      ? `You planned ${s.cueMin} more minutes to ${last(s.phrases)}.`
-      : `You planned ${s.cueMin} minutes to ${last(s.phrases)}.`;
-    view.querySelector(".feed-wrap").insertAdjacentHTML("beforeend", `
-      <div class="scrim" id="cp" role="dialog" aria-modal="true" aria-labelledby="cpTitle">
-        <div class="sheet">
-          <div class="brand"><span class="dot"></span>Pause</div>
-          <h1 id="cpTitle">Still doing what you came for?</h1>
-          <p class="sub">${sub}</p>
-          <div class="btn-stack">
-            <button class="btn" data-a="end">End my session</button>
-            <button class="btn" data-a="continue">Continue for 5 minutes</button>
-            <button class="btn" data-a="change">Change my purpose</button>
-          </div>
-          <p class="foot">You stay in control.</p>
-        </div>
-      </div>`);
-    renderLive();
-    $("#cp").querySelectorAll("button").forEach(b => b.onclick = () => {
-      const a = b.dataset.a;
-      s.checkpoint_decisions.push(Math.round(performance.now() - shownAt));
-      if (a === "end") { s.checkpoint_choices.push("end_session"); closeApp(); }
-      if (a === "continue") {
-        s.checkpoint_choices.push("continue_5");
-        s.boundaryMs = s.elapsedMs + CONTINUE_MIN * 60000;
-        s.cueMin = CONTINUE_MIN;
-        s.extended = true;
-        $("#cp").remove();
-        state.screen = "feed";
-        renderLive();
-        renderLog();
-      }
-      if (a === "change") { s.checkpoint_choices.push("change_purpose"); showPrompt(true); renderLog(); }
-    });
-    $("#cp .btn").focus();
-  }
-
-  const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#127C71" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  const NEUTRAL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#56666D" stroke-width="2.2" stroke-linecap="round"><path d="M6 12h12"/></svg>';
-
-  function ringSVG(val, goal, animate) {
-    const r = 34, c = 2 * Math.PI * r, p = Math.min(1, val / goal);
-    return `<svg class="ring${animate ? " animate" : ""}" viewBox="0 0 84 84" aria-hidden="true">
-      <circle cx="42" cy="42" r="${r}" fill="none" stroke="#E7F2F0" stroke-width="8"/>
-      <circle class="fill" cx="42" cy="42" r="${r}" fill="none" stroke="#127C71" stroke-width="8" stroke-linecap="round"
-        style="--full:${c.toFixed(1)}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - p)).toFixed(1)}" transform="rotate(-90 42 42)"/>
-      <text x="42" y="48" text-anchor="middle" font-size="18" font-weight="650" fill="#1E2A30">${val}</text>
-    </svg>`;
-  }
-
-  // Variant B: weekly count of chosen stops. The participant picks a goal the first time.
-  function progressHTML(mode) {
-    if (mode === "pick") {
-      return `<div class="progress" id="progress">
-        <p class="goal-q">How many chosen stops would feel good this week?</p>
-        <div class="chips">${GOAL_OPTIONS.map(g => `<button class="chip" data-g="${g}" aria-pressed="${g === state.weeklyGoal}">${g}</button>`).join("")}</div>
-        <div class="cap">You can change this any time.</div>
-      </div>`;
+  appendItems(app === 'clips' ? 4 : 6);
+}
+function appendItems(n){
+  let html = '';
+  for (let i = 0; i < n; i++){
+    const p = nextItem();
+    if (FS.app === 'loop'){
+      html += `<article class="lp-post"><header><span class="av" style="background:${avColor(p.h)}">${p.h[0].toUpperCase()}</span><span class="lp-h">${p.h}</span><span class="lp-dots" aria-hidden="true">•••</span></header>
+        <div class="lp-img${p.meme ? ' has-meme' : ''}" style="background:linear-gradient(135deg,${p.g[0]},${p.g[1]})">${p.meme ? `<p class="meme">${esc(p.meme)}</p>` : ''}<span class="big" aria-hidden="true">${p.e}</span></div>
+        <div class="acts"><button class="like" type="button" aria-label="Like">${SV.heart}</button><button type="button" aria-label="Comment">${SV.comment}</button><button type="button" aria-label="Share">${SV.send}</button></div>
+        <p class="lp-likes">${rint(40, 4800).toLocaleString('en-IN')} likes</p><p class="lp-cap"><b>${p.h}</b> ${esc(p.t)}</p><p class="lp-more">View all ${rint(3, 180)} comments</p></article>`;
+    } else if (FS.app === 'clips'){
+      html += `<section class="clip" style="background:linear-gradient(165deg,${p.g[0]},${p.g[1]})"><span class="clip-big" aria-hidden="true">${p.e}</span>
+        <div class="clip-meta"><p class="clip-h">@${p.h}</p><p class="clip-t">${esc(p.t)}</p><p class="clip-sound">♫ original audio</p></div>
+        <div class="clip-rail"><button class="like" type="button" aria-label="Like">${SV.heartL}<span>${kfmt(rint(1200, 98000))}</span></button><button type="button" aria-label="Comments">${SV.commentL}<span>${kfmt(rint(40, 3200))}</span></button><button type="button" aria-label="Share">${SV.sendL}<span>Share</span></button></div>
+        <div class="clip-prog"><span></span></div></section>`;
+    } else {
+      const poll = p.poll ? `<div class="poll">${p.poll.map(([o, v]) => `<div class="pl"><i style="width:${v}%"></i><em>${o}</em><b>${v}%</b></div>`).join('')}</div>` : '';
+      const ago = ['2m', '9m', '14m', '38m', '1h', '2h', '3h', '5h'][rint(0, 7)];
+      html += `<article class="fd-post"><span class="av" style="background:${avColor(p.h)}">${p.n[0]}</span><div class="fd-body">
+        <p class="fd-who"><b>${esc(p.n)}</b> <span>@${p.h} · ${ago}</span></p><p class="fd-t">${esc(p.t)}</p>${poll}
+        <div class="fd-acts"><button type="button" aria-label="Reply">${SV.commentS}${rint(2, 90)}</button><button type="button" aria-label="Repost">${SV.repost}${rint(1, 400)}</button><button class="like" type="button" aria-label="Like">${SV.heartS}${rint(5, 2400)}</button></div></div></article>`;
     }
-    return `<div class="progress" id="progress">
-      <div class="row">${ringSVG(state.weekStops, state.weeklyGoal, mode === "animate")}
-        <div class="stat">Stops you chose this week: ${state.weekStops} of ${state.weeklyGoal}</div>
-      </div>
-      <button class="link" id="changeGoal">Change goal</button>
-    </div>`;
   }
+  el.feed.insertAdjacentHTML('beforeend', html);
+}
+el.feed.addEventListener('scroll', () => {
+  if (S.screen !== 'app') return;
+  if (el.feed.scrollTop + el.feed.clientHeight > el.feed.scrollHeight - 900) appendItems(FS.app === 'clips' ? 3 : 5);
+}, {passive:true});
+el.feed.addEventListener('click', e => { const b = e.target.closest('.like'); if (b) b.classList.toggle('on'); });
 
-  function mountProgress(mode) {
-    const box = $("#progress");
-    if (!box) return;
-    box.outerHTML = progressHTML(mode);
-    const nb = $("#progress");
-    nb.querySelectorAll("[data-g]").forEach(b => b.onclick = () => {
-      const first = state.weeklyGoal == null;
-      state.weeklyGoal = +b.dataset.g;
-      mountProgress(first ? "animate" : "static");
-      renderLive();
-    });
-    const cg = $("#changeGoal");
-    if (cg) cg.onclick = () => mountProgress("pick");
+/* ---------------- Clock ---------------- */
+let lastReal = performance.now(), nowTick = 0;
+setInterval(() => {
+  const now = performance.now(), dt = now - lastReal; lastReal = now;
+  const c = S.cur, running = S.screen === 'app' && c && !c.endType;
+  S.sim += running ? dt * S.settings.speed : dt;
+  if (running){
+    c.elapsed += dt * S.settings.speed;
+    if (c.cueEnd != null && c.elapsed >= c.cueEnd){ c.elapsed = c.cueEnd; showCheckpoint(false); }
+    updateIsland();
   }
+  const hm = fmtHM(S.sim);
+  if (el.sbTime.textContent !== hm){ el.sbTime.textContent = hm; $('#wTime').textContent = hm; }
+  if (++nowTick % 5 === 0) renderNow();
+}, 100);
 
-  function showReward(s) {
-    const timedWithin = s.boundaryMs != null && s.within_boundary === "yes";
-    setScreen("exit", `
-      <div class="pause">
-        <div class="brand"><span class="dot"></span>Pause</div>
-        <div class="exit-mark">${CHECK_SVG}</div>
-        <h1>You chose to stop.</h1>
-        <p class="sub">Your ${esc(last(s.nouns) || "session")} ended on your terms.</p>
-        ${timedWithin ? `<p class="sub">You stopped when you planned to.</p>` : ""}
-        ${state.rewardVariant === "B" ? `<div id="progress"></div>` : ""}
-        <div class="spacer"></div>
-        <div class="btn-stack">
-          <button class="btn primary" id="backDay">Back to my day</button>
-          <button class="btn" id="reflect">Reflect for a moment</button>
-        </div>
-      </div>`);
-    if (state.rewardVariant === "B") mountProgress(state.weeklyGoal == null ? "pick" : "animate");
-    $("#backDay").onclick = showHome;
-    $("#reflect").onclick = () => showReflect(s);
-  }
+/* ---------------- Console ---------------- */
+function consoleMsg(t){ const m = $('#msg'); m.textContent = t; clearTimeout(T.msg); T.msg = setTimeout(() => { m.textContent = ''; }, 5000); }
+function renderNow(){
+  const c = S.cur, line = $('#nowLine');
+  if (!c){ line.innerHTML = `Now: <b>home screen</b>, ${esc(S.settings.pid)}, session ${S.sessionN + 1} is next.`; return; }
+  const a = APPS[c.app].name;
+  const labels = {breath:'breathing screen', purpose:'purpose prompt', app:'scrolling', checkpoint:'checkpoint', reward:'exit screen', reflect:'reflection', declined:'chose not to open', ended:'interrupted', call:'incoming call'};
+  const t = c.startSim !== null ? `, ${mmss(c.elapsed)} simulated${c.cueEnd != null ? ' of ' + mmss(c.cueEnd) : ''}` : '';
+  line.innerHTML = `Now: <b>${a}, ${labels[S.screen] || S.screen}</b>${t}.`;
+}
+function renderSettings(){
+  $('#pid').value = S.settings.pid;
+  $('#weekStart').value = S.settings.weekStart;
+  $$('.segc').forEach(g => {
+    const key = g.dataset.setting;
+    const val = key === 'breath' ? (S.settings.breath ? 'on' : 'off') : String(S.settings[key]);
+    $$('button', g).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === val ? 'true' : 'false'));
+  });
+  const secs = 600 / S.settings.speed;
+  $('#speedHelp').textContent = `At ${S.settings.speed}×, a 10-minute cue arrives after ${secs >= 60 ? secs / 60 + (secs === 60 ? ' minute' : ' minutes') : secs + ' seconds'}. Use 10× with participants; 60× is for demos.`;
+}
+const pLabel = k => (P[k] ? P[k].label : k);
+function renderWatch(){
+  const pid = S.settings.pid, rows = S.log.filter(r => r.participant_id === pid && r.end_type !== 'unknown');
+  const box = $('#watch');
+  if (!rows.length){ box.innerHTML = `<p class="empty">No sessions yet for ${esc(pid)}. Ask them to open Loop, Clips or Feed.</p>`; return; }
+  const vals = rows.map(r => +r.purpose_decision_ms || 0);
+  const max = Math.max(4000, ...vals);
+  box.innerHTML = `<ol class="watch">${rows.map((r, i) => {
+    const ms = r.purpose_decision_ms, has = ms !== '' && ms != null;
+    const fast = has && +ms < 1000;
+    const first = String(r.purpose_history || '').split('>')[0];
+    const prevFirst = i > 0 ? String(rows[i - 1].purpose_history || '').split('>')[0] : '';
+    const same = i > 0 && first && first === prevFirst;
+    const changed = String(r.purpose_history || '').includes('>') ? ', changed to ' + esc(pLabel(r.purpose).toLowerCase()) : '';
+    const cps = r.checkpoint_decision_ms ? String(r.checkpoint_decision_ms).split('|').map(x => (x / 1000).toFixed(1) + ' s').join(', ') : '';
+    const flags = [
+      fast ? '<em class="flag">under 1 s</em>' : '',
+      same ? '<em class="flag">same purpose as last time</em>' : '',
+      r.end_type === 'declined' ? '<em class="flag ok">chose not to open</em>' : '',
+      r.end_type === 'interrupted' ? '<em class="flag soft">interrupted</em>' : '',
+      cps ? `<em class="flag soft">checkpoint ${cps}</em>` : ''
+    ].join('');
+    return `<li><span class="w-n">Session ${r.session_number}</span>
+      <span class="w-bar${fast ? ' fast' : ''}"><span style="width:${has ? Math.min(100, ms / max * 100) : 0}%"></span></span>
+      <span class="w-v">${has ? (ms / 1000).toFixed(1) + ' s' : 'none'}</span>
+      <span class="w-meta">${esc(r.app)}, ${r.trigger === 'notification' ? 'from a notification' : 'tapped'}${first ? ', ' + esc(pLabel(first)) + changed : ''}${r.time_cue_min && r.time_cue_min !== 'none' ? ', ' + r.time_cue_min + ' min' : r.time_cue_min === 'none' ? ', no timer' : ''} ${flags}</span></li>`;
+  }).join('')}</ol>`;
+}
+function pct(a, b){ return b ? Math.round(a / b * 100) + '%' : 'n/a'; }
+function renderTotals(){
+  const all = S.log.filter(r => r.end_type !== 'unknown');
+  const people = new Set(S.log.map(r => r.participant_id)).size;
+  const declined = all.filter(r => r.end_type === 'declined').length;
+  const withCp = all.filter(r => +r.checkpoint_count > 0);
+  const stop1 = withCp.filter(r => r.stop_within_1min_of_checkpoint === 'yes').length;
+  const vol = all.filter(r => r.end_type === 'voluntary');
+  const intr = all.filter(r => r.end_type === 'interrupted').length;
+  const saved = vol.filter(r => r.reflection === 'saved').length, skipped = vol.filter(r => r.reflection === 'skipped').length;
+  const notOpened = vol.filter(r => r.reflection === 'not_opened').length;
+  $('#totals').innerHTML = `
+    <div><dt>Sessions</dt><dd>${all.length}<small>from ${people} participant${people === 1 ? '' : 's'}</small></dd></div>
+    <div><dt>Chose not to open</dt><dd>${declined} of ${all.length}<small>${pct(declined, all.length)}. one sec field study (PNAS 2023): 36% of opening attempts.</small></dd></div>
+    <div><dt>Stopped within 1 minute of a checkpoint</dt><dd>${stop1} of ${withCp.length}<small>${pct(stop1, withCp.length)}. Compare with the Wellspent trial (JMIR mHealth 2026).</small></dd></div>
+    <div><dt>Chose to stop</dt><dd>${vol.length}<small>${intr} interrupted, which get no reward</small></dd></div>
+    <div><dt>Reflection</dt><dd>${saved} saved<small>${skipped} skipped, ${notOpened} not opened</small></dd></div>`;
+}
+function renderTable(){
+  const head = ['ID', '#', 'App', 'Opened', 'Purpose', 'Choose (ms)', 'Cue', 'Checkpoints', 'End', 'Within', 'Reward', 'Stops', 'Reflection', 'Worthwhile', 'In control'];
+  const rows = S.log.slice().reverse();
+  $('#logTable').innerHTML = `<thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${
+    rows.length ? rows.map(r => `<tr><td>${esc(r.participant_id)}</td><td>${r.session_number}</td><td>${esc(r.app)}</td><td>${r.trigger}</td><td>${esc(r.purpose_history || '')}</td><td>${r.purpose_decision_ms}</td><td>${r.time_cue_min}</td><td>${esc(r.checkpoint_choices || '')}</td><td>${r.end_type}${r.interruption ? ' (' + r.interruption + ')' : ''}</td><td>${r.within_boundary}</td><td>${r.reward_variant}</td><td>${r.chosen_stops_after}${r.weekly_goal ? '/' + r.weekly_goal : ''}</td><td>${r.reflection}</td><td>${r.worthwhile}</td><td>${r.in_control}</td></tr>`).join('')
+    : `<tr><td colspan="${head.length}">No sessions logged yet.</td></tr>`}</tbody>`;
+}
+function renderConsole(){ renderSettings(); renderWatch(); renderTotals(); renderTable(); renderNow(); }
 
-  function showExitNeutral(s, why) {
-    const text = why === "call" ? "A call came in, so the app closed."
-      : why === "class" ? "Class is starting, so the app closed."
-      : "The app is closed.";
-    setScreen("exit", `
-      <div class="pause">
-        <div class="brand"><span class="dot"></span>Pause</div>
-        <div class="exit-mark neutral">${NEUTRAL_SVG}</div>
-        <h1>Session ended</h1>
-        <p class="sub">${text}</p>
-        <div class="spacer"></div>
-        <div class="btn-stack">
-          <button class="btn primary" id="backDay">Back to my day</button>
-          <button class="btn" id="reflect">Reflect for a moment</button>
-        </div>
-      </div>`);
-    $("#backDay").onclick = showHome;
-    $("#reflect").onclick = () => showReflect(s);
-  }
-
-  function showReflect(s) {
-    const ans = { worthwhile: "", control: "" };
-    const seg = id => `<div class="seg" id="${id}">${["Yes", "Partly", "No"].map(v => `<button class="chip" data-v="${v}" aria-pressed="false">${v}</button>`).join("")}</div>`;
-    setScreen("reflect", `
-      <div class="pause">
-        <div class="brand"><span class="dot"></span>Pause <span class="ctx">· reflection</span></div>
-        <div class="q" style="margin-top:32px">Did this session feel worthwhile?</div>
-        ${seg("worthSeg")}
-        <div class="q">Did you feel in control?</div>
-        ${seg("controlSeg")}
-        <div class="spacer"></div>
-        <div class="btn-stack">
-          <button class="btn primary" id="saveR" disabled>Save reflection</button>
-          <button class="btn" id="skipR">Skip for now</button>
-        </div>
-        <p class="foot">Your reflection stays private.</p>
-      </div>`);
-    const pick = (id, key) => $(id).querySelectorAll("button").forEach(b => b.onclick = () => {
-      $(id).querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-      ans[key] = b.dataset.v.toLowerCase();
-      $("#saveR").disabled = false;
-    });
-    pick("#worthSeg", "worthwhile");
-    pick("#controlSeg", "control");
-    $("#saveR").onclick = () => {
-      s.worthwhile = ans.worthwhile;
-      s.felt_in_control = ans.control;
-      s.reflection_skipped = "no";
-      renderLog();
-      showSaved();
-    };
-    $("#skipR").onclick = () => { s.reflection_skipped = "yes"; renderLog(); showHome(); };
-  }
-
-  function showSaved() {
-    setScreen("saved", `
-      <div class="pause">
-        <div class="brand"><span class="dot"></span>Pause</div>
-        <div class="exit-mark">${CHECK_SVG}</div>
-        <h1>Reflection saved</h1>
-        <p class="sub">Thanks for taking a moment.</p>
-        <div class="spacer"></div>
-        <button class="btn primary" id="backDay">Back to my day</button>
-      </div>`);
-    $("#backDay").onclick = showHome;
-  }
-
-  // ---------- Clock ----------
-  let lastTick = performance.now();
-  setInterval(() => {
-    const now = performance.now(), d = now - lastTick;
-    lastTick = now;
-    const s = state.current;
-    if (s && state.screen === "feed") {
-      s.elapsedMs += d * state.speed;
-      if (s.boundaryMs != null && s.elapsedMs >= s.boundaryMs) {
-        s.elapsedMs = s.boundaryMs;
-        updateChip();
-        showCheckpoint();
-      } else updateChip();
-      renderLive();
+function toCSV(){
+  const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  return [COLS.join(',')].concat(S.log.map(r => COLS.map(k => q(r[k])).join(','))).join('\n');
+}
+const stamp = () => { const d = new Date(); return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()); };
+const downloadsP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : null;
+function showCsv(csv){ $('#csvText').value = csv; try{ $('#csvDialog').showModal(); }catch(e){ $('#csvDialog').setAttribute('open', ''); } $('#csvText').select(); }
+async function exportCSV(){
+  if (!S.log.length){ consoleMsg('Nothing to export yet.'); return; }
+  const csv = toCSV(), filename = `bookend-log-${stamp()}.csv`;
+  if (downloadsP){
+    const d = await downloadsP;
+    if (d){
+      try{ await d.save({filename, data:csv}); consoleMsg('Log saved.'); return; }
+      catch(e){
+        if (e && e.code === 'declined'){ consoleMsg('Save cancelled.'); return; }
+        if (e && e.code === 'rate_limited'){ consoleMsg('A save prompt is already open.'); return; }
+      }
     }
-  }, 200);
-
-  function tickClock() {
-    const d = new Date();
-    const t = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
-    $("#sbTime").textContent = t;
-    const ht = $("#homeTime");
-    if (ht) { ht.textContent = t; $("#homeDate").textContent = d.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" }); }
+    showCsv(csv); return;
   }
-  setInterval(tickClock, 10000);
+  try{
+    const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+    consoleMsg('Log downloaded.');
+  }catch(e){ showCsv(csv); }
+}
+function copyCSV(){
+  if (!S.log.length){ consoleMsg('Nothing to copy yet.'); return; }
+  const csv = toCSV();
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(csv).then(() => consoleMsg('Log copied. Paste it into a spreadsheet.'), () => showCsv(csv));
+  } else showCsv(csv);
+}
 
-  // ---------- Facilitator panel ----------
-  function segment(id, key, parse) {
-    const el = $(id);
-    const sync = () => el.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", String(String(state[key]) === o.dataset.v)));
-    el.querySelectorAll("button").forEach(b => b.onclick = () => {
-      state[key] = parse ? parse(b.dataset.v) : b.dataset.v;
-      sync();
-      renderLive();
-    });
-    sync();
-  }
-  segment("#promptSeg", "promptVariant");
-  segment("#rewardSeg", "rewardVariant");
-  segment("#speedSeg", "speed", Number);
+/* ---------------- Console wiring ---------------- */
+function newParticipant(){
+  if (S.cur && !S.cur.endType) endSession('unknown');
+  else if (S.cur) goHome();
+  const m = /^(.*?)(\d+)$/.exec(S.settings.pid);
+  if (m) S.settings.pid = m[1] + String(+m[2] + 1).padStart(m[2].length, '0');
+  S.sessionN = 0; S.week = {stops:S.settings.weekStart, goal:null};
+  hideNotif(); save(); goHome();
+  consoleMsg(`Ready for ${S.settings.pid}.`);
+}
+$('#btnNew').addEventListener('click', newParticipant);
+$('#pid').addEventListener('change', e => {
+  const v = e.target.value.trim() || 'P01';
+  S.settings.pid = v;
+  S.sessionN = S.log.filter(r => r.participant_id === v).length;
+  save(); renderConsole();
+});
+$('#weekStart').addEventListener('change', e => {
+  const v = Math.max(0, Math.min(50, parseInt(e.target.value, 10) || 0));
+  S.settings.weekStart = v;
+  if (!S.log.some(r => r.participant_id === S.settings.pid)) S.week.stops = v;
+  save(); renderConsole();
+});
+$$('.segc').forEach(g => g.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const key = g.dataset.setting;
+  if (key === 'breath') S.settings.breath = b.dataset.v === 'on';
+  else if (key === 'speed') S.settings.speed = +b.dataset.v;
+  else S.settings[key] = b.dataset.v;
+  save(); renderSettings();
+}));
+$$('[data-notify]').forEach(b => b.addEventListener('click', () => notify(b.dataset.notify)));
+$$('[data-interrupt]').forEach(b => b.addEventListener('click', () => interrupt(b.dataset.interrupt)));
+$('#btnUnknown').addEventListener('click', () => {
+  if (S.cur && !S.cur.endType){ endSession('unknown'); consoleMsg('Session ended and logged as unknown.'); }
+  else if (S.cur){ goHome(); }
+  else consoleMsg('No session is open.');
+});
+$('#btnExport').addEventListener('click', exportCSV);
+$('#btnCopy').addEventListener('click', copyCSV);
+let clearArmed = false;
+$('#btnClear').addEventListener('click', e => {
+  if (!clearArmed){ clearArmed = true; e.target.textContent = 'Click again to clear everything'; T.clr = setTimeout(() => { clearArmed = false; e.target.textContent = 'Clear log'; }, 4000); return; }
+  clearArmed = false; e.target.textContent = 'Clear log';
+  S.log = []; S.sessionN = 0; save(); renderConsole(); consoleMsg('Log cleared.');
+});
+$('#csvClose').addEventListener('click', () => { try{ $('#csvDialog').close(); }catch(e){ $('#csvDialog').removeAttribute('open'); } });
+function setPView(on){ document.body.classList.toggle('pview', on); }
+$('#btnPView').addEventListener('click', () => setPView(true));
+let taps = [];
+el.sbTime.addEventListener('click', () => {
+  const t = performance.now(); taps = taps.filter(x => t - x < 3000); taps.push(t);
+  if (taps.length >= 5){ taps = []; setPView(!document.body.classList.contains('pview')); }
+});
 
-  $("#pidInput").value = state.pid;
-  $("#pidInput").addEventListener("change", e => {
-    const v = e.target.value.trim();
-    if (v) { state.pid = v; state.sessionCounter = state.sessions.filter(s => s.participant_id === v).length; }
-    else e.target.value = state.pid;
-    renderLive();
-  });
-  $("#weekSeed").addEventListener("change", e => {
-    const v = Math.max(0, Math.round(+e.target.value || 0));
-    e.target.value = v;
-    state.weekStops += v - state.weekSeed;
-    state.weekSeed = v;
-  });
-  $("#newParticipant").onclick = () => {
-    if (state.current) endSession("unknown");
-    state.pNum++;
-    state.pid = "P" + String(state.pNum).padStart(2, "0");
-    $("#pidInput").value = state.pid;
-    state.sessionCounter = 0;
-    state.weekStops = state.weekSeed;
-    state.weeklyGoal = null;
-    state.notif = null;
-    showHome();
-  };
-  $("#simNotif").onclick = () => {
-    if (state.current) return;
-    state.notif = $("#notifApp").value;
-    if (state.screen === "home") showHome();
-    renderLive();
-  };
-  $("#simInterrupt").onclick = () => {
-    if (!state.current) return;
-    const s = endSession("interrupted");
-    showExitNeutral(s, $("#interruptKind").value);
-  };
-  $("#panelClose").onclick = () => document.documentElement.classList.remove("show-panel");
-
-  function renderLive() {
-    const s = state.current;
-    const screenNames = { home: "Home", prompt: "Purpose prompt", feed: "In app (feed)", checkpoint: "Checkpoint", exit: "Exit screen", reflect: "Reflection", saved: "Reflection saved" };
-    const cells = [
-      ["Screen", screenNames[state.screen] || state.screen],
-      ["Session", s ? s.session_id : "—"],
-      ["Purpose", s && s.purposes.length ? last(s.purposes) : "—"],
-      ["Time in app", s && s.opened ? mmss(s.elapsedMs) : "—"],
-      ["Current cue ends", s && s.opened ? (s.boundaryMs == null ? "No timer" : mmss(s.boundaryMs)) : "—"],
-      ["Chosen stops / goal", `${state.weekStops} / ${state.weeklyGoal ?? "not set"}`],
-      ["Pending notification", state.notif || "—"]
-    ];
-    $("#live").innerHTML = cells.map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join("");
-    $("#simNotif").disabled = !!state.current;
-    $("#simInterrupt").disabled = !state.current;
-  }
-
-  function rowValues(s) {
-    return {
-      participant_id: s.participant_id,
-      session_id: s.session_id,
-      session_number: s.session_number,
-      app: s.app,
-      trigger: s.trigger,
-      prompt_variant: s.prompt_variant,
-      purpose: s.opened ? s.purposes.join(" > ") : "(not opened)",
-      time_cue_chosen: s.time_cue_chosen,
-      purpose_decision_ms: s.purpose_decisions.join("|"),
-      start_time: s.start ? s.start.toISOString() : "",
-      checkpoint_count: s.opened ? s.checkpoint_count : "",
-      checkpoint_choice: last(s.checkpoint_choices) || "",
-      checkpoint_choices: s.checkpoint_choices.join("|"),
-      checkpoint_decision_ms: s.checkpoint_decisions.join("|"),
-      final_boundary: !s.opened ? "" : s.boundaryMs == null ? "none" : fmtMin(s.boundaryMs),
-      end_time: s.end ? s.end.toISOString() : "",
-      end_type: s.status === "active" ? "(in progress)" : s.end_type,
-      within_boundary: s.within_boundary,
-      reward_variant_shown: s.reward_variant_shown,
-      reflection_skipped: s.reflection_skipped,
-      worthwhile: s.worthwhile,
-      felt_in_control: s.felt_in_control,
-      time_speed: s.status === "active" ? state.speed : s.speed,
-      sim_duration_s: s.opened ? Math.round(s.elapsedMs / 1000) : ""
-    };
-  }
-
-  function renderLog() {
-    const wrap = $("#logWrap");
-    if (!state.sessions.length) { wrap.innerHTML = `<div class="empty">No sessions yet. Tap an app on the phone to start one.</div>`; return; }
-    const rows = state.sessions.slice().reverse();
-    wrap.innerHTML = `<table><thead><tr>${COLS.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${
-      rows.map(s => { const v = rowValues(s); return `<tr class="${s.status === "active" ? "active" : ""}">${COLS.map(c => `<td>${esc(v[c])}</td>`).join("")}</tr>`; }).join("")
-    }</tbody></table>`;
-  }
-
-  function buildCSV() {
-    const done = state.sessions.filter(s => s.status === "done");
-    const cell = v => { const t = String(v ?? ""); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
-    const lines = [COLS.join(",")].concat(done.map(s => { const v = rowValues(s); return COLS.map(c => cell(v[c])).join(","); }));
-    return { csv: lines.join("\n"), count: done.length, open: state.sessions.length - done.length };
-  }
-  function csvNote(r) { return `${r.count} session${r.count === 1 ? "" : "s"}${r.open ? " (the session in progress is not included)" : ""}`; }
-
-  $("#exportCsv").onclick = () => {
-    const r = buildCSV();
-    const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
-    try {
-      const url = URL.createObjectURL(new Blob([r.csv], { type: "text/csv" }));
-      const a = document.createElement("a");
-      a.href = url; a.download = `pause-log-${stamp}.csv`;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-    } catch (e) { /* downloads can be blocked; the text below is the fallback */ }
-    const out = $("#csvOut");
-    out.value = r.csv; out.hidden = false;
-    $("#csvMsg").textContent = `Exported ${csvNote(r)}. If no file downloaded, copy the text below.`;
-  };
-  $("#copyCsv").onclick = () => {
-    const r = buildCSV();
-    const out = $("#csvOut");
-    out.value = r.csv;
-    navigator.clipboard.writeText(r.csv)
-      .then(() => { $("#csvMsg").textContent = `Copied ${csvNote(r)}. Paste into a spreadsheet.`; })
-      .catch(() => { out.hidden = false; out.focus(); out.select(); $("#csvMsg").textContent = "Copy was blocked. The CSV is selected below; press Ctrl/Cmd+C."; });
-  };
-
-  window.addEventListener("beforeunload", e => {
-    if (state.sessions.length) { e.preventDefault(); e.returnValue = ""; }
-  });
-
-  // ---------- Fit phone to the window (laptop view only) ----------
-  function fit() {
-    const col = $("#phoneCol");
-    if (pmode) { col.style.zoom = ""; return; }
-    const byH = (window.innerHeight - 32) / 872;
-    const byW = (window.innerWidth - 32) / 418;
-    col.style.zoom = Math.max(0.55, Math.min(1, window.innerWidth >= 900 ? Math.min(byH, byW) : byW));
-  }
-  window.addEventListener("resize", fit);
-
-  if (pmode) document.documentElement.classList.add("pmode");
-  fit();
-  showHome();
-  renderLog();
+/* ---------------- Start ---------------- */
+load();
+const qs = new URLSearchParams(location.search);
+if (qs.get('speed') && [1, 10, 60].includes(+qs.get('speed'))) S.settings.speed = +qs.get('speed');
+if (qs.get('reward') && /^[AB]$/i.test(qs.get('reward'))) S.settings.reward = qs.get('reward').toUpperCase();
+if (qs.get('breath')) S.settings.breath = qs.get('breath') === '1' || qs.get('breath') === 'on';
+if (qs.get('pid')){ S.settings.pid = qs.get('pid'); S.sessionN = S.log.filter(r => r.participant_id === S.settings.pid).length; }
+if (qs.get('participant') === '1') setPView(true);
+$('#cMark').innerHTML = MARK_SVG(30);
+buildHome();
+setScreen('home');
+el.sbTime.textContent = fmtHM(S.sim); $('#wTime').textContent = fmtHM(S.sim);
+renderConsole();
 })();
 </script>
 </body>
