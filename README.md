@@ -33,17 +33,19 @@ The counter under the progress bar always shows Reels and time together, for exa
 
 Your own words are matched to card topics with a plain keyword list (for example "marketing" → the scarcity card, "Formula 1" → the F1 card, "Japan" → the Kyoto card). This is simple matching, not AI.
 
-**Learn something instead.** After the five-second pause, this shows **one** card (examples: Kyoto, Rome, marketing, Formula 1, fashion, cooking) picked from your profile: planned trips first, then subjects to explore, work or study, interests, Instagram interests, and places visited. Each card has:
-- a heading saying why it was picked ("Because you're planning to visit Rome")
-- a photo where a relevant one exists (sky, parrots, lighthouse); otherwise a colour band
-- a 60–100-word explanation (about 30–60 seconds)
-- a one-question quiz or one extra fact
-- a source link (Wikipedia, NASA, WHO, Britannica, Investopedia). Wikipedia sources open inside the phone in a small viewer with **Done** to return to the card; other sites don't allow being shown inside another page, so they open in a new tab
-- feedback: Interesting / Not for me / Already knew this (cards marked "Not for me" or "Already knew this" are skipped next time)
-- a Done button. There is no next card, autoplay, streak or quota.
-- a note that it is a curated demo card checked against its source, not AI-generated and not live news.
+**Learn something instead.** After the five-second pause, this shows **one** discovery card, picked automatically from your profile (planned trips first, then subjects to explore, work or study, interests, Instagram interests, places visited). Examples: Kyoto, Rome, marketing, Formula 1, fashion, cooking. The card fits on one phone screen and shows only:
+- a small label saying why it was picked ("Because you're planning to visit Kyoto")
+- one image: a photo where a relevant one exists (sky, parrots, lighthouse), otherwise a simple illustration
+- a question-style title ("Why is the sky blue?")
+- a 40–60-word explanation
+- a discreet source link. Wikipedia sources open inside the phone with **Done** to return to the card; other sites open in a new tab
+- one **Done for now** button
 
-If you skip setup, you get a general card about variable rewards and an invitation to personalise.
+A small **Change topic** link under the card opens a separate, compact topic picker ("For you" topics from your profile, then "Something different"). Picking a topic replaces the card with one card on that topic.
+
+**After Done for now**, an optional follow-up screen shows a quick question (or one extra fact) and "Was this for you?" feedback: Interesting / Not for me / Already knew this. Cards marked "Not for me" or "Already knew this" are skipped next time. Everything there is optional; **Finish** leaves straight away. There is no next card, autoplay, streak or quota. Cards are labelled as curated demo content, not AI-generated and not live news.
+
+If you skip setup, you get a general card about variable rewards; the topic picker offers to personalise.
 
 **Learning from the demo feed.** In the simulated Instagram you can save Reels and posts, and some Reels have an **ⓘ Learn more about …** button. When you've saved or tapped Learn more twice on the same topic (for example, nature), Pause asks on the home screen and in My Interests whether to add it. Nothing is added without your confirmation. Confirmed topics appear under **From the demo feed** in My Interests, where you can remove them, see the raw signal counts, and clear all signals.
 

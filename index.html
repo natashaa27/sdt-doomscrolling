@@ -173,6 +173,18 @@
     .lcard{margin-top:12px;background:var(--white);border:1px solid var(--edge);border-radius:20px;overflow:hidden}
     .lcard-img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
     .lcard-band{height:10px}
+    .lcard-art{height:132px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 60%),var(--art)}
+    .lcard-art span{font-size:58px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.2))}
+    .learn-inner .lcard-img{aspect-ratio:auto;height:150px}
+    .lcard-foot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:2px}
+    .lcard-foot span{font-size:10.5px;color:#8a998d;white-space:nowrap}
+    .lcard-foot .lcard-src,.lcard-foot .lcard-src.as-link{font-size:11.5px;font-weight:600;color:#6b7f71}
+    .change-topic{align-self:center;margin-top:12px;border:0;background:transparent;color:#2f6b4a;font:inherit;font-size:13px;font-weight:650;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px}
+    .learn-recap{font-family:Georgia,serif;font-style:italic;margin:6px 0 16px}
+    .fb-box{display:flex;flex-direction:column;gap:8px;margin-top:16px}.fb-box em{font-style:normal;color:#8a998d}
+    .topic-wrap{display:flex;flex-wrap:wrap;gap:7px}
+    .learn-inner>[data-action="learn-done"]{position:sticky;bottom:12px;box-shadow:0 6px 18px rgba(20,40,30,.18)}
+    @media (max-height:760px){.learn-inner .lcard-img{height:112px}.lcard-art{height:96px}.lcard-art span{font-size:44px}.learn-inner .lcard h3{font-size:21px}.learn-inner .lcard-text{font-size:13.5px;line-height:1.5}.learn-inner .lcard-body{gap:8px;padding:12px 14px 14px}.learn-inner .change-topic{margin-top:6px}}
     .lcard-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
     .lcard-why{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4e7a5f}
     .lcard h3{font-family:Georgia,serif;font-size:24px;font-weight:400;letter-spacing:-.03em;line-height:1.15;margin:0}
@@ -244,129 +256,133 @@
   /* Curated learning cards. Each is short (60–100 words), fact-checked and linked to a source.
      tags: place:<id> (visited or planned), interest:<id> (interests, subjects to explore, Instagram interests), field:<id>. */
   const LEARN_CARDS=[
-    {id:'kyoto',tags:['place:kyoto'],title:'Why Kyoto was Japan’s capital for over 1,000 years',color:'#8a3b2e',
-     body:'In 794, Emperor Kanmu moved the court to a new city laid out on a grid: Heian-kyō, today’s Kyoto. It stayed the imperial capital until 1868, when the emperor moved to Tokyo. That long stretch is why Kyoto holds so many temples. At Kiyomizu-dera, founded in 778, the main hall’s wooden stage juts out over the hillside on tall pillars. The present buildings date from 1633, and the stage was built without nails.',
+    {id:'kyoto',tags:['place:kyoto'],emoji:'⛩️',title:'Why was Kyoto Japan’s capital for over 1,000 years?',color:'#8a3b2e',
+     body:'In 794, Emperor Kanmu moved the court to a new grid-planned city, Heian-kyō, today’s Kyoto. It stayed the imperial capital until 1868, when the emperor moved to Tokyo. That long stretch is why Kyoto holds so many temples, like Kiyomizu-dera, whose wooden stage juts out over the hillside and was built without nails.',
      quiz:{q:'In which year did Heian-kyō (Kyoto) become Japan’s capital?',opts:['794','1185','1603'],a:0,why:'Emperor Kanmu moved the court there in 794.'},
      source:{name:'Wikipedia: Heian-kyō',url:'https://en.wikipedia.org/wiki/Heian-ky%C5%8D'}},
-    {id:'trevi',tags:['place:rome'],title:'The Trevi Fountain still runs on an ancient aqueduct',color:'#3f6f8f',
-     body:'The Trevi Fountain was finished in 1762 to a design by Nicola Salvi. It marks the end of the Aqua Virgo, an aqueduct built in 19 BC under Marcus Agrippa, which still supplies the fountain today. Legend says a coin thrown over your left shoulder means you will return to Rome. Visitors throw in more than a million euros a year, and the city gives the money to the charity Caritas.',
+    {id:'trevi',tags:['place:rome'],emoji:'⛲',title:'How is the Trevi Fountain still fed by ancient Rome?',color:'#3f6f8f',
+     body:'Finished in 1762 to Nicola Salvi’s design, the Trevi Fountain marks the end of the Aqua Virgo, an aqueduct built in 19 BC under Marcus Agrippa. It still supplies the fountain today. Legend says a coin thrown over your left shoulder means you’ll return to Rome, and the city gives the money to the charity Caritas.',
      quiz:{q:'Which ancient aqueduct feeds the Trevi Fountain?',opts:['Aqua Appia','Aqua Virgo','Aqua Claudia'],a:1,why:'The Aqua Virgo, built in 19 BC, still supplies it.'},
      source:{name:'Wikipedia: Trevi Fountain',url:'https://en.wikipedia.org/wiki/Trevi_Fountain'}},
-    {id:'colosseum',tags:['place:rome'],title:'The Colosseum had a retractable roof',color:'#a0703c',
-     body:'Construction of the Colosseum began under Emperor Vespasian around AD 70, and his son Titus opened it in AD 80 with 100 days of games. It could hold an estimated 50,000 to 80,000 people. To shade the crowd, sailors rigged a huge canvas awning, the velarium, from wooden masts around the top. Holes for those masts can still be seen in the upper walls.',
+    {id:'colosseum',tags:['place:rome'],emoji:'🏟️',title:'Did the Colosseum have a roof?',color:'#a0703c',
+     body:'Emperor Titus opened the Colosseum in AD 80 with 100 days of games, for an estimated 50,000 to 80,000 people. To shade the crowd, sailors rigged a huge canvas awning, the velarium, from wooden masts around the top. You can still see the holes for those masts in the upper walls.',
      quiz:{q:'Which emperor opened the Colosseum in AD 80?',opts:['Nero','Titus','Hadrian'],a:1,why:'Titus, Vespasian’s son, opened it with 100 days of games.'},
      source:{name:'Wikipedia: Colosseum',url:'https://en.wikipedia.org/wiki/Colosseum'}},
-    {id:'eiffel',tags:['place:paris'],title:'The Eiffel Tower was meant to be temporary',color:'#6a5d4f',
-     body:'The Eiffel Tower was built for the 1889 World’s Fair and was only permitted to stand for 20 years. Gustave Eiffel helped save it by using it for science, especially radio experiments, and its value as a radio antenna convinced the city to keep it. The iron also responds to the weather: on hot days it expands, and the tower can grow by up to about 15 centimetres.',
+    {id:'eiffel',tags:['place:paris'],emoji:'🗼',title:'Was the Eiffel Tower meant to come down?',color:'#6a5d4f',
+     body:'Built for the 1889 World’s Fair, the Eiffel Tower was only permitted to stand for 20 years. Gustave Eiffel helped save it by using it for science, especially radio experiments, and its value as an antenna convinced the city to keep it. On hot days the iron expands, and the tower can grow by about 15 centimetres.',
      quiz:{q:'What helped save the Eiffel Tower from demolition?',opts:['Its use as a radio antenna','A public vote','A royal decree'],a:0,why:'Radio transmission made it too useful to take down.'},
      source:{name:'Wikipedia: Eiffel Tower',url:'https://en.wikipedia.org/wiki/Eiffel_Tower'}},
-    {id:'sagrada',tags:['place:barcelona'],title:'Gaudí knew he would never see the Sagrada Família finished',color:'#b0683a',
-     body:'Construction of the Sagrada Família began in 1882, and Antoni Gaudí took over the project a year later. He worked on it for the rest of his life, and when he died in 1926 less than a quarter of it was complete. He knew it would outlast him, and is often quoted as saying, “My client is not in a hurry.” Work has continued for more than a century since.',
+    {id:'sagrada',tags:['place:barcelona'],emoji:'⛪',title:'Did Gaudí expect to see the Sagrada Família finished?',color:'#b0683a',
+     body:'Work on the Sagrada Família began in 1882, and Antoni Gaudí took over a year later. He worked on it for the rest of his life, and when he died in 1926 less than a quarter was complete. He knew it would outlast him, and is often quoted as saying, “My client is not in a hurry.”',
      fact:'Gaudí is buried in the crypt of the basilica he designed.',
      source:{name:'Wikipedia: Sagrada Família',url:'https://en.wikipedia.org/wiki/Sagrada_Fam%C3%ADlia'}},
-    {id:'hagia',tags:['place:istanbul'],title:'Hagia Sophia’s dome seems to float',color:'#7a5a8c',
-     body:'Hagia Sophia was completed in 537 under the Byzantine emperor Justinian I, in just under six years. Its huge central dome sits on pendentives, curved triangles that let a round dome rest on a square base, and a ring of windows at its base makes it seem to float on light. For nearly a thousand years it was the largest cathedral in the world. It later became a mosque, then a museum, and a mosque again in 2020.',
+    {id:'hagia',tags:['place:istanbul'],emoji:'🕌',title:'How does Hagia Sophia’s dome seem to float?',color:'#7a5a8c',
+     body:'Completed in 537 under the Byzantine emperor Justinian I, Hagia Sophia has a huge dome resting on pendentives, curved triangles that let a round dome sit on a square base. A ring of windows around its base makes it seem to float on light. For nearly a thousand years it was the world’s largest cathedral.',
      quiz:{q:'Which emperor built Hagia Sophia?',opts:['Constantine','Justinian I','Theodosius'],a:1,why:'Justinian I completed it in 537.'},
      source:{name:'Wikipedia: Hagia Sophia',url:'https://en.wikipedia.org/wiki/Hagia_Sophia'}},
-    {id:'bigben',tags:['place:london'],title:'Big Ben is a bell, not a tower',color:'#5b6a7a',
-     body:'Strictly speaking, “Big Ben” is the nickname of the Great Bell inside the clock tower at the Palace of Westminster, not the tower itself. The bell weighs about 13.7 tonnes and has a noticeable crack, which gives it a slightly unusual tone. The tower was called the Clock Tower until 2012, when it was renamed the Elizabeth Tower to mark Queen Elizabeth II’s Diamond Jubilee.',
+    {id:'bigben',tags:['place:london'],emoji:'🔔',title:'Is Big Ben actually the tower?',color:'#5b6a7a',
+     body:'Strictly speaking, “Big Ben” is the nickname of the Great Bell inside the clock tower at Westminster, not the tower itself. The bell weighs about 13.7 tonnes and has a crack that gives it a slightly unusual tone. The tower was renamed the Elizabeth Tower in 2012 for Queen Elizabeth II’s Diamond Jubilee.',
      quiz:{q:'What is the tower’s official name since 2012?',opts:['Victoria Tower','Elizabeth Tower','Westminster Tower'],a:1,why:'It was renamed for the Diamond Jubilee.'},
      source:{name:'Wikipedia: Big Ben',url:'https://en.wikipedia.org/wiki/Big_Ben'}},
-    {id:'liberty',tags:['place:new-york'],title:'The Statue of Liberty used to be copper-brown',color:'#4f8a7a',
-     body:'The Statue of Liberty was a gift from France, designed by Frédéric Auguste Bartholdi and dedicated in 1886. Its internal iron framework was engineered by Gustave Eiffel, three years before his famous tower. The statue’s thin copper skin was originally a shiny reddish-brown. Weather slowly formed a green layer called a patina, and within about 20 to 30 years the whole statue had turned the colour we know today. The patina also protects the copper underneath.',
+    {id:'liberty',tags:['place:new-york'],emoji:'🗽',title:'Why is the Statue of Liberty green?',color:'#4f8a7a',
+     body:'The Statue of Liberty, a gift from France dedicated in 1886, has a thin copper skin that was originally a shiny reddish-brown. Weather slowly formed a green layer called a patina, and within about 20 to 30 years the whole statue had turned green. The patina protects the copper underneath. Gustave Eiffel engineered its iron frame.',
      quiz:{q:'Who engineered the statue’s internal framework?',opts:['Gustave Eiffel','Frédéric Bartholdi','Frank Lloyd Wright'],a:0,why:'Eiffel designed the iron skeleton.'},
      source:{name:'Wikipedia: Statue of Liberty',url:'https://en.wikipedia.org/wiki/Statue_of_Liberty'}},
-    {id:'scarcity',tags:['field:marketing','field:business','interest:psychology'],title:'Why “only 2 left” makes you want it more',color:'#8c4f5e',
-     body:'In a 1975 study, Stephen Worchel and colleagues gave people a cookie from a jar holding either ten cookies or just two. The same cookies were rated as more desirable when they came from the nearly empty jar. This is the scarcity effect: things seem more valuable when they seem limited. It explains “only 2 left in stock” labels and countdown timers, and why pausing before a limited offer helps you judge the product itself.',
+    {id:'scarcity',tags:['field:marketing','field:business','interest:psychology'],emoji:'🍪',title:'Why does “only 2 left” make you want it more?',color:'#8c4f5e',
+     body:'In a 1975 study, people were given a cookie from a jar holding either ten cookies or just two. The same cookies were rated more desirable when they came from the nearly empty jar. This is the scarcity effect: things seem more valuable when they seem limited. It’s why shops use “only 2 left” labels and countdown timers.',
      quiz:{q:'In the study, which cookies were rated more desirable?',opts:['From the full jar','From the nearly empty jar','No difference'],a:1,why:'Scarcity made identical cookies seem better.'},
      source:{name:'Wikipedia: Scarcity (social psychology)',url:'https://en.wikipedia.org/wiki/Scarcity_(social_psychology)'}},
-    {id:'monalisa',tags:['interest:art','field:design','field:arts'],title:'A theft made the Mona Lisa world-famous',color:'#6b5b3a',
-     body:'In 1911, the Mona Lisa was stolen from the Louvre by Vincenzo Peruggia, an Italian handyman who had worked there. He hid in the museum overnight and walked out with the painting under his clothes. It was missing for more than two years, until he tried to sell it in Florence in 1913. The worldwide news coverage turned a respected painting into the most famous artwork on Earth.',
+    {id:'monalisa',tags:['interest:art','field:design','field:arts'],emoji:'🖼️',title:'How did a theft make the Mona Lisa famous?',color:'#6b5b3a',
+     body:'In 1911, Vincenzo Peruggia, a handyman who had worked at the Louvre, hid in the museum overnight and walked out with the Mona Lisa under his clothes. It was missing for over two years, until he tried to sell it in Florence in 1913. Worldwide news coverage made it the most famous painting on Earth.',
      quiz:{q:'How long was the Mona Lisa missing?',opts:['About two weeks','Over two years','Ten years'],a:1,why:'Stolen in 1911, it was recovered in December 1913.'},
      source:{name:'Wikipedia: Mona Lisa',url:'https://en.wikipedia.org/wiki/Mona_Lisa'}},
-    {id:'maillard',tags:['interest:cooking'],title:'Why browned food tastes so good',color:'#9c5a2e',
-     body:'The deep flavour of toast, seared steak and roasted coffee comes from the Maillard reaction, first described by the French chemist Louis-Camille Maillard in 1912. When amino acids and sugars are heated, they react to form hundreds of new flavour and aroma compounds and a brown colour. It happens quickly above roughly 140 °C, which is why a wet surface, stuck near 100 °C while water evaporates, steams instead of browning.',
+    {id:'maillard',tags:['interest:cooking'],emoji:'🍞',title:'Why does browned food taste so good?',color:'#9c5a2e',
+     body:'The flavour of toast, seared steak and roasted coffee comes from the Maillard reaction, described by the chemist Louis-Camille Maillard in 1912. When amino acids and sugars are heated, they form hundreds of new flavour compounds and a brown colour. It happens quickly above roughly 140 °C, which is why a wet surface steams instead of browning.',
      fact:'Pat meat or vegetables dry before searing. Less surface water means faster browning and more flavour.',
      source:{name:'Wikipedia: Maillard reaction',url:'https://en.wikipedia.org/wiki/Maillard_reaction'}},
-    {id:'buttress',tags:['interest:architecture','field:architecture'],title:'How flying buttresses let cathedrals fill with light',color:'#58657a',
-     body:'Tall stone vaults push outwards, so early churches needed thick walls with small windows. Gothic builders solved this with flying buttresses: stone arches on the outside that carry that sideways push down to separate piers. With the walls no longer holding everything up, they could be thinner and filled with huge stained-glass windows. Notre-Dame de Paris, begun in 1163, was one of the first cathedrals to use them.',
+    {id:'buttress',tags:['interest:architecture','field:architecture'],emoji:'🪟',title:'How did Gothic cathedrals get such huge windows?',color:'#58657a',
+     body:'Tall stone vaults push outwards, so early churches needed thick walls and small windows. Gothic builders added flying buttresses: stone arches on the outside that carry that sideways push down to separate piers. Freed from holding everything up, walls could be thinner and filled with stained glass. Notre-Dame de Paris, begun in 1163, was an early example.',
      quiz:{q:'What problem do flying buttresses solve?',opts:['Roof leaks','The outward push of heavy vaults','Earthquakes'],a:1,why:'They carry the sideways thrust away from the walls.'},
      source:{name:'Wikipedia: Flying buttress',url:'https://en.wikipedia.org/wiki/Flying_buttress'}},
-    {id:'lighthouse',tags:['interest:architecture','interest:travel'],img:'kodim21',title:'Every lighthouse has its own signature',color:'#2c6aa0',
-     body:'Sailors need to know exactly which lighthouse they are looking at. By day, many towers are identified by their daymark, a distinctive shape or painted pattern such as stripes or bands. At night, each light has its own light characteristic, a unique pattern of flashes, colours and timing. These signatures are published in official lists of lights, so a navigator can match a pattern to a position on the chart.',
+    {id:'lighthouse',tags:['interest:architecture','interest:travel'],img:'kodim21',emoji:'🗼',title:'How do sailors tell one lighthouse from another?',color:'#2c6aa0',
+     body:'By day, many lighthouses are identified by their daymark, a distinctive shape or painted pattern such as stripes. At night, each light has its own characteristic: a unique pattern of flashes, colours and timing. These signatures are published in official lists of lights, so navigators can match what they see to a position on the chart.',
      fact:'The pattern is often written in code on nautical charts, for example “Fl(2) 10s”: two flashes every ten seconds.',
      source:{name:'Wikipedia: Light characteristic',url:'https://en.wikipedia.org/wiki/Light_characteristic'}},
-    {id:'parrots',tags:['interest:nature','interest:science'],img:'kodim23',title:'Parrots make colours no other birds can',color:'#2f8f5b',
-     body:'The reds and yellows of parrots come from pigments called psittacofulvins, which are found only in parrots. Most other birds get similar colours from carotenoids in their food, but parrots make these pigments themselves. Their blues are different again: there is no blue pigment at all. Tiny structures in the feathers scatter light so that blue is what reaches your eye. Greens usually combine that structural blue with yellow pigment.',
+    {id:'parrots',tags:['interest:nature','interest:science'],img:'kodim23',emoji:'🦜',title:'Where do parrots get their colours?',color:'#2f8f5b',
+     body:'Parrots’ reds and yellows come from pigments called psittacofulvins, found only in parrots. Most other birds get similar colours from their food, but parrots make these pigments themselves. Their blues aren’t pigment at all: tiny structures in the feathers scatter light so that blue reaches your eye. Greens usually mix that structural blue with yellow pigment.',
      quiz:{q:'Where does the blue in parrot feathers come from?',opts:['Blue pigment','Feather structure scattering light','Their diet'],a:1,why:'Blue in feathers is structural, not a pigment.'},
      source:{name:'Wikipedia: Psittacofulvin',url:'https://en.wikipedia.org/wiki/Psittacofulvin'}},
-    {id:'sky',tags:['interest:science','interest:nature'],img:'kodim16',title:'Why the sky is blue',color:'#2f86b6',
-     body:'Sunlight contains every colour. As it passes through the air, tiny gas molecules scatter short wavelengths such as blue much more strongly than long wavelengths such as red. That scattered blue light reaches your eyes from every direction, so the whole sky looks blue. At sunset, light travels through far more air to reach you. Most of the blue is scattered away before it arrives, leaving the oranges and reds.',
+    {id:'sky',tags:['interest:science','interest:nature'],img:'kodim16',emoji:'🌤️',title:'Why is the sky blue?',color:'#2f86b6',
+     body:'Sunlight contains every colour. As it passes through the air, tiny gas molecules scatter short wavelengths like blue much more strongly than long ones like red, so blue light reaches your eyes from every direction. At sunset, light travels through far more air. Most of the blue is scattered away, leaving the oranges and reds.',
      fact:'This is called Rayleigh scattering. Next sunset, notice that the sky overhead often stays blue while the horizon glows orange.',
      source:{name:'NASA Space Place: Why is the sky blue?',url:'https://spaceplace.nasa.gov/blue-sky/en/'}},
-    {id:'variable',tags:['interest:psychology','field:psychology'],title:'Why you keep checking: variable rewards',color:'#5d6fb3',
-     body:'B. F. Skinner and colleagues found that animals rewarded on an unpredictable schedule kept pressing a lever far longer than animals rewarded every time. Not knowing when the next reward will come keeps the behaviour going. Feeds work in a similar way. Most posts are forgettable, but now and then one is great, and you cannot tell which swipe will bring it. So “just one more” always feels worth it.',
+    {id:'variable',tags:['interest:psychology','field:psychology'],emoji:'🎰',title:'Why is it so hard to stop at “one more”?',color:'#5d6fb3',
+     body:'B. F. Skinner found that animals rewarded on an unpredictable schedule kept pressing a lever far longer than animals rewarded every time. Not knowing when the next reward will come keeps the behaviour going. Feeds work similarly: most posts are forgettable, but now and then one is great, so “just one more” always feels worth it.',
      fact:'Next time you reach to refresh, notice the “maybe this one” feeling. Naming it makes it easier to stop.',
      source:{name:'Wikipedia: Reinforcement (schedules)',url:'https://en.wikipedia.org/wiki/Reinforcement'}},
-    {id:'rule72',tags:['interest:finance','field:business'],title:'The rule of 72',color:'#3e7f5c',
-     body:'To estimate how long money takes to double, divide 72 by the yearly growth rate. At 6% a year, savings double in about 12 years, because 72 divided by 6 is 12. At 9%, it takes about 8 years. It works for debt too: a balance growing at 18% a year doubles in about 4 years if nothing is paid off. The same maths that builds savings makes debt grow fast.',
+    {id:'rule72',tags:['interest:finance','field:business'],emoji:'💰',title:'How long does it take money to double?',color:'#3e7f5c',
+     body:'Divide 72 by the yearly growth rate. At 6% a year, savings double in about 12 years; at 9%, in about 8. This rule of 72 works for debt too: a balance growing at 18% a year doubles in about 4 years if nothing is paid off. The same maths that builds savings makes debt grow fast.',
      quiz:{q:'Roughly how long does money take to double at 8% a year?',opts:['6 years','9 years','12 years'],a:1,why:'72 ÷ 8 = 9 years.'},
      source:{name:'Investopedia: Rule of 72',url:'https://www.investopedia.com/terms/r/ruleof72.asp'}},
-    {id:'gutenberg',tags:['interest:history'],title:'The printing press changed who could know things',color:'#7a5a3c',
-     body:'Around 1440 in Mainz, Johannes Gutenberg developed a press that combined movable metal type with oil-based ink and a screw press adapted from wine-making. Before that, most books in Europe were copied by hand, and a single book could take months. Within about fifty years, presses were running in more than two hundred European cities. Books became cheaper, ideas spread faster, and far more people could read for themselves.',
+    {id:'gutenberg',tags:['interest:history'],emoji:'📜',title:'How did one machine let far more people read?',color:'#7a5a3c',
+     body:'Around 1440 in Mainz, Johannes Gutenberg combined movable metal type, oil-based ink and a screw press adapted from wine-making. Before that, most European books were copied by hand, sometimes over months. Within about fifty years, presses were running in more than two hundred cities. Books became cheaper, ideas spread faster and far more people could read.',
      quiz:{q:'Where did Gutenberg develop his press?',opts:['Venice','Mainz','Paris'],a:1,why:'He worked in Mainz, in present-day Germany.'},
      source:{name:'Britannica: Johannes Gutenberg',url:'https://www.britannica.com/biography/Johannes-Gutenberg'}},
-    {id:'genji',tags:['interest:books'],title:'The Tale of Genji, often called the first novel',color:'#9c5bb5',
-     body:'Around 1000 to 1012, Murasaki Shikibu, a lady at the Japanese imperial court, wrote The Tale of Genji. It follows the life and loves of Hikaru Genji, the son of an emperor, across more than fifty chapters. Its focus on characters’ inner lives, rather than only heroic deeds, is why it is often called the world’s first novel. Murasaki is not even her real name: it comes from a character in her book.',
+    {id:'genji',tags:['interest:books'],emoji:'📖',title:'What is often called the world’s first novel?',color:'#9c5bb5',
+     body:'Around 1000 to 1012, Murasaki Shikibu, a lady at the Japanese imperial court, wrote The Tale of Genji, following the life and loves of an emperor’s son across more than fifty chapters. Its focus on characters’ inner lives, not only heroic deeds, is why it’s often called the first novel. Murasaki isn’t even her real name.',
      quiz:{q:'Who wrote The Tale of Genji?',opts:['Sei Shōnagon','Murasaki Shikibu','Matsuo Bashō'],a:1,why:'Murasaki Shikibu, a lady of the Heian court.'},
      source:{name:'Wikipedia: The Tale of Genji',url:'https://en.wikipedia.org/wiki/The_Tale_of_Genji'}},
-    {id:'who-activity',tags:['interest:fitness','field:medicine'],title:'150 minutes a week, in any size pieces',color:'#c9812b',
-     body:'The World Health Organization recommends that adults get 150 to 300 minutes of moderate activity each week, such as brisk walking or cycling, or 75 to 150 minutes of vigorous activity. Its 2020 guidelines dropped the idea that activity only counts in blocks of ten minutes or more. The message now is that every move counts: a short walk or a few flights of stairs all add up.',
+    {id:'who-activity',tags:['interest:fitness','field:medicine'],emoji:'🚶',title:'How much activity do you really need each week?',color:'#c9812b',
+     body:'The World Health Organization recommends that adults get 150 to 300 minutes of moderate activity a week, such as brisk walking or cycling, or 75 to 150 minutes of vigorous activity. Its 2020 guidelines dropped the idea that activity only counts in ten-minute blocks. Every move counts: a short walk or a few flights of stairs adds up.',
      quiz:{q:'How many minutes of moderate activity a week does the WHO recommend, at minimum?',opts:['60','150','300'],a:1,why:'150 to 300 minutes of moderate activity.'},
      source:{name:'World Health Organization: Physical activity',url:'https://www.who.int/news-room/fact-sheets/detail/physical-activity'}},
-    {id:'bug',tags:['field:computing','field:engineering','interest:technology'],title:'The first computer “bug” was a real moth',color:'#51707a',
-     body:'In September 1947, operators of the Harvard Mark II computer found a moth trapped in one of its relays. They taped it into the logbook with the note “First actual case of bug being found.” The story was later popularised by computing pioneer Grace Hopper, whose team worked on the machine. Engineers had already called faults “bugs” for decades, but this moth gave the word its most famous example.',
+    {id:'bug',tags:['field:computing','field:engineering','interest:technology'],emoji:'🐛',title:'Was the first computer bug a real insect?',color:'#51707a',
+     body:'In September 1947, operators of the Harvard Mark II computer found a moth trapped in one of its relays. They taped it into the logbook with the note “First actual case of bug being found.” Grace Hopper, whose team worked on the machine, popularised the story. Engineers had already called faults “bugs” for decades.',
      quiz:{q:'What was found inside the Harvard Mark II?',opts:['A moth','A mouse','A beetle'],a:0,why:'A moth, taped into the logbook in 1947.'},
      source:{name:'Wikipedia: Software bug',url:'https://en.wikipedia.org/wiki/Software_bug'}},
-    {id:'semmelweis',tags:['field:medicine'],title:'The doctor who asked colleagues to wash their hands',color:'#3f8f6b',
-     body:'In 1847, Ignaz Semmelweis noticed that mothers on a Vienna ward run by doctors died of childbed fever far more often than on a ward run by midwives. Doctors often came straight from autopsies. He required them to wash their hands in a chlorinated lime solution, and deaths dropped sharply, to around 1 to 2 percent. Many colleagues rejected his idea, and it was only widely accepted after his death.',
+    {id:'semmelweis',tags:['field:medicine'],emoji:'🧼',title:'Why did one doctor ask colleagues to wash their hands?',color:'#3f8f6b',
+     body:'In 1847, Ignaz Semmelweis noticed that mothers on a Vienna ward run by doctors died of childbed fever far more often than on a ward run by midwives. Doctors often came straight from autopsies. He required handwashing in a chlorinated lime solution, and deaths dropped sharply. Many colleagues rejected the idea until after his death.',
      quiz:{q:'What did Semmelweis ask doctors to wash their hands with?',opts:['Soap and cold water','Chlorinated lime solution','Alcohol'],a:1,why:'A chlorinated lime solution.'},
      source:{name:'Wikipedia: Ignaz Semmelweis',url:'https://en.wikipedia.org/wiki/Ignaz_Semmelweis'}},
-    {id:'forgetting',tags:['field:education','interest:languages','interest:psychology'],title:'Why cramming fades and spacing sticks',color:'#4b5e9a',
-     body:'In 1885, Hermann Ebbinghaus tested his own memory by learning lists of nonsense syllables. He found that we forget quickly at first, then more slowly. This became known as the forgetting curve. He also found that reviewing material spread out over time made it last much longer than studying it all at once. Language apps and flashcard systems still use this spacing idea today.',
+    {id:'forgetting',tags:['field:education','interest:languages','interest:psychology'],emoji:'🧠',title:'Why does cramming fade so fast?',color:'#4b5e9a',
+     body:'In 1885, Hermann Ebbinghaus tested his own memory with lists of nonsense syllables. He found that we forget quickly at first, then more slowly: the forgetting curve. Reviewing material spread out over time made it last much longer than studying it all at once. Language apps and flashcard systems still use this spacing idea today.',
      fact:'Try reviewing something tomorrow, then in three days, then in a week. Each review can be shorter than the last.',
      source:{name:'Wikipedia: Forgetting curve',url:'https://en.wikipedia.org/wiki/Forgetting_curve'}},
-    {id:'saudade',tags:['interest:languages'],title:'Saudade: a word Portuguese has and English lacks',color:'#8a4f7d',
-     body:'Saudade is a Portuguese word for a deep, bittersweet longing for someone or something you love that is absent, and may never return. It mixes sadness with warmth, because missing something means it mattered. It is central to Portuguese and Brazilian culture, especially the music style fado. It is often called untranslatable: English needs a whole sentence for what Portuguese says in one word.',
+    {id:'saudade',tags:['interest:languages'],emoji:'💭',title:'Which feeling has a word in Portuguese but not in English?',color:'#8a4f7d',
+     body:'Saudade is a Portuguese word for a deep, bittersweet longing for someone or something you love that is absent and may never return. It mixes sadness with warmth, because missing something means it mattered. It’s central to Portuguese and Brazilian culture, especially fado music, and English needs a whole sentence to say it.',
      fact:'Say it out loud: “sow-DAH-jee” in Brazil or “sow-DAHD” in Portugal.',
      source:{name:'Wikipedia: Saudade',url:'https://en.wikipedia.org/wiki/Saudade'}},
-    {id:'a440',tags:['interest:music'],title:'Why orchestras tune to 440',color:'#6a4f9c',
-     body:'Before the twentieth century, the note A could be tuned anywhere from about 400 to over 450 hertz, depending on the city and the decade. A piece sounded different in Vienna than in London. In 1939, an international conference in London recommended 440 hertz as the standard, and in 1955 it became the international standard ISO 16. When an orchestra tunes to the oboe’s A, it is usually this pitch.',
+    {id:'a440',tags:['interest:music'],emoji:'🎻',title:'Why do orchestras tune to 440?',color:'#6a4f9c',
+     body:'Before the twentieth century, the note A could be tuned anywhere from about 400 to over 450 hertz, so a piece sounded different in Vienna than in London. A 1939 conference in London recommended 440 hertz, and in 1955 it became the international standard ISO 16. When an orchestra tunes to the oboe’s A, it’s usually this pitch.',
      quiz:{q:'What frequency is the standard tuning A?',opts:['432 Hz','440 Hz','452 Hz'],a:1,why:'440 Hz, standardised as ISO 16.'},
      source:{name:'Wikipedia: A440 (pitch standard)',url:'https://en.wikipedia.org/wiki/A440_(pitch_standard)'}},
-    {id:'jetlag',tags:['interest:travel'],title:'Why flying east is harder on your body clock',color:'#2c6aa0',
-     body:'Your body clock runs on a cycle of roughly 24 hours, set mainly by light. After crossing several time zones, it takes days to catch up. A common rule of thumb is about one day per time zone crossed. Flying east is usually harder, because your day gets shorter and your body has to go to sleep earlier than it wants to, which is harder than staying up later. Morning light helps after eastward trips.',
+    {id:'jetlag',tags:['interest:travel'],emoji:'✈️',title:'Why is flying east harder on your body clock?',color:'#2c6aa0',
+     body:'Your body clock runs on a roughly 24-hour cycle, set mainly by light, and takes days to catch up after crossing time zones, often about one day per zone. Flying east is usually harder: your day gets shorter, and falling asleep earlier than your body wants is harder than staying up later. Morning light helps.',
      fact:'After flying east, get outside in the morning; after flying west, seek evening light.',
      source:{name:'Wikipedia: Jet lag',url:'https://en.wikipedia.org/wiki/Jet_lag'}},
-    {id:'jeans',tags:['interest:fashion'],title:'The tiny pocket on your jeans was for a watch',color:'#3a5fc4',
-     body:'That small pocket inside the front right pocket of many jeans dates back to the late 1800s, when workers carried pocket watches. Levi Strauss and tailor Jacob Davis patented copper-riveted work trousers in 1873, and early designs included a small watch pocket to keep watches safe. Wristwatches later replaced pocket watches, but the pocket stayed. People now use it for coins, keys or guitar picks.',
+    {id:'jeans',tags:['interest:fashion'],emoji:'👖',title:'What is the tiny pocket on your jeans for?',color:'#3a5fc4',
+     body:'That small pocket inside the front right pocket dates back to the late 1800s, when workers carried pocket watches. Levi Strauss and tailor Jacob Davis patented copper-riveted work trousers in 1873, and early designs included a watch pocket. Wristwatches replaced pocket watches, but the pocket stayed. People now use it for coins, keys or guitar picks.',
      quiz:{q:'What was the small jeans pocket originally for?',opts:['Coins','Pocket watches','Matches'],a:1,why:'It was a watch pocket.'},
      source:{name:'Wikipedia: Jeans',url:'https://en.wikipedia.org/wiki/Jeans'}},
-    {id:'f1',tags:['interest:sports','topic:f1'],title:'An F1 car is an upside-down aeroplane',color:'#b3262d',
-     body:'An aeroplane wing is shaped to create lift. A Formula 1 car’s wings are turned the other way, so the air pushes the car down onto the track instead. This force is called downforce, and together with the shaped floor it presses the tyres into the road. The grip lets drivers take corners far faster than tyres alone would allow, with sideways forces of around five to six g.',
+    {id:'f1',tags:['interest:sports','topic:f1'],emoji:'🏎️',title:'Why is an F1 car like an upside-down aeroplane?',color:'#b3262d',
+     body:'An aeroplane wing is shaped to create lift. A Formula 1 car’s wings are turned the other way, so the air pushes the car down onto the track. This downforce, together with the shaped floor, presses the tyres into the road, letting drivers take corners far faster than tyres alone would allow.',
      fact:'Engineers often say that, in theory, an F1 car produces enough downforce at high speed to drive upside down on a ceiling.',
      source:{name:'Wikipedia: Formula One car',url:'https://en.wikipedia.org/wiki/Formula_One_car'}},
-    {id:'horyuji',tags:['topic:japan','interest:architecture'],title:'Why old Japanese pagodas survive earthquakes',color:'#7c4a2c',
-     body:'Hōryū-ji, a temple near Nara founded by Prince Shōtoku in 607, has wooden buildings from around the late 600s, among the oldest surviving wooden buildings in the world. Its five-storey pagoda has come through centuries of earthquakes. Japanese pagodas have a central pillar, the shinbashira, and stacked storeys that can sway separately, which helps absorb shaking. Carpenters joined the timbers with interlocking joints rather than relying on nails.',
+    {id:'horyuji',tags:['topic:japan','interest:architecture'],emoji:'🏯',title:'How have old Japanese pagodas survived earthquakes?',color:'#7c4a2c',
+     body:'Hōryū-ji, a temple near Nara founded in 607, has wooden buildings from around the late 600s, among the oldest surviving in the world. Its five-storey pagoda has come through centuries of earthquakes. Japanese pagodas have a central pillar, the shinbashira, and stacked storeys that can sway separately, which helps absorb shaking.',
      quiz:{q:'What is the central pillar of a Japanese pagoda called?',opts:['Torii','Shinbashira','Tatami'],a:1,why:'The shinbashira runs up the centre of the pagoda.'},
      source:{name:'Wikipedia: Hōryū-ji',url:'https://en.wikipedia.org/wiki/H%C5%8Dry%C5%AB-ji'}},
-    {id:'lbd',tags:['interest:fashion'],title:'The little black dress was called “Chanel’s Ford”',color:'#1f1f24',
-     body:'In 1926, American Vogue published a drawing of a short, simple black dress by Coco Chanel. The magazine compared it to the Ford Model T, calling it “Chanel’s Ford”, because, like the car, it was simple, practical and available to many women. Before then, black was mostly worn for mourning. The little black dress became a wardrobe staple that designers still reinvent almost every season.',
+    {id:'lbd',tags:['interest:fashion'],emoji:'👗',title:'Why did Vogue call a black dress “Chanel’s Ford”?',color:'#1f1f24',
+     body:'In 1926, American Vogue published a drawing of a short, simple black dress by Coco Chanel and compared it to the Ford Model T: simple, practical and available to many women. Before then, black was mostly worn for mourning. The little black dress became a wardrobe staple that designers still reinvent almost every season.',
      quiz:{q:'What did Vogue compare Chanel’s black dress to in 1926?',opts:['A Ford car','A tuxedo','A uniform'],a:0,why:'It called the dress “Chanel’s Ford”.'},
      source:{name:'Wikipedia: Little black dress',url:'https://en.wikipedia.org/wiki/Little_black_dress'}},
   ];
   /* Shown when the profile is empty. */
   const DEFAULT_CARD='variable';
+  /* Topics for the compact "Change topic" picker: [key, label, card tags]. */
+  const TOPICS=[['japan','Japan',['place:kyoto','topic:japan']],['rome','Rome',['place:rome']],['paris','Paris',['place:paris']],['barcelona','Barcelona',['place:barcelona']],['istanbul','Istanbul',['place:istanbul']],['london','London',['place:london']],['new-york','New York',['place:new-york']],
+    ['marketing','Marketing',['field:marketing']],['medicine','Medicine',['field:medicine']],['technology','Technology',['interest:technology','field:computing']],
+    ...[['psychology','Psychology'],['history','History'],['science','Science'],['books','Books'],['art','Art'],['finance','Money'],['fitness','Fitness'],['cooking','Food'],['architecture','Architecture'],['nature','Nature'],['travel','Travel'],['languages','Languages'],['music','Music'],['fashion','Fashion'],['sports','Formula 1']].map(([k,l])=>[k,l,['interest:'+k]])];
   /* ---------- Personalisation (stored only in this browser) ---------- */
   const PREF={
     interests:[['psychology','Psychology'],['history','History'],['science','Science'],['books','Books'],['art','Art'],['finance','Finance'],['fitness','Fitness'],['cooking','Cooking'],['architecture','Architecture'],['nature','Nature'],['travel','Travel'],['languages','Languages'],['music','Music'],['technology','Technology'],['fashion','Fashion'],['sports','Sports']],
@@ -415,7 +431,7 @@
   function pendingSuggestion(){const c=topicCounts();return Object.keys(c).find(t=>c[t]>=2&&!profile.interests.includes(t)&&!profile.ig.includes(t)&&!profile.inferred.includes(t)&&!profile.declined.includes(t))||''}
   /* Pick ONE card: planned trips first, then subjects to explore, work, interests, Instagram interests, places visited.
      Cards rated "Not for me" or "Already knew this" are skipped; unseen cards win ties. */
-  function pickCard(){const sources=[
+  function profileSources(){const sources=[
       ...profile.planned.map(p=>['place:'+p,`Because you’re planning to visit ${labelOf('places',p)}`,6]),
       ...profile.explore.map(i=>['interest:'+i,`Because you want to explore ${labelOf('interests',i).toLowerCase()}`,5]),
       ...profile.field.map(f=>['field:'+f,`Because you work or study in ${labelOf('fields',f).toLowerCase()}`,4]),
@@ -427,13 +443,19 @@
     [['plannedOther',6,t=>`Because you’re planning to visit ${t}`],['exploreOther',5,t=>`Because you want to learn about ${t}`],['fieldOther',4,t=>`Because you work or study in ${t}`],
      ['interestsOther',4,t=>`Because you’re into ${t}`],['igOther',3,t=>`Because you watch ${t} on Instagram`],['visitedOther',3,t=>`Because you’ve been to ${t}`]]
       .forEach(([k,w,why])=>profile[k].forEach(text=>matchTags(text).forEach(tag=>sources.push([tag,why(`“${esc(text)}”`),w]))));
-    let best=null;
+    return sources}
+  function pickCard(){const sources=profileSources();let best=null;
     LEARN_CARDS.forEach(card=>{if(feedback[card.id]==='not'||feedback[card.id]==='knew')return;
       sources.forEach(([tag,why,w])=>{if(!card.tags.includes(tag))return;const score=w*10-(seen[card.id]||0)*25+(feedback[card.id]==='interesting'?-3:0);
         if(!best||score>best.score)best={card,why,score};});});
     if(best)return {card:best.card,why:best.why,personal:true};
     const fallback=LEARN_CARDS.find(c=>c.id===DEFAULT_CARD);
     return {card:fallback,why:hasProfile()?'We’ve shown you everything that matches for now':'A card for anyone who scrolls',personal:false};}
+  /* A topic the user chose in "Change topic": the least-seen card with that tag, skipping the current one and cards rated away. */
+  function pickTopic(key){const t=TOPICS.find(x=>x[0]===key);if(!t)return null;
+    const pool=LEARN_CARDS.filter(c=>c.id!==state.cardId&&c.tags.some(g=>t[2].includes(g)));
+    const ok=pool.filter(c=>feedback[c.id]!=='not'&&feedback[c.id]!=='knew');const list=(ok.length?ok:pool).sort((a,b)=>(seen[a.id]||0)-(seen[b.id]||0));
+    return list.length?{card:list[0],why:`You picked ${t[1]}`,personal:true}:null}
   /* Photos: Kodak Lossless True Color Image Suite, released by Eastman Kodak for unrestricted use. */
   const FEED=[
     {img:'kodim23',pos:'45% 50%',user:'birdwatch.daily',color:'#2f8f5b',cap:'Two very talkative neighbours 🦜',audio:'Original audio',likes:'48.2K',comments:'612'},
@@ -457,7 +479,7 @@
   // New v2 default is on even for people who turned off the experimental v1 setting.
   try{if(localStorage.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
   let existingGate=false;try{existingGate=sessionStorage.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
-  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:OPTIONS.afters.some(x=>x[0]===prefs.after)?prefs.after:'learn',freeTime:prefs.freeTime||'10',nextPick:'',ideaIdx:0,puzzle:0,obStep:0,obReturn:'home',profileReturn:'home',cardId:'',cardWhy:'',cardPersonal:false,quizPick:null,fbNote:'',confirmDelete:false,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
+  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:OPTIONS.afters.some(x=>x[0]===prefs.after)?prefs.after:'learn',freeTime:prefs.freeTime||'10',nextPick:'',ideaIdx:0,puzzle:0,obStep:0,obReturn:'home',profileReturn:'home',cardId:'',cardWhy:'',learnStage:'card',cardPersonal:false,quizPick:null,fbNote:'',confirmDelete:false,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
   let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const selected=(kind,v)=>state[kind]===v?' selected':'';
@@ -580,31 +602,55 @@
   function suggestBox(t){const n=topicCounts()[t];return `<div class="suggest"><b>You saved or tapped “Learn more” on ${n} ${labelOf('interests',t).toLowerCase()} posts in the demo feed.</b><span>Add ${labelOf('interests',t).toLowerCase()} to your interests?</span><div class="btn-row"><button class="btn btn-sm" data-action="accept-suggest" data-topic="${t}">Add it</button><button class="btn alt btn-sm" data-action="decline-suggest" data-topic="${t}">No thanks</button></div></div>`}
 
   /* ---------- One personalised learning card ---------- */
-  function enterLearn(from){clearTimers();const pick=pickCard();state.learnFrom=from;state.cardId=pick.card.id;state.cardWhy=pick.why;state.cardPersonal=pick.personal;state.quizPick=null;state.fbNote='';
-    seen[pick.card.id]=(seen[pick.card.id]||0)+1;store.set('pause_seen',seen);state.screen='learn';render()}
-  function learn(){const c=LEARN_CARDS.find(x=>x.id===state.cardId)||LEARN_CARDS[0];const fb=feedback[c.id];
-    const quiz=c.quiz?`<div class="quiz"><b>Quick question</b><p>${c.quiz.q}</p><div class="quiz-opts">${c.quiz.opts.map((o,i)=>{const cls=state.quizPick==null?'':i===c.quiz.a?' right':i===state.quizPick?' wrong':'';return `<button class="pill sm${cls}" data-action="quiz" data-i="${i}"${state.quizPick!=null?' disabled':''}>${o}</button>`}).join('')}</div>${state.quizPick!=null?`<p class="quiz-why">${state.quizPick===c.quiz.a?'Right. ':'Not quite. '}${c.quiz.why}</p>`:''}</div>`
-      :`<div class="try-this"><b>One more thing</b>${c.fact}</div>`;
-    return `<div class="inner">
-     <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('LEARN ONE THING')}</div>
-     ${!hasProfile()?'<button class="invite" data-action="start-onboard" data-return="learn"><b>Make it about you</b><span>Add a few interests or places (about a minute) and Pause will pick cards for you.</span></button>':''}
+  function showCard(pick){state.cardId=pick.card.id;state.cardWhy=pick.why;state.cardPersonal=pick.personal;state.quizPick=null;state.fbNote='';state.learnStage='card';
+    seen[pick.card.id]=(seen[pick.card.id]||0)+1;store.set('pause_seen',seen)}
+  function enterLearn(from){clearTimers();state.learnFrom=from;showCard(pickCard());state.screen='learn';render()}
+  const sourceLink=c=>/wikipedia\.org/.test(c.source.url)?`<button class="lcard-src as-link" data-action="open-web" data-url="${c.source.url}">Source: ${c.source.name}</button>`:`<a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>`;
+  function learn(){const c=LEARN_CARDS.find(x=>x.id===state.cardId)||LEARN_CARDS[0];
+    if(state.learnStage==='topics')return topicPicker(c);
+    if(state.learnStage==='after')return learnAfter(c);
+    return `<div class="inner learn-inner">
+     <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('ONE THING')}</div>
      <article class="lcard">
-       ${c.img?`<img class="lcard-img" src="${photo(c.img)}" alt=""/>`:`<div class="lcard-band" style="background:${c.color}"></div>`}
+       ${c.img?`<img class="lcard-img" src="${photo(c.img)}" alt=""/>`:`<div class="lcard-art" style="--art:${c.color}" aria-hidden="true"><span>${c.emoji||'✦'}</span></div>`}
        <div class="lcard-body">
          <span class="lcard-why">${state.cardWhy}</span>
          <h3>${c.title}</h3>
          <p class="lcard-text">${c.body}</p>
-         ${quiz}
-         ${/wikipedia\.org/.test(c.source.url)?`<button class="lcard-src as-link" data-action="open-web" data-url="${c.source.url}">Source: ${c.source.name} →</button>`:`<a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>`}
-         <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
-         ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}
-         <p class="card-end">That’s the whole card.</p>
-         <p class="card-demo">Curated demo card, checked against the linked source. Not AI-generated and not live news.</p>
+         <div class="lcard-foot">${sourceLink(c)}<span>Curated demo</span></div>
        </div>
      </article>
+     <button class="change-topic" data-action="change-topic">Change topic</button>
      <div class="spacer"></div>
-     <button class="btn full" data-action="learn-complete">Done ✓</button>
-     <button class="btn text full" data-action="open-profile">Edit my interests</button>
+     <button class="btn full" data-action="learn-done">Done for now</button>
+   </div>`}
+  /* Optional follow-up after the card: a quick question (or one extra fact) and feedback. Nothing here is required. */
+  function learnAfter(c){const fb=feedback[c.id];
+    const extra=c.quiz?`<div class="quiz"><b>Quick question · optional</b><p>${c.quiz.q}</p><div class="quiz-opts">${c.quiz.opts.map((o,i)=>{const cls=state.quizPick==null?'':i===c.quiz.a?' right':i===state.quizPick?' wrong':'';return `<button class="pill sm${cls}" data-action="quiz" data-i="${i}"${state.quizPick!=null?' disabled':''}>${o}</button>`}).join('')}</div>${state.quizPick!=null?`<p class="quiz-why">${state.quizPick===c.quiz.a?'Right. ':'Not quite. '}${c.quiz.why}</p>`:''}</div>`
+      :`<div class="try-this"><b>One more thing</b>${c.fact}</div>`;
+    return `<div class="inner learn-inner">
+     <div class="brand-row"><span></span>${step('ONE THING')}</div>
+     <div class="checkmark" style="margin:22px 0 14px">✓</div>
+     <h2>That’s one thing learned.</h2>
+     <p class="lede learn-recap">${c.title}</p>
+     ${extra}
+     <div class="fb-box"><span class="small">Was this for you? <em>Optional</em></span>
+       <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
+       ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}</div>
+     <div class="spacer"></div>
+     <button class="btn full" data-action="learn-complete">Finish</button>
+     <p class="card-demo" style="text-align:center;margin-top:8px">Curated demo card, checked against the linked source. Not AI-generated and not live news.</p>
+   </div>`}
+  function topicPicker(c){const mine=new Set(profileSources().map(x=>x[0]));
+    const forYou=TOPICS.filter(t=>t[2].some(g=>mine.has(g))),rest=TOPICS.filter(t=>!forYou.includes(t));
+    const row=list=>`<div class="topic-wrap">${list.map(t=>`<button class="pill sm" data-action="pick-topic" data-topic="${t[0]}">${t[1]}</button>`).join('')}</div>`;
+    return `<div class="inner learn-inner">
+     <div class="brand-row"><button class="btn text btn-sm" data-action="topic-cancel">← Back to card</button>${step('CHANGE TOPIC')}</div>
+     <h2 style="margin:14px 0 12px">Pick a topic</h2>
+     ${forYou.length?`<div class="section-title">For you</div>${row(forYou)}<div class="section-title" style="margin-top:14px">Something different</div>`:''}
+     ${row(rest)}
+     <div class="spacer"></div>
+     <button class="btn text full" data-action="${hasProfile()?'open-profile':'start-onboard'}"${hasProfile()?'':' data-return="learn"'}>${hasProfile()?'Edit my interests':'Personalise with My Interests'}</button>
    </div>`}
 
   /* ---------- Reward the Exit: one personalised, optional idea ---------- */
@@ -810,6 +856,10 @@
     switch(action){case 'open':open();break;case 'go-home':goHome();break;case 'purpose':if(state.countdown<=0){clearTimers();state.screen='setup';render();}break;
       case 'back-pause':open();break;case 'learn':enterLearn('pause');break;
       case 'learn-back':if(state.learnFrom==='exit'){state.screen='exit';render()}else{state.screen='pause';startCountdown()}break;
+      case 'learn-done':state.learnStage='after';render();root.scrollTop=0;break;
+      case 'change-topic':state.learnStage='topics';render();root.scrollTop=0;break;
+      case 'topic-cancel':state.learnStage='card';render();break;
+      case 'pick-topic':{const pick=pickTopic(target.dataset.topic);if(pick)showCard(pick);else state.learnStage='card';render();root.scrollTop=0;break}
       case 'learn-complete':if(state.learnFrom==='exit'){goHome()}else{state.views=0;state.elapsed=0;finish('learn')}break;
       case 'grayscale':state.grayscale=!state.grayscale;save();render();break;
       case 'start-feed':begin();break;case 'next':next();break;
