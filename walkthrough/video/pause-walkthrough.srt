@@ -1,76 +1,76 @@
 1
-00:00:00,200 --> 00:00:01,599
+00:00:00,200 --> 00:00:01,603
 Pause: scroll on purpose, stop by choice.
 
 2
-00:00:01,649 --> 00:00:04,355
+00:00:01,653 --> 00:00:04,367
 Two connected interventions for doomscrolling
 among students and young adults.
 
 3
-00:00:04,805 --> 00:00:06,725
+00:00:04,817 --> 00:00:06,736
 Pause begins before the feed does.
 
 4
-00:00:06,775 --> 00:00:10,664
+00:00:06,786 --> 00:00:10,673
 When the user taps Instagram, a
 five-second breathing pause appears,
 
 5
-00:00:10,714 --> 00:00:14,778
+00:00:10,723 --> 00:00:14,785
 followed by three choices: continue, learn
 something instead, or leave.
 
 6
-00:00:14,828 --> 00:00:18,370
+00:00:14,835 --> 00:00:18,375
 The aim is to turn an automatic tap
 into a conscious decision.
 
 7
-00:00:18,820 --> 00:00:22,277
+00:00:18,825 --> 00:00:22,282
 Next, the user makes three small
 commitments: why they are here,
 
 8
-00:00:22,327 --> 00:00:25,346
+00:00:22,332 --> 00:00:25,350
 where they will stop, and what
 they might do afterwards.
 
 9
-00:00:25,396 --> 00:00:29,073
+00:00:25,400 --> 00:00:29,076
 Here the user wants a short break, sets
 a finish line of five Reels,
 
 10
-00:00:29,123 --> 00:00:30,662
+00:00:29,126 --> 00:00:30,665
 and plans to learn one thing.
 
 11
-00:00:31,112 --> 00:00:34,223
+00:00:31,115 --> 00:00:34,226
 The session opens in a simulated Reels feed.
 
 12
-00:00:34,273 --> 00:00:37,600
+00:00:34,276 --> 00:00:37,602
 A counter at the top keeps
 consumption visible:
 
 13
-00:00:37,650 --> 00:00:41,480
+00:00:37,652 --> 00:00:41,482
 Reels watched against the finish
 line, and time spent.
 
 14
-00:00:41,930 --> 00:00:47,067
+00:00:41,932 --> 00:00:47,069
 Halfway to the finish line, a brief reminder
 repeats the user’s own purpose.
 
 15
-00:00:47,117 --> 00:00:52,732
+00:00:47,119 --> 00:00:52,733
 It does not lock the phone; it simply brings the
 original intention back into view.
 
 16
-00:00:53,182 --> 00:00:56,258
+00:00:53,183 --> 00:00:56,258
 At the fifth Reel, autoplay stops.
 
 17
@@ -79,96 +79,96 @@ Instead of another video, the user
 reaches a finish line and chooses:
 
 18
-00:01:02,651 --> 00:01:07,566
+00:01:02,651 --> 00:01:07,565
 end the session, or consciously
 take three more Reels.
 
 19
-00:01:08,016 --> 00:01:10,391
+00:01:08,015 --> 00:01:10,391
 If the user continues,
 
 20
-00:01:10,441 --> 00:01:19,429
+00:01:10,441 --> 00:01:19,432
 grayscale begins straight away at thirty-five
 percent and deepens with every Reel,
 
 21
-00:01:19,479 --> 00:01:21,853
+00:01:19,482 --> 00:01:21,857
 to sixty-five percent.
 
 22
-00:01:21,903 --> 00:01:27,144
+00:01:21,907 --> 00:01:27,150
 The feed still works, but it
 becomes less vivid.
 
 23
-00:01:27,594 --> 00:01:33,830
+00:01:27,600 --> 00:01:33,839
 The second and final extension
 starts at seventy
 
 24
-00:01:33,880 --> 00:01:39,330
+00:01:33,889 --> 00:01:39,342
 percent grayscale and fades to fully gray.
 
 25
-00:01:39,380 --> 00:01:47,319
+00:01:39,392 --> 00:01:47,334
 After the last Reel, both optional
 extensions have been used.
 
 26
-00:01:47,769 --> 00:01:52,190
+00:01:47,784 --> 00:01:52,212
 With both extensions used, there is no
 further plus-three option.
 
 27
-00:01:52,240 --> 00:01:55,973
+00:01:52,262 --> 00:01:56,001
 In this simulated Instagram, the
 Reels tab is disabled,
 
 28
-00:01:56,023 --> 00:01:59,550
+00:01:56,051 --> 00:01:59,583
 but the regular feed and direct
 messages still work.
 
 29
-00:01:59,600 --> 00:02:04,571
+00:01:59,633 --> 00:02:04,612
 The intervention targets the distracting
 feature, not the whole platform.
 
 30
-00:02:05,021 --> 00:02:10,192
+00:02:05,062 --> 00:02:10,233
 When the user finishes, Pause offers one
 optional, personalised idea.
 
 31
-00:02:10,242 --> 00:02:15,943
+00:02:10,283 --> 00:02:15,984
 For this user, planning a trip to Rome, that
 can be a useful Italian phrase.
 
 32
-00:02:15,993 --> 00:02:20,181
+00:02:16,034 --> 00:02:20,222
 They can try it, ask for another
 idea, or simply finish.
 
 33
-00:02:20,231 --> 00:02:22,678
+00:02:20,272 --> 00:02:22,719
 Ending the session is the reward.
 
 34
-00:02:23,128 --> 00:02:25,842
+00:02:23,169 --> 00:02:25,822
 In summary: Purpose Sessions add
 awareness and a goal before entry;
 
 35
-00:02:25,892 --> 00:02:28,689
+00:02:25,872 --> 00:02:28,605
 Reward the Exit adds visibility, stopping
 points and rising friction,
 
 36
-00:02:28,739 --> 00:02:29,721
+00:02:28,655 --> 00:02:29,614
 and makes leaving easier.
 
 37
-00:02:29,771 --> 00:02:32,238
+00:02:29,664 --> 00:02:32,075
 This is a prototype; its effects have
 not yet been evaluated.

@@ -79,7 +79,7 @@
     panel.innerHTML=`
       <div class="p-head" id="p-head"><span class="p-badge" id="p-anchor">${s.num}</span><div><div class="p-chapter">${c.short} · ${c.title}</div><h2>${s.name}</h2></div></div>
       <p class="p-what">${s.now}</p>
-      <div class="p-insight"><span class="ins-k">Behavioural insight</span><p>${s.insight}</p></div>
+      <div class="p-insight"><span class="ins-k">Systems-thinking insight</span><p>${s.insight}</p></div>
       <div class="p-now" id="p-now"><span class="dotn">${s.num}</span><span id="p-caption">${caption||'Setting up the phone…'}</span></div>
       ${s.note?`<p class="p-note">${s.note}</p>`:''}
       <details class="p-more" id="p-more"${moreOpen?' open':''}><summary>Explore further <span>design rationale and systems thinking</span></summary><div class="p-more-body">

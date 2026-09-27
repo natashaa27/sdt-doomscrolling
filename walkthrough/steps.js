@@ -1,6 +1,6 @@
 /* Pause walkthrough: chapters, steps and explanations.
    Edit the text here. Each step has:
-     now / insight  what the panel shows first: a short description and one key behavioural insight
+     now / insight  what the panel shows first: a short description and one systems-thinking insight
      phone, user, why, systems  the detail under “Explore further” (collapsed by default)
      prepare(d)  puts the real prototype into a known starting state (used when jumping to a step)
      run(d)      the scripted demonstration; d.click() presses real buttons in the prototype
@@ -28,7 +28,7 @@
   /* ---------------- Chapter 1: Purpose Sessions ---------------- */
   {id:'pause',chapter:'purpose',num:'1',name:'The five-second pause',label:'Trigger Awareness',loop:'B1',
    now:'Tapping Instagram opens a five-second breathing pause, then three choices: continue, learn something, or leave.',
-   insight:'A few seconds between impulse and feed can turn an automatic tap into a choice.',
+   insight:'A delay at the entry point weakens the trigger → open app link in the reinforcing loop.',
    phone:'Tapping Instagram opens Pause first. A breathing circle counts down five seconds, then three options become available: continue to the feed, learn something instead, or leave.',
    user:'A short, calm delay between the impulse to open the app and the feed itself. Nothing is blocked, and leaving is always one tap away.',
    why:'Opening social media is often a cue-driven habit rather than a deliberate decision. A brief interruption is intended to create a moment in which the user can notice the trigger and reconsider, without the frustration of a hard block.',
@@ -46,7 +46,7 @@
    }},
   {id:'commit',chapter:'purpose',num:'2',name:'Three commitment rules',label:'Intentional Choice',loop:'B1',continues:true,
    now:'The user sets a purpose (a short break), a finish line (5 Reels) and a next step (learn one thing).',
-   insight:'Deciding where to stop before starting is easier than deciding while absorbed.',
+   insight:'A stated goal gives the system a reference point that later feedback can compare against.',
    phone:'The walkthrough selects a representative user’s commitments: purpose “Take a short break”, finish line “5 Reels”, and afterwards “Learn one thing”. This sample user is planning a trip to Rome.',
    user:'Three quick taps set a reason, a boundary and a plan for what comes next. The answers are remembered and can be changed at any time.',
    why:'Stating a purpose, a limit and a next action in advance resembles an implementation intention. Deciding where to stop before scrolling starts means the user does not have to make that decision later, when absorbed.',
@@ -63,7 +63,7 @@
    }},
   {id:'feed',chapter:'purpose',num:'3',name:'Entering the feed',label:'Feedback',loop:'B2',continues:true,
    now:'Reels play at demonstration speed. The counter shows Reels watched against the finish line, and time spent.',
-   insight:'Visible consumption restores the reference point that infinite feeds remove.',
+   insight:'Making the stock of content consumed visible closes an information gap in the loop.',
    phone:'The session starts in a simulated Reels feed. The walkthrough advances Reels at an accelerated speed. The counter shows Reels watched against the finish line, plus elapsed time.',
    user:'The feed looks familiar, but consumption is now visible, for example “2 / 5 Reels · 0:14”.',
    why:'Infinite feeds remove natural cues about how much has been consumed. Making quantity and time visible is intended to restore a reference point the user can act on.',
@@ -78,7 +78,7 @@
    }},
   {id:'reminder',chapter:'purpose',num:'4',name:'Purpose reminder',label:'Intentional Choice',loop:'B1',continues:true,
    now:'At Reel 3 of 5, a short banner repeats the user’s own purpose, then fades.',
-   insight:'A reminder of one’s own intention nudges without taking control away.',
+   insight:'Re-inserting the goal mid-session shortens the delay before drift is noticed.',
    phone:'Halfway to the finish line (Reel 3 of 5), a short banner appears: “You came here to take a short break. Still what you want to do?” It disappears on its own after a few seconds.',
    user:'A light prompt, not a lock. The user can ignore it, dismiss it, or tap Finish at any time.',
    why:'During absorbed scrolling, the original intention tends to fade. A timely reminder is designed to bring it back into awareness at little cost to autonomy.',
@@ -94,7 +94,7 @@
   /* ---------------- Chapter 2: Reward the Exit ---------------- */
   {id:'finishline',chapter:'exit',num:'5',name:'The first finish line',label:'Automatic Scrolling Interruption',loop:'B2',
    now:'At Reel 5, autoplay stops. The user chooses: finish, or three more Reels.',
-   insight:'Stopping becomes the default; continuing requires a conscious choice.',
+   insight:'At the goal, the balancing loop closes: a continuous flow becomes a deliberate decision.',
    phone:'At Reel 5 the progress bar completes and autoplay stops. Instead of the next Reel, a checkpoint shows the user’s intention, Reels watched and time, with two options: finish or take three more Reels.',
    user:'A natural stopping point. Continuing is still possible, but it now requires an active choice.',
    why:'Autoplay and infinite scroll remove stopping cues, so continuing becomes the default. Replacing that default with a decision is intended to interrupt automatic scrolling while respecting autonomy.',
@@ -112,7 +112,7 @@
    }},
   {id:'extra1',chapter:'exit',num:'6',name:'First extension: grayscale begins',label:'Automatic Scrolling Interruption',loop:'B2',continues:true,
    now:'Three more Reels. Grayscale starts at 35% and deepens to 65%.',
-   insight:'As colour fades, the feed loses some of its pull, and continuing becomes noticeable.',
+   insight:'Each Reel past the goal weakens the reward signal that drives the reinforcing loop.',
    phone:'The user chooses three more Reels. Grayscale starts immediately at 35% and deepens with each Reel, reaching 65% by the end of this portion. The indicator beside the phone shows the current level.',
    user:'Scrolling continues, but the feed gradually looks less vivid. The counter reads “Extra 1 of 3”.',
    why:'Colour contributes to the visual appeal of feeds. Reducing it gradually is intended to make continued scrolling feel less rewarding and more noticeable, rather than stopping it abruptly.',
@@ -128,7 +128,7 @@
    }},
   {id:'extra2',chapter:'exit',num:'7',name:'Second and final extension',label:'Feedback',loop:'B2',continues:true,
    now:'The last +3 starts at 70% grayscale and ends fully gray. Both extensions are now used.',
-   insight:'Flexibility is allowed, but the limit cannot keep drifting.',
+   insight:'Capping extensions prevents “drifting goals”, where the limit quietly keeps moving.',
    phone:'At the next checkpoint the user takes the last +3. Grayscale now starts at 70% and reaches 100%. After the final Reel, the checkpoint shows that both extensions have been used.',
    user:'The feed is almost colourless, and the user can see that this was the last optional portion.',
    why:'A small, fixed number of extensions gives flexibility without making the boundary meaningless. Showing that both have been used makes the remaining allowance explicit.',
@@ -144,7 +144,7 @@
    }},
   {id:'protected',chapter:'exit',num:'8',name:'Protected Instagram mode',label:'Environment Redesign',loop:'B2',continues:true,
    now:'No more extensions. Reels are off in the simulated Instagram; posts and DMs still work.',
-   insight:'Remove the most absorbing feature, not the whole platform or its social value.',
+   insight:'Changing the structure removes the loop’s main flow instead of relying on willpower.',
    phone:'No further extension is offered. The simulated Instagram opens with the Reels tab disabled, while posts from followed accounts and Direct Messages remain available.',
    user:'The user can still check posts and reply to friends; only the endless Reels feature is switched off for this session.',
    why:'Blocking a whole platform can feel punitive and may encourage workarounds. Targeting only the most absorbing feature aims to remove the main source of automatic scrolling while preserving social connection.',
@@ -163,7 +163,7 @@
    }},
   {id:'alternative',chapter:'exit',num:'9',name:'A personalised alternative',label:'Positive Behavioural Reinforcement',loop:'B2',
    now:'On finishing, Pause offers one optional, personalised idea: here, an Italian phrase for the Rome trip.',
-   insight:'Leaving is easier when there is something worthwhile to do next.',
+   insight:'A competing, positive flow away from the feed makes leaving the easier path.',
    phone:'When the user finishes, Pause shows Reels watched and time, then one optional idea based on their commitments and profile, labelled with the time it takes. “Another idea” swaps it; here it offers an Italian phrase for the Rome trip.',
    user:'Leaving comes with something meaningful to do, but nothing is required: “I’m done for now” ends the session straight away. There are no points, streaks or badges.',
    why:'Leaving a feed is easier when there is an attractive next action. A single personalised suggestion is intended to fill the gap left by scrolling without becoming another feed.',
@@ -183,7 +183,7 @@
   /* ---------------- Optional chapter: Personalised learning ---------------- */
   {id:'learn-choose',chapter:'learn',num:'L1',name:'Choosing to learn instead',label:'Intentional Choice',loop:'B1',
    now:'A sample user planning a Rome trip, interested in history and studying business, chooses to learn instead.',
-   insight:'Replacing a habit with a short, finite alternative can be easier than resisting it.',
+   insight:'Redirecting the trigger into a finite flow means the scrolling loop is never entered.',
    phone:'This sample user has told Pause that they are planning to visit Rome, are interested in history and study business (shown under My Interests). After the pause, they choose “Learn something instead”.',
    user:'A worthwhile alternative is offered at the moment of the urge, before any Reels are seen.',
    why:'Replacing a habit is often easier than suppressing it. The detour offers a short activity with a similar appeal of quick novelty, but with a clear end.',
@@ -198,7 +198,7 @@
    }},
   {id:'learn-card',chapter:'learn',num:'L2',name:'One personalised card',label:'Personalisation',loop:'B1',continues:true,
    now:'One card chosen from the user’s own profile: an image, a question, about 50 words and a source.',
-   insight:'Relevance comes from what users choose to share, not from tracking them.',
+   insight:'Self-reported interests strengthen the alternative flow without harvesting behavioural data.',
    phone:'Pause picks one card from the voluntary profile, labelled “Because you’re planning to visit Rome”. It has an image, a question-style title, about 50 words of explanation and a source link.',
    user:'One short, relevant card that can be read in under a minute.',
    why:'Relevance based on interests, profession and travel plans that the user supplied voluntarily is intended to make the alternative attractive. Cards are curated and source-linked, not live AI output.',
@@ -214,7 +214,7 @@
    }},
   {id:'learn-done',chapter:'learn',num:'L3',name:'Optional quiz, feedback and a clean exit',label:'Positive Behavioural Reinforcement',loop:'B2',continues:true,
    now:'An optional quiz and a thumbs-up, then “Done for now” returns straight home.',
-   insight:'One detour, then done: a clear ending keeps learning from becoming another feed.',
+   insight:'A clear endpoint stops the detour from becoming a new reinforcing loop.',
    phone:'The collapsed quick question is opened and answered, then a thumbs-up is given. “Done for now” returns straight to the home screen with a small confirmation.',
    user:'The quiz and feedback are optional; feedback tunes later picks. There is no completion screen, next card or extra suggestion.',
    why:'One meaningful detour per session: chaining activities would recreate the endless-feed pattern. Ending cleanly makes stopping the natural outcome.',
