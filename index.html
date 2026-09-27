@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f4ef" />
+  <meta name="description" content="Loop — a research-inspired prototype for intentional entry and intentional exit from social feeds." />
+  <title>Loop v2 — Intentional scrolling</title>
+  <style>
+    :root { --paper:#f5f4ef;--white:#fffefa;--ink:#1c2724;--sub:#64736c;--edge:#dce2d9;--green:#264c3d;--mist:#e4eee5;--dark:#121b18;--shadow:0 18px 70px rgba(19,39,28,.15);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    body { margin:0;background:#e9eee8;color:var(--ink); }
+    button,select,input {font:inherit;} button {cursor:pointer;} button:focus-visible,input:focus-visible {outline:3px solid #86b69b;outline-offset:3px;} button[disabled] {cursor:not-allowed;opacity:.48;}
+    #app { min-height:100dvh;display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,402px) minmax(120px,1fr);gap:clamp(20px,4vw,70px);align-items:center;max-width:1450px;margin:0 auto;padding:24px 42px; }
+    .site-note {max-width:360px;align-self:center;} .eyebrow {font-size:11px;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:#4e7a5f;} .site-note h1 {font-family:Georgia,serif;font-weight:400;font-size:clamp(46px,5.6vw,75px);letter-spacing:-.06em;line-height:1;margin:12px 0 18px;} .site-note p {font-size:16px;line-height:1.65;color:#566c61;} .phase-list{display:grid;gap:13px;margin-top:40px;} .phase {display:flex;align-items:flex-start;gap:12px;font-size:13px;line-height:1.5;color:#587061;} .phase b {display:block;color:#223c30;font-size:14px;} .phase-index {display:grid;place-items:center;flex:0 0 29px;height:29px;border:1px solid #a3baaa;border-radius:50%;font-size:11px;font-weight:800;}
+    .phone {width:100%;max-width:402px;height:min(820px,calc(100dvh - 36px));min-height:630px;justify-self:center;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--paper);border:7px solid #25332d;border-radius:39px;box-shadow:var(--shadow);isolation:isolate;}
+    .device-status {height:31px;flex:0 0 31px;display:flex;align-items:center;justify-content:space-between;padding:0 23px;background:var(--paper);font-size:11px;font-weight:800;letter-spacing:.03em;z-index:5;}
+    .device-status span:last-child {letter-spacing:3px;}
+    .screen {flex:1;position:relative;min-height:0;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none;}
+    .screen::-webkit-scrollbar{display:none;}
+    .inner{padding:26px 25px 22px;display:flex;flex-direction:column;flex:1;}
+    .brand-row {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:28px;} .brand{font-size:24px;font-weight:900;letter-spacing:-.09em;line-height:1;} .brand i{font-style:normal;color:#88ac91;} .step-label {font-size:10px;letter-spacing:.11em;color:#6d8574;text-transform:uppercase;font-weight:800;}
+    .spacer {flex:1;min-height:18px;} h2 {font-family:Georgia,serif;font-size:clamp(28px,5vh,37px);font-weight:400;letter-spacing:-.055em;line-height:1.08;margin:0 0 12px;} h3{font-size:15px;margin:0 0 10px;font-weight:750;letter-spacing:-.01em;} p{margin:0;} .lede{font-size:14px;line-height:1.58;color:#6a776e;} .small{font-size:12px;line-height:1.55;color:#77847c;} .muted{color:var(--sub);} .em {color:var(--green);}
+    .btn {border:1px solid transparent;border-radius:15px;padding:14px 17px;min-height:49px;background:var(--green);color:white;font-weight:750;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;transition:transform .12s;} .btn:active{transform:scale(.99);} .btn.alt{background:white;border-color:#d7e0d7;color:#244235;} .btn.ghost{background:transparent;border:1px solid #dbe2da;color:#53685b;} .btn.text{background:transparent;color:#557062;padding:10px;min-height:36px;} .btn.full{width:100%;} .btn.quiet{background:#e2eee4;color:#305c45;} .btn.btn-sm{min-height:34px;font-size:12px;padding:8px 11px;border-radius:10px;} .btn-row{display:flex;gap:10px;align-items:center;} .btn-row>*{flex:1;}
+    .section-title{font-weight:800;font-size:12px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;} .section-title span {font-size:10px;font-weight:600;color:#89988e;}
+    .pill-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;} .pill-grid.three{grid-template-columns:repeat(3,1fr);} .pill{border:1px solid #dfe5dc;background:#fffefa;border-radius:12px;padding:11px 10px;font-size:12px;font-weight:650;color:#52695a;min-height:45px;text-align:left;} .pill.selected{background:#e4efe6;border-color:#57886a;color:#214f36;box-shadow:inset 0 0 0 1px #57886a;} .pill .hint {display:block;font-size:10px;font-weight:500;color:#7f8d81;margin-top:5px;}
+    .card {background:var(--white);border:1px solid var(--edge);border-radius:19px;padding:18px;} .rule-card{margin-bottom:12px;} .rule-label{display:flex;align-items:center;gap:8px;margin:0 0 13px;font-weight:800;font-size:13px;}.rule-number{height:23px;width:23px;background:#e2ebe3;color:#326345;border-radius:50%;font-size:11px;display:grid;place-items:center;}
+    .hero-orbit {height:195px;width:195px;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 35%,#fafcf8 0 12%,#c0d7c8 12% 37%,#9ab9a4 37% 57%,#789d87 57% 70%,#e4eee5 70% 100%);margin:30px auto 25px;box-shadow:0 30px 60px rgba(55,104,73,.12);}.hero-orbit:after{content:"";position:absolute;inset:-22px;border:1px solid #d0dfd1;border-radius:50%;}.hero-orbit .orbit-word{position:absolute;left:-18px;bottom:8px;font-family:Georgia,serif;font-style:italic;font-size:41px;letter-spacing:-.09em;color:#234934;transform:rotate(-12deg);}
+    .breath-orbit{margin:22px auto 13px;width:166px;height:166px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#c3dac9,#e9f1e9);box-shadow:0 0 0 10px #e7f0e7,0 0 0 20px #f1f5ef;animation:breathe 5s ease-in-out infinite;} @keyframes breathe{0%,100%{transform:scale(.91)}50%{transform:scale(1.05)}} .breath-count{font-family:Georgia,serif;font-size:72px;color:#26563b;line-height:1;} .breath-caption{text-align:center;font-size:12px;color:#6a8b74;margin:18px 0 30px;} .hairline{height:1px;background:#e0e6de;margin:18px 0;}
+    .setup-panel .inner {padding-top:20px;min-height:0;overflow-y:auto;padding-bottom:8px;} .setup-panel h2{font-size:30px;} .setup-footer{flex:none;position:relative;background:var(--paper);padding:12px 25px 15px;box-shadow:0 -8px 20px var(--paper);z-index:2;} .setup-footer .tip{margin-top:8px;} .switch-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#61786a;} .switch{position:relative;width:43px;height:25px;border:0;border-radius:15px;background:#b9c9bc;padding:0;flex:0 0 43px;} .switch:after{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:white;transition:transform .2s}.switch.on{background:#3d7653;}.switch.on:after{transform:translateX(18px)}
+    .lesson-card{background:#e9efe8;border:1px solid #cedccf;border-radius:19px;padding:20px;min-height:176px;display:flex;flex-direction:column;gap:12px;} .lesson-card .mini-eyebrow{font-size:10px;font-weight:800;color:#62826c;letter-spacing:.11em;text-transform:uppercase}.lesson-card h3{font-family:Georgia,serif;font-size:27px;font-weight:400;letter-spacing:-.04em;line-height:1.15;margin:0;}.lesson-card p{font-size:14px;color:#506d59;line-height:1.5}
+    .feed-screen{background:#14211e;color:white;overflow:hidden;} .feed-ui{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;flex-direction:column;gap:10px;padding:14px 16px 8px;background:linear-gradient(#0008,transparent);} .feed-top{display:flex;align-items:center;gap:9px;justify-content:space-between;} .feed-name{font-weight:850;letter-spacing:-.05em;font-size:19px;} .feed-name span{color:#b6d2ba;} .feed-meta{border:1px solid #ffffff55;background:#18221a55;border-radius:15px;padding:7px 11px;font-size:10px;letter-spacing:.04em;color:#e7f2e9;}.feed-progress-track{height:3px;background:#ffffff4a;border-radius:4px;overflow:hidden}.feed-progress{height:100%;background:#d6ecdd;transition:width .12s linear}.feed-grayscale-notice{font-size:10px;color:#dce4db;opacity:.88}
+    .feed-content {position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;touch-action:pan-y;}.reel-art{position:absolute;inset:0;transition:filter .3s;display:grid;place-items:center;overflow:hidden}.reel-art.a{background:linear-gradient(155deg,#9caeac 5%,#597f71 39%,#192d2a 100%)}.reel-art.b{background:linear-gradient(145deg,#cab4a2 5%,#9b725d 51%,#483c38 100%)}.reel-art.c{background:linear-gradient(150deg,#b5beb9,#667a8c 46%,#243246)}.reel-art.d{background:linear-gradient(150deg,#d8c8a5,#a6a174 46%,#354d40)}.reel-art.e{background:linear-gradient(145deg,#a5b6b2,#607a77 50%,#293b36)}.reel-art.f{background:linear-gradient(155deg,#a3a9bd,#666e94 50%,#242d42)}.reel-art:before,.reel-art:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:#ffffff18;filter:blur(1px)}.reel-art:before{top:14%;left:-25%;transform:rotate(35deg) scaleX(1.5)}.reel-art:after{bottom:12%;right:-40%;transform:scale(1.5,1.1)}.reel-icon{font-size:130px;line-height:1;filter:drop-shadow(0 18px 27px #101d2840);opacity:.82;transform:rotate(-8deg)}.feed-vignette{position:absolute;inset:0;background:linear-gradient(#0005,transparent 31%,transparent 46%,#000b 96%);pointer-events:none}
+    .feed-mid{z-index:1;text-align:center;max-width:285px;position:relative;padding:0 25px;margin-top:-80px;text-shadow:0 2px 14px #0007}.feed-mid .overline{font-weight:750;font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:12px}.feed-mid h2{color:white;font-size:37px;line-height:1.1;letter-spacing:-.055em}.feed-mid .subline{font-size:13px;line-height:1.5;color:#f3f4ee}.feed-foot{position:absolute;z-index:2;bottom:15px;left:17px;right:17px;display:flex;align-items:end;gap:12px}.feed-caption{flex:1;font-size:12px;color:#edf3ed;line-height:1.5}.feed-caption b{display:block;font-size:13px;margin-bottom:6px}.feed-actions{display:grid;gap:15px}.round-control{background:#ffffff3d;color:white;border:1px solid #ffffff80;border-radius:50%;height:40px;width:40px;font-size:18px;display:grid;place-items:center;backdrop-filter:blur(7px)}.feed-nudge{z-index:5;position:absolute;top:91px;left:17px;right:17px;background:#eaf3e9;color:#2e5038;border-radius:13px;padding:13px;font-size:12px;line-height:1.45;box-shadow:0 6px 25px #0004}
+    .checkmark{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;font-size:30px;color:#2a6746;background:#e3efe5;margin-bottom:24px} .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.stat{background:#edf2ea;border-radius:12px;padding:14px}.stat strong{font-family:Georgia,serif;font-weight:400;font-size:28px}.stat small{display:block;color:#708072;font-size:11px;margin-top:6px}
+    .choice-box{background:#f0f4ed;border-radius:15px;padding:14px;display:flex;gap:12px;align-items:center}.choice-icon{width:37px;height:37px;border-radius:11px;background:#dce8de;display:grid;place-items:center;font-size:18px;flex:0 0 37px}.choice-box h3{margin:0 0 4px;font-size:13px}.choice-box p{font-size:11px;color:#6d7b6e;line-height:1.4}
+    .tip {font-size:11px;color:#84968b;line-height:1.5;text-align:center;margin-top:14px;} .home-mini{display:flex;gap:9px;align-items:center;margin:16px 0 22px;font-size:12px;color:#60776a;}.home-mini i{display:inline-block;height:8px;width:8px;background:#8cb19a;border-radius:50%;}.side-foot{color:#7f9485;align-self:end;font-size:11px;line-height:1.5;max-width:160px}.debug{display:none}
+    @media(max-width:950px){#app{grid-template-columns:minmax(0,1fr) 402px;padding:18px;gap:22px}.side-foot{display:none}.site-note h1{font-size:50px}.site-note{padding-left:20px;}}
+    @media(max-width:700px){body{background:var(--paper)}#app{display:block;padding:0;min-height:100dvh}.site-note,.side-foot{display:none}.phone{height:100dvh;min-height:0;max-width:none;width:100%;border:0;border-radius:0;box-shadow:none}.device-status{padding-top:env(safe-area-inset-top,0px);height:calc(31px + env(safe-area-inset-top,0px));flex-basis:calc(31px + env(safe-area-inset-top,0px));}.screen{padding-bottom:env(safe-area-inset-bottom,0px)}.inner{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+    .gray-setting{background:#ebf2ea;border:1px solid #d6e4d6;border-radius:12px;padding:10px 12px;margin-bottom:9px;line-height:1.3}.setup-panel .rule-card{padding:13px;margin-bottom:9px}.setup-panel .inner{padding-top:13px}.setup-panel .pill{padding:9px;min-height:42px}.setup-panel .rule-label{margin-bottom:9px}.setup-footer .tip{margin-top:5px}.mode-choice{padding:14px;margin-top:8px}.mode-choice .pill{text-align:center}.protected-note,.safe-banner{margin-top:12px;background:#e6eee6;border:1px solid #c7d8cb;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.5;color:#31533c}
+    .round-indicators{display:flex;align-items:center;gap:8px;margin-top:13px}.round-indicators>span{width:11px;height:11px;border:1px solid #87ae93;border-radius:50%;background:#fff}.round-indicators>span.used{background:#3d7653}.round-indicators>small{font-size:10px;color:#688271}
+    .protected-screen{background:#fbfaf7;overflow:hidden}.protected-wrap{display:flex;flex-direction:column;height:100%;min-height:0;background:#fffefa}.protected-top{display:flex;align-items:center;gap:9px;padding:9px 13px 8px;border-bottom:1px solid #eee;background:#fff}.protected-top b{font-size:22px;letter-spacing:-.06em}.mock-tag{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.05em;color:#688070}.safe-banner{margin:10px 12px 13px}.protected-scroll{padding:0 15px 15px;overflow-y:auto;flex:1;min-height:0;scrollbar-width:thin}.ig-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:8px 11px 14px;background:#fff;border-top:1px solid #e9ede6}.ig-nav button{border:0;background:transparent;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 1px;font-size:22px;color:#597362}.ig-nav button span{font-size:10px}.ig-nav button.active{background:#edf4ed;color:#214b36}.ig-nav button[disabled]{color:#acb7af;background:#f5f5f4;cursor:not-allowed}
+    .ig-post{background:#fff;border:1px solid #e3e9e1;border-radius:15px;overflow:hidden;margin:10px 0 16px}.ig-user{display:flex;align-items:center;gap:8px;padding:11px;font-size:12px}.avatar{display:inline-grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:#dce9df;color:#315942;font-size:13px;font-weight:800}.ig-photo{height:164px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}.ig-photo span{font-size:48px}.ig-photo b{font-family:Georgia,serif;font-size:19px;font-weight:400}.ig-photo.warm{background:linear-gradient(135deg,#ebd2aa,#9da990)}.ig-photo.cool{background:linear-gradient(135deg,#d2dde8,#90a5bc)}.ig-photo.green{background:linear-gradient(135deg,#c7dcbf,#8daa87)}.ig-post p{padding:12px;font-size:12px;line-height:1.5}.dm-row{width:100%;padding:15px 4px;border:0;border-bottom:1px solid #e6eae4;background:transparent;display:flex;align-items:center;gap:12px;text-align:left}.dm-row span:nth-child(2){flex:1;font-size:14px}.dm-row small{display:block;margin-top:5px;font-size:11px;color:#778579}.dm-row strong{font-size:24px;color:#879a89;font-weight:400}.chat-bubble{width:fit-content;max-width:84%;margin:12px 0;padding:13px;border-radius:15px;background:#e8efe8;font-size:13px;line-height:1.5}.chat-bubble.own{margin-left:auto;background:#d1e6d8}.dm-compose{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #e7ece7}.dm-compose input{flex:1;min-width:0;border:1px solid #d9e4db;border-radius:30px;padding:10px 13px;font-size:12px}.dm-compose button{border:0;background:var(--green);color:#fff;padding:10px 13px;border-radius:30px;font-size:12px;font-weight:800}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+<div id="app">
+  <aside class="site-note" aria-label="Prototype explanation">
+    <div class="eyebrow">A behavioural design prototype</div>
+    <h1>Meet<br/><i style="font-weight:400;color:#527b60">Loop.</i></h1>
+    <p>Scroll on purpose. Stop by choice. One feed, two linked experiments—not another phone lock.</p>
+    <div class="phase-list">
+      <div class="phase"><div class="phase-index">01</div><div><b>Purpose Sessions</b>Pause for five seconds, choose why you came and set your own finish line.</div></div>
+      <div class="phase"><div class="phase-index">02</div><div><b>Reward the Exit</b>Two optional +3 portions, increasingly gray Reels, then a protected feed with no Reels.</div></div>
+    </div>
+    <p style="font-size:11px;margin-top:35px;color:#819285">The Instagram view is a simulation. Blocking real Instagram Reels requires a compatible browser or browser extension; this page cannot alter the native app.</p>
+  </aside>
+  <main class="phone" aria-label="Loop interactive mobile prototype">
+    <div class="device-status"><span>LOOP · DEMO</span><span>●●● ▰</span></div>
+    <div id="phone-screen" class="screen" aria-live="polite"></div>
+  </main>
+  <aside class="side-foot">Prototype v2<br/>Two extra portions → stronger grayscale → Reels off</aside>
+</div>
+<script>
+(()=>{'use strict';
+  const root=document.getElementById('phone-screen');
+  const OPTIONS={
+    reasons:[['friends','Catch up with friends'],['break','Take a short break'],['learn','Find something useful'],['habit','Just felt like scrolling']],
+    limits:[['5','5 Reels'],['10','10 Reels'],['120','2 minutes']],
+    afters:[['reading','Read something'],['move','Move a little'],['learn','Learn something'],['rest','Rest my eyes']]
+  };
+  const lessons={
+    reading:{label:'Reading · 30 seconds',title:'The one-sentence takeaway',body:'Think of the last article or chapter you enjoyed. Can you explain its most interesting idea in one sentence?'},
+    move:{label:'Movement · 30 seconds',title:'The posture reset',body:'Stand up, relax your shoulders and slowly look left and right. Notice whether your body feels different from a moment ago.'},
+    learn:{label:'Curiosity · 30 seconds',title:'Explain it like a beginner',body:'Pick something you learned recently. Try explaining it aloud in two sentences without using jargon.'},
+    rest:{label:'Mindful break · 30 seconds',title:'Notice three details',body:'Look away from your screen and notice three details in your surroundings you normally overlook.'}
+  };
+  const alternatives={
+    reading:{title:'Read just two pages',desc:'Start with a book, article or saved piece you actually want to read.',emoji:'▤'},
+    move:{title:'Take a two-minute walk',desc:'Get up, stretch or step outside. A tiny change of scene counts.',emoji:'↗'},
+    learn:{title:'Learn one useful thing',desc:'Try a 30-second micro-learning card from your interests.',emoji:'✦'},
+    rest:{title:'Take a proper breather',desc:'Put the phone down and give your eyes a few screen-free moments.',emoji:'◌'}
+  };
+  const FEED=[
+    {tag:'SLOW LIVING',title:'Little moments, big days.',desc:'A quiet coffee and somewhere new to walk.',icon:'☼',style:'a',handle:'@weekday.notes'},
+    {tag:'THINGS TO TRY',title:'A recipe for the weekend.',desc:'Three ingredients, one very good afternoon.',icon:'◒',style:'b',handle:'@goodthings.daily'},
+    {tag:'YOUR CITY',title:'Take the scenic route.',desc:'The street you walk past may have something unexpected.',icon:'↗',style:'c',handle:'@city.window'},
+    {tag:'NEW MUSIC',title:'Songs that feel like sunlight.',desc:'A playlist for walking nowhere in particular.',icon:'♫',style:'d',handle:'@small.sounds'},
+    {tag:'A LITTLE CURIOUS',title:'What have you been meaning to learn?',desc:'One idea for the next time you have a spare minute.',icon:'✳',style:'e',handle:'@curious.today'},
+    {tag:'WEEKEND IDEAS',title:'An afternoon with no plans.',desc:'What would you do if the feed disappeared for a day?',icon:'✧',style:'f',handle:'@offscreen.club'},
+    {tag:'PHOTO DIARY',title:'Not every moment needs posting.',desc:'The favourite pictures you keep just for yourself.',icon:'▧',style:'a',handle:'@somewhere.slow'},
+    {tag:'CREATIVE BREAK',title:'Try something new.',desc:'Draw the view from where you are sitting.',icon:'✎',style:'b',handle:'@little.studio'},
+    {tag:'LEARN IN A MINUTE',title:'Ask one better question.',desc:'The quickest way to get curious about anything.',icon:'?',style:'c',handle:'@tiny.questions'},
+    {tag:'THE GOOD STUFF',title:'This is your sign to call a friend.',desc:'One genuine conversation beats another hour of browsing.',icon:'♡',style:'d',handle:'@real.life'},
+    {tag:'NATURE NOTE',title:'Look up once in a while.',desc:'A reminder that the world exists outside your screen.',icon:'❋',style:'e',handle:'@outside.everyday'},
+    {tag:'EVERYDAY',title:'Make a little room for boredom.',desc:'Some of your best ideas arrive when nothing is happening.',icon:'◎',style:'f',handle:'@little.pause'}
+  ];
+  const defaults={reason:'break',limit:'5',after:'reading',grayscale:true,platform:'instagram'};
+  let saved={};try{saved=JSON.parse(localStorage.getItem('loop_prefs')||'{}')||{}}catch(e){}
+  let prefs={...defaults,...saved};
+  // New v2 default is on even for people who turned off the experimental v1 setting.
+  try{if(localStorage.getItem('loop_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
+  let existingGate=false;try{existingGate=sessionStorage.getItem('loop_instagram_reels_disabled')==='true'}catch(e){}
+  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:prefs.after,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
+  let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const selected=(kind,v)=>state[kind]===v?' selected':'';
+  const nameOf=(arr,id)=>arr.find(x=>x[0]===id)?.[1]||'';
+  const brand=()=>'<span class="brand" aria-label="Loop">l<i>oo</i>p.</span>';
+  const step=n=>`<span class="step-label">${n}</span>`;
+  const time=secs=>{const s=Math.max(0,Math.floor(secs));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
+  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('loop_prefs',JSON.stringify(prefs));localStorage.setItem('loop_prefs_version','2')}catch(e){}};
+  const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(3,state.views-state.extraRoundStart));return state.extraRounds===1?Math.round(35+n*10):Math.min(100,Math.round(70+n*10));};
+  const displayCount=()=>state.extraRounds?`+${Math.max(0,state.views-state.extraRoundStart)} / 3 · round ${state.extraRounds}/2`:state.limit==='120'?`${time(state.elapsed)} / 2:00`:`${state.views} / ${state.checkpoint} Reels`;
+  const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('loop_instagram_reels_disabled','true')}catch(e){}}};
+  const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
+  const render=()=>{root.className='screen '+(state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
+    if(state.screen==='home')root.innerHTML=home();
+    if(state.screen==='pause')root.innerHTML=pause();
+    if(state.screen==='setup')root.innerHTML=setup();
+    if(state.screen==='learn')root.innerHTML=learn();
+    if(state.screen==='feed')root.innerHTML=feed();
+    if(state.screen==='checkpoint')root.innerHTML=checkpoint();
+    if(state.screen==='exit')root.innerHTML=exitScreen();
+    if(state.screen==='protected-feed')root.innerHTML=protectedFeed();
+    if(state.screen==='protected-dms')root.innerHTML=protectedDms();
+    if(state.screen==='protected-chat')root.innerHTML=protectedChat();
+  };
+  function home(){return `<div class="inner">
+    <div class="brand-row">${brand()}${step('TWO CONNECTED EXPERIMENTS')}</div>
+    <div class="hero-orbit"><span class="orbit-word">your call.</span></div>
+    <h2>Scroll on purpose.<br/>Leave by choice.</h2>
+    <p class="lede">Pause for five seconds, choose your finish line, then get just two chances for three more Reels. After that, the short-video feed stops.</p>
+    <div class="home-mini"><i></i> No plants · No points · Only intentional choices</div>
+    <section class="card mode-choice"><div class="section-title">What are you opening? <span>Demo modes</span></div>
+      <div class="pill-grid">
+        <button class="pill${selected('platform','instagram')}" data-set="platform" data-value="instagram" aria-pressed="${state.platform==='instagram'}">Instagram <span class="hint">Simulated feed + DMs</span></button>
+        <button class="pill${selected('platform','loop')}" data-set="platform" data-value="loop" aria-pressed="${state.platform==='loop'}">Loop feed <span class="hint">Simulated short videos</span></button>
+      </div>
+      ${state.reelsDisabled&&state.platform==='instagram'?'<div class="protected-note"><b>Reels are currently unavailable.</b><br/>You can still view posts and use DMs in the simulated Instagram interface.</div>':''}
+    </section>
+    <div class="spacer"></div>
+    <button class="btn full" data-action="open">${state.reelsDisabled&&state.platform==='instagram'?'Open Instagram feed →':'Open '+(state.platform==='instagram'?'Instagram':'Loop')+' →'}</button>
+    <button class="btn text full" data-action="direct-learn">Learn one thing instead ✦</button>
+    ${state.reelsDisabled?'<button class="btn text full" data-action="reset-demo">Reset demo for another test</button>':''}
+    <p class="tip">Prototype simulation only: no access to real Instagram, accounts or messages.</p>
+  </div>`}
+  function pause(){return `<div class="inner">
+    <div class="brand-row"><button class="btn text btn-sm" data-action="go-home">← Back</button>${step('01 · PURPOSE SESSIONS')}</div>
+    <div class="spacer"></div><h2 style="text-align:center">Before you scroll,<br/><i>take a second.</i></h2>
+    <p class="lede" style="text-align:center">A tiny pause is all you need to make a deliberate choice.</p>
+    <div class="breath-orbit" aria-label="Breathing countdown"><span class="breath-count" id="breath-count">${state.countdown}</span></div>
+    <p class="breath-caption" id="breath-caption">Breathe in, then out.</p><div class="spacer"></div>
+    <button class="btn full" data-action="purpose" ${state.countdown?'disabled':''}>${state.countdown?'Pause for '+state.countdown+'s':'Choose my purpose →'}</button>
+    <button class="btn alt full" style="margin-top:10px" data-action="learn">Learn something instead ✦</button>
+    <button class="btn text full" data-action="go-home">Actually, not right now</button>
+    <p class="tip">You can always leave. Nothing is blocked.</p>
+  </div>`}
+  function setup(){const reasonOpts=OPTIONS.reasons.map(([k,v])=>`<button class="pill${selected('reason',k)}" data-set="reason" data-value="${k}" aria-pressed="${state.reason===k}">${v}</button>`).join('');
+    const limitOpts=OPTIONS.limits.map(([k,v])=>`<button class="pill${selected('limit',k)}" data-set="limit" data-value="${k}" aria-pressed="${state.limit===k}">${v}</button>`).join('');
+    const afterOpts=OPTIONS.afters.map(([k,v])=>`<button class="pill${selected('after',k)}" data-set="after" data-value="${k}" aria-pressed="${state.after===k}">${v}</button>`).join('');
+    return `<div class="inner">
+      <div class="brand-row"><button class="btn text btn-sm" data-action="back-pause">← Back</button>${step('01 · PURPOSE SESSIONS')}</div>
+      <h2 style="margin:16px 0 6px">Three little<br/>commitments.</h2><p class="lede" style="margin-bottom:19px">Set them once. Change them anytime.</p>
+      <section class="card rule-card"><div class="rule-label"><span class="rule-number">1</span> Why am I here?</div><div class="pill-grid">${reasonOpts}</div></section>
+      <section class="card rule-card"><div class="rule-label"><span class="rule-number">2</span> Where's my finish line?</div><div class="pill-grid three">${limitOpts}</div></section>
+      <section class="card rule-card"><div class="rule-label"><span class="rule-number">3</span> What might I do afterwards?</div><div class="pill-grid">${afterOpts}</div></section>
+    </div>
+    <div class="setup-footer"><div class="switch-row gray-setting"><span><b>Progressive grayscale</b><br/><span style="font-size:10px">On by default · starts with the first +3 Reels</span></span><button role="switch" aria-checked="${state.grayscale}" aria-label="Progressive grayscale" class="switch${state.grayscale?' on':''}" data-action="grayscale"></button></div><button class="btn full" data-action="start-feed">Start my session →</button><p class="tip">The first portion stays colourful. Each extra portion gets grayer.</p></div>`;
+  }
+  function learn(){const lesson=lessons[state.after];return `<div class="inner">
+     <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('A MEANINGFUL DETOUR')}</div>
+     <div class="spacer"></div>
+     <h2>One small thing<br/>instead of a scroll.</h2>
+     <p class="lede" style="margin-bottom:24px">Your interests don't need an infinite feed. Try this 30-second exercise.</p>
+     <div class="section-title">Choose a topic</div>
+     <div class="pill-grid" style="margin-bottom:16px">${OPTIONS.afters.map(([k,v])=>`<button class="pill${selected('after',k)}" data-set="after" data-value="${k}">${v}</button>`).join('')}</div>
+     <div class="lesson-card"><span class="mini-eyebrow">${lesson.label}</span><h3>${lesson.title}</h3><p>${lesson.body}</p></div>
+     <div class="spacer"></div>
+     <button class="btn full" data-action="learn-complete">That was enough for now ✓</button>
+     <button class="btn text full" data-action="learn-back">Return to my plan</button>
+   </div>`}
+  function currentReel(){return FEED[(Math.max(1,state.views)-1)%FEED.length]}
+  function feed(){const reel=currentReel();const gray=grayPercent();
+    return `<div class="feed-content" aria-label="Simulated short-video feed. Swipe up or use Next to advance.">
+      <div class="reel-art ${reel.style}" id="reel-art" style="filter:grayscale(${gray}%)"><span class="reel-icon" aria-hidden="true">${reel.icon}</span></div>
+      <div class="feed-vignette"></div><div class="feed-mid"><p class="overline">${reel.tag}</p><h2>${reel.title}</h2><p class="subline">${reel.desc}</p></div>
+      <div class="feed-foot"><div class="feed-caption"><b>${reel.handle}</b>Swipe up to see the next post. <span style="opacity:.7">Simulated ${state.platform==='instagram'?'Instagram':'Loop'} feed.</span></div>
+      <div class="feed-actions"><button class="round-control" data-action="next" aria-label="Next reel">↑</button><button class="round-control" data-action="early-exit" aria-label="End session">×</button></div></div>
+    </div>
+    <div class="feed-ui"><div class="feed-top"><span class="feed-name">${state.platform==='instagram'?'instagram':'l<span>oo</span>p.'}</span>
+      <span class="feed-meta" id="feed-count">${displayCount()}</span>
+      <button class="btn btn-sm" style="background:#f0f4ed;color:#244532;border:0" data-action="early-exit">Finish</button>
+      </div><div class="feed-progress-track"><div class="feed-progress" id="reel-progress" style="width:${state.progress}%"></div></div>
+      <div id="gray-label" class="feed-grayscale-notice" role="status">${state.extraRounds?`Extra portion ${state.extraRounds} of 2 · ${gray}% grayscale`:'First portion · normal colour'}</div></div>
+    ${state.notice?`<div class="feed-nudge" role="status">↗ &nbsp; You came here to <b>${esc(nameOf(OPTIONS.reasons,state.reason).toLowerCase())}</b>. Still what you want to do? <button class="btn text btn-sm" data-action="dismiss-notice" style="float:right">×</button></div>`:''}`;
+  }
+  function checkpoint(){const final=state.extraRounds>=2;const noun=state.platform==='instagram'?'Instagram':'Loop';return `<div class="inner">
+    <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div><div class="spacer"></div>
+    <div class="checkmark">${final?'✓':'Ⅱ'}</div>
+    <h2>${final?'That’s your two<br/>extra portions.':'Here’s your<br/>finish line.'}</h2>
+    <p class="lede">${final?`You used both +3 Reel extensions. The ${noun} Reels section is now unavailable ${state.platform==='instagram'?'in this simulated browser view':'for this demo session'}.`:state.extraRounds===0?`You reached your ${esc(nameOf(OPTIONS.limits,state.limit).toLowerCase())} boundary. The next Reel won't autoplay until you decide.`:`You finished extra portion ${state.extraRounds} of 2. Your feed is now ${grayPercent()}% grayscale.`}</p>
+    <div class="card" style="margin:23px 0 13px;background:#e8f0e7">
+      <div style="font-size:11px;color:#708775;margin-bottom:8px">YOUR ORIGINAL INTENTION</div>
+      <b>${nameOf(OPTIONS.reasons,state.reason)}</b><div class="small" style="margin-top:5px">Planned finish: ${nameOf(OPTIONS.limits,state.limit)}</div>
+      <div class="round-indicators" aria-label="${state.extraRounds} of 2 extra portions used"><span class="${state.extraRounds>=1?'used':''}"></span><span class="${state.extraRounds>=2?'used':''}"></span><small>${state.extraRounds}/2 extensions used</small></div>
+    </div>
+    <p class="small">${final?'The scrolling loop ends here, but messages and regular posts stay available.':'No phone lock. If you choose three more Reels, grayscale starts immediately and gets stronger.'}</p>
+    <div class="spacer"></div>
+    ${final?`<button class="btn full" data-action="protected-feed">Open ${noun} feed (no Reels) →</button>
+      <button class="btn alt full" style="margin-top:10px" data-action="protected-dms">Open DMs →</button>
+      <button class="btn text full" data-action="finish">Finish my session</button>`:
+      `<button class="btn full" data-action="finish">Finish my session →</button>
+       <button class="btn alt full" style="margin-top:10px" data-action="continue">+3 more Reels ${state.extraRounds===0?'(first extra portion)':'(last extra portion)'}</button>`}
+    <p class="tip">${final?'The Reels tab cannot be reopened in this demo until you reset it.':'You can always stop earlier.'}</p>
+  </div>`}
+  function exitScreen(){const a=alternatives[state.after],early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
+    return `<div class="inner">
+      <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div><div class="spacer"></div>
+      <div class="checkmark">✓</div><h2>${title}</h2>
+      <p class="lede">No streaks, points or pressure. The reward is getting back to something you actually wanted to do.</p>
+      ${detour?'':`<div class="stat-grid" style="margin:24px 0"><div class="stat"><strong>${state.views}</strong><small>Posts viewed</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
+      <div class="section-title" style="margin:24px 0 12px">Your next small thing <span>Based on your choice</span></div>
+      <div class="choice-box"><div class="choice-icon">${a.emoji}</div><div><h3>${a.title}</h3><p>${a.desc}</p></div></div>
+      <div class="spacer"></div>
+      ${state.after==='learn'?'<button class="btn full" data-action="learn-from-exit">Try my 30-second learning card →</button>':'<button class="btn full" data-action="go-home">Sounds good. I’m done.</button>'}
+      ${state.reelsDisabled&&state.platform==='instagram'?'<button class="btn alt full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':state.after==='learn'?'<button class="btn text full" data-action="go-home">I’ll do that later</button>':'<button class="btn text full" data-action="open">Start another intentional session</button>'}
+      <p class="tip">Ending your session is the reward. You don’t have to prove what you did next.</p>
+    </div>`}
+  const mockPosts=[
+    {author:'alex.photos',title:'A slow Sunday afternoon',body:'Walked a new route and found a tiny bookstore.',tone:'warm'},
+    {author:'mayainmotion',title:'Postcards from the city',body:'Just a regular photo from an unexpectedly lovely day.',tone:'cool'},
+    {author:'sam.cooks',title:'Something worth making',body:'Made lunch from whatever was in the fridge. It worked.',tone:'green'}
+  ];
+  function nav(current){return `<nav class="ig-nav" aria-label="Protected app navigation">
+    <button class="${current==='feed'?'active':''}" data-action="protected-feed">⌂ <span>Feed</span></button>
+    <button class="${current==='dms'?'active':''}" data-action="protected-dms">✉ <span>DMs</span></button>
+    <button disabled aria-disabled="true" title="Reels are disabled for this demo session">⊘ <span>Reels off</span></button>
+  </nav>`}
+  function protectHeader(){return `<div class="protected-top"><button class="btn text btn-sm" data-action="go-home">←</button><b>${state.platform==='instagram'?'instagram':'loop.'}</b><span class="mock-tag">SIMULATED</span></div>
+    <div class="safe-banner"><b>Reels unavailable for this session.</b><br/>You can still see regular posts and use your DMs. No Reels tab, in-feed Reels or recommendation stream.</div>`}
+  function protectedFeed(){return `<div class="protected-wrap">
+    ${protectHeader()}<div class="protected-scroll"><div class="section-title">Following feed <span>Photos and text only</span></div>
+    ${mockPosts.map((p,i)=>`<article class="ig-post"><div class="ig-user"><span class="avatar">${p.author[0].toUpperCase()}</span><b>@${p.author}</b></div>
+    <div class="ig-photo ${p.tone}"><span>${i===0?'☼':i===1?'⌁':'✳'}</span><b>${p.title}</b></div>
+    <p>${p.body}</p></article>`).join('')}</div>${nav('feed')}</div>`}
+  function protectedDms(){return `<div class="protected-wrap">${protectHeader()}
+    <div class="protected-scroll"><div class="section-title">Messages <span>Demo conversations</span></div>
+    ${[['Alex','Are we still meeting later?'],['Sam','Sent you those notes!'],['Maya','Want to grab a coffee?']].map(([who,summary])=>`<button class="dm-row" data-action="open-chat" data-chat="${who}"><span class="avatar">${who[0]}</span><span><b>${who}</b><small>${summary}</small></span><strong>›</strong></button>`).join('')}
+    <p class="small" style="margin:18px 0">These messages are placeholders. Nothing is sent to Instagram.</p></div>${nav('dms')}</div>`}
+  function protectedChat(){const who=state.activeChat;const local=state.messages[who]||[];return `<div class="protected-wrap">${protectHeader()}
+    <div class="protected-scroll"><button class="btn text btn-sm" data-action="protected-dms">← DMs</button>
+    <h2 style="font-size:27px;margin:17px 0">${who}</h2><div class="chat-bubble">${who==='Alex'?'Are we still meeting later?':who==='Sam'?'Sent you those notes!':'Want to grab a coffee?'}</div>
+    ${local.map(m=>`<div class="chat-bubble own">${esc(m)}</div>`).join('')}</div>
+    <form id="demo-chat" class="dm-compose"><label for="dm-input" class="sr-only">Message ${who}</label><input id="dm-input" name="message" maxlength="180" placeholder="Write a demo message..." required/><button type="submit">Send</button></form>
+    ${nav('dms')}</div>`}
+  function goHome(){clearTimers();state.screen='home';state.notice=false;render()}
+  function open(){clearTimers();if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
+    state.screen='pause';state.countdown=5;render();countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Choose my purpose →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose what you actually want.'}},1000)}
+  function begin(){if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
+    clearTimers();save();state.views=1;state.checkpoint=state.limit==='120'?120:Number(state.limit);state.extraRounds=0;state.extraRoundStart=0;state.elapsed=0;state.sessionStart=Date.now();state.progress=0;state.noticeShown=false;state.notice=false;state.finishedBy='';state.screen='feed';lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
+  function tick(){if(state.screen!=='feed')return;if(document.hidden){lastTick=performance.now();return}const now=performance.now(),delta=Math.min(250,now-lastTick);lastTick=now;state.elapsed+=delta/1000;state.progress=Math.min(100,state.progress+delta/70);const bar=document.getElementById('reel-progress');if(bar)bar.style.width=state.progress+'%';const countEl=document.getElementById('feed-count');if(countEl)countEl.textContent=displayCount();const art=document.getElementById('reel-art');if(art)art.style.filter=`grayscale(${grayPercent()}%)`;const label=document.getElementById('gray-label');if(label&&state.extraRounds)label.textContent=`Extra portion ${state.extraRounds} of 2 · ${grayPercent()}% grayscale`;if(state.progress>=100)next();}
+  function next(){if(state.screen!=='feed'||state.reelsDisabled&&state.platform==='instagram')return;const reach=state.extraRounds===0&&state.limit==='120'?state.elapsed>=state.checkpoint:state.views>=state.checkpoint;
+    if(reach){clearInterval(feedTimer);if(state.extraRounds>=2)protectInstagram();state.screen='checkpoint';state.notice=false;render();return}
+    state.views++;state.progress=0;
+    if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200)}render();lastTick=performance.now()}
+  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;render()}
+  function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.extraRoundStart=state.views;state.checkpoint=state.views+3;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
+  root.addEventListener('click',event=>{
+    const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;save();render();return}
+    const target=event.target.closest('[data-action]');if(!target||target.disabled)return;
+    const action=target.dataset.action;
+    switch(action){case 'open':open();break;case 'direct-learn':state.learnFrom='home';state.screen='learn';render();break;case 'go-home':goHome();break;case 'purpose':if(state.countdown<=0){clearTimers();state.screen='setup';render();}break;
+      case 'back-pause':open();break;case 'learn':state.learnFrom='pause';clearTimers();state.screen='learn';render();break;
+      case 'learn-back':if(state.learnFrom==='exit'){state.screen='exit';render()}else if(state.learnFrom==='home'){goHome()}else open();break;
+      case 'learn-complete':if(state.learnFrom==='exit'){goHome()}else{state.views=0;state.elapsed=0;finish('learn')}break;
+      case 'grayscale':state.grayscale=!state.grayscale;save();render();break;
+      case 'start-feed':begin();break;case 'next':next();break;
+      case 'protected-feed':state.screen='protected-feed';render();break;
+      case 'protected-dms':state.screen='protected-dms';render();break;
+      case 'open-chat':state.activeChat=target.dataset.chat;state.screen='protected-chat';render();break;
+      case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('loop_instagram_reels_disabled')}catch(e){}render();break;
+      case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
+      case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
+      case 'learn-from-exit':state.learnFrom='exit';state.screen='learn';render();break;
+    }
+  });
+  root.addEventListener('submit',event=>{if(event.target.id!=='demo-chat')return;event.preventDefault();const input=event.target.querySelector('input[name=message]');const msg=input?.value.trim();if(msg){state.messages[state.activeChat].push(msg.slice(0,180));render();}});
+  root.addEventListener('wheel',event=>{if(state.screen==='feed'&&event.deltaY>18){event.preventDefault();const now=Date.now();if(now-lastWheel>550){lastWheel=now;next()}}},{passive:false});
+  root.addEventListener('touchstart',event=>{if(state.screen==='feed')touchY=event.changedTouches[0].screenY},{passive:true});
+  root.addEventListener('touchend',event=>{if(state.screen==='feed'&&touchY!==null){const diff=touchY-event.changedTouches[0].screenY;if(diff>55)next();touchY=null}},{passive:true});
+  document.addEventListener('keydown',event=>{if(state.screen==='feed'&&['ArrowDown','PageDown',' '].includes(event.key)&&!event.repeat){event.preventDefault();next()}if(event.key==='Escape'&&state.screen==='feed')finish('early')});
+  document.addEventListener('visibilitychange',()=>{lastTick=performance.now()});
+  render();
+  // Non-user-facing test interface; no external analytics or network requests.
+  window.__loopTest={get:()=>({...state}),begin,finish,next,open,render,continueAfter,grayPercent,reset:()=>{state.reelsDisabled=false;state.extraRounds=0;state.platform='instagram';state.screen='home';try{sessionStorage.removeItem('loop_instagram_reels_disabled')}catch(e){}render();}};
+})();
+</script>
+</body>
+</html>
