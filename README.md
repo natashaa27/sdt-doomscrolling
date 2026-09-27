@@ -38,18 +38,20 @@ Your own words are matched to card topics with a plain keyword list (for example
 - one image: a photo where a relevant one exists (sky, parrots, lighthouse), otherwise a simple illustration
 - a question-style title ("Why is the sky blue?")
 - a 40–60-word explanation
+- a collapsed **Quick question** (or "One more thing"), optional
 - a discreet source link. Wikipedia sources open inside the phone with **Done** to return to the card; other sites open in a new tab
+- optional 👍 / 👎 feedback (👎 means the card won't come back; 👍 favours similar cards)
 - one **Done for now** button
 
 A small **Change topic** link under the card opens a separate, compact topic picker ("For you" topics from your profile, then "Something different"). Picking a topic replaces the card with one card on that topic.
 
-**After Done for now**, an optional follow-up screen shows a quick question (or one extra fact) and "Was this for you?" feedback: Interesting / Not for me / Already knew this. Cards marked "Not for me" or "Already knew this" are skipped next time. Everything there is optional; **Finish** leaves straight away. There is no next card, autoplay, streak or quota. Cards are labelled as curated demo content, not AI-generated and not live news.
+**One meaningful detour per session.** Done for now ends the session and takes you straight home, with a small message ("Nice. That was your break. Session ended."). There is no completion screen, no second suggestion and no next card. Cards are labelled as curated demo content, not AI-generated and not live news.
 
 If you skip setup, you get a general card about variable rewards; the topic picker offers to personalise.
 
 **Learning from the demo feed.** In the simulated Instagram you can save Reels and posts, and some Reels have an **ⓘ Learn more about …** button. When you've saved or tapped Learn more twice on the same topic (for example, nature), Pause asks on the home screen and in My Interests whether to add it. Nothing is added without your confirmation. Confirmed topics appear under **From the demo feed** in My Interests, where you can remove them, see the raw signal counts, and clear all signals.
 
-**Reward the Exit.** When you stop, Pause offers **one** optional idea based on why you opened Instagram, what you planned to do afterwards, your profile and how much time you have (2, 10 or 30 minutes). Examples: read five pages of the book you're reading, learn one phrase for a city you're visiting (Japanese, Italian, French, Catalan, Turkish), take a five-minute walk or stretch, try a recipe you saved (30 minutes, if you're into cooking), read a history article you saved, message a friend, a two-minute puzzle, or one learning card. "Another idea" shows a different one, and "I'm done for now" is always there.
+**Reward the Exit.** Only people who finish scrolling (at their finish line or by tapping Finish) see this screen. It shows Reels watched and time, then **one** optional idea based on why you opened Instagram, what you planned to do afterwards and your profile, for example: read five pages of your book, learn one phrase for a city you're visiting, take a five-minute walk or stretch, try a recipe you saved, message a friend, a two-minute puzzle or one learning card. A small "Another idea" link shows a different one, and **I'm done for now** is the main button. If you start the learning card or puzzle from here, finishing it takes you home: nothing else is chained on. No points, streaks or plants; ending the session is the reward.
 
 ## What is real and what is simulated
 

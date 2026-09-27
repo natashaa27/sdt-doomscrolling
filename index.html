@@ -176,14 +176,17 @@
     .lcard-art{height:132px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28),transparent 60%),var(--art)}
     .lcard-art span{font-size:58px;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.2))}
     .learn-inner .lcard-img{aspect-ratio:auto;height:150px}
-    .lcard-foot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:2px}
+    .lcard-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:2px}
     .lcard-foot span{font-size:10.5px;color:#8a998d;white-space:nowrap}
     .lcard-foot .lcard-src,.lcard-foot .lcard-src.as-link{font-size:11.5px;font-weight:600;color:#6b7f71}
     .change-topic{align-self:center;margin-top:12px;border:0;background:transparent;color:#2f6b4a;font:inherit;font-size:13px;font-weight:650;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px}
     .learn-recap{font-family:Georgia,serif;font-style:italic;margin:6px 0 16px}
     .fb-box{display:flex;flex-direction:column;gap:8px;margin-top:16px}.fb-box em{font-style:normal;color:#8a998d}
     .topic-wrap{display:flex;flex-wrap:wrap;gap:7px}
-    .learn-inner>[data-action="learn-done"]{position:sticky;bottom:12px;box-shadow:0 6px 18px rgba(20,40,30,.18)}
+    .lquiz{border-top:1px solid var(--edge);padding-top:8px}.lquiz summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#2f6b4a;list-style:none}.lquiz summary::-webkit-details-marker{display:none}.lquiz summary::before{content:'＋ ';font-weight:400}.lquiz[open] summary::before{content:'－ '}
+    .lquiz summary em{font-style:normal;font-weight:500;color:#8a998d;margin-left:4px}.lquiz p{font-size:13px;line-height:1.5;margin:8px 0;color:#3c5446}
+    .thumbs{display:flex;gap:6px}.thumb{width:32px;height:32px;border-radius:50%;border:1px solid var(--edge);background:transparent;font-size:14px;cursor:pointer;display:grid;place-items:center;filter:grayscale(1);opacity:.75}.thumb.on{filter:none;opacity:1;background:#e3efe4;border-color:#3d7653}
+    .learn-inner>[data-action="learn-complete"]{position:sticky;bottom:12px;box-shadow:0 6px 18px rgba(20,40,30,.18)}
     @media (max-height:760px){.learn-inner .lcard-img{height:112px}.lcard-art{height:96px}.lcard-art span{font-size:44px}.learn-inner .lcard h3{font-size:21px}.learn-inner .lcard-text{font-size:13.5px;line-height:1.5}.learn-inner .lcard-body{gap:8px;padding:12px 14px 14px}.learn-inner .change-topic{margin-top:6px}}
     .lcard-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
     .lcard-why{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4e7a5f}
@@ -608,7 +611,9 @@
   const sourceLink=c=>/wikipedia\.org/.test(c.source.url)?`<button class="lcard-src as-link" data-action="open-web" data-url="${c.source.url}">Source: ${c.source.name}</button>`:`<a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>`;
   function learn(){const c=LEARN_CARDS.find(x=>x.id===state.cardId)||LEARN_CARDS[0];
     if(state.learnStage==='topics')return topicPicker(c);
-    if(state.learnStage==='after')return learnAfter(c);
+    const fb=feedback[c.id];
+    const extra=c.quiz?`<details class="lquiz"${state.quizPick!=null?' open':''}><summary>Quick question <em>optional</em></summary><p>${c.quiz.q}</p><div class="quiz-opts">${c.quiz.opts.map((o,i)=>{const cls=state.quizPick==null?'':i===c.quiz.a?' right':i===state.quizPick?' wrong':'';return `<button class="pill sm${cls}" data-action="quiz" data-i="${i}"${state.quizPick!=null?' disabled':''}>${o}</button>`}).join('')}</div>${state.quizPick!=null?`<p class="quiz-why">${state.quizPick===c.quiz.a?'Right. ':'Not quite. '}${c.quiz.why}</p>`:''}</details>`
+      :`<details class="lquiz"><summary>One more thing <em>optional</em></summary><p>${c.fact}</p></details>`;
     return `<div class="inner learn-inner">
      <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('ONE THING')}</div>
      <article class="lcard">
@@ -617,29 +622,16 @@
          <span class="lcard-why">${state.cardWhy}</span>
          <h3>${c.title}</h3>
          <p class="lcard-text">${c.body}</p>
-         <div class="lcard-foot">${sourceLink(c)}<span>Curated demo</span></div>
+         ${extra}
+         <div class="lcard-foot">${sourceLink(c)}
+           <span class="thumbs" role="group" aria-label="Was this card for you? Optional">${[['interesting','👍','Useful'],['not','👎','Not for me']].map(([k,i,l])=>`<button class="thumb${fb===k?' on':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}" aria-label="${l}" title="${l}">${i}</button>`).join('')}</span></div>
+         ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}
        </div>
      </article>
      <button class="change-topic" data-action="change-topic">Change topic</button>
      <div class="spacer"></div>
-     <button class="btn full" data-action="learn-done">Done for now</button>
-   </div>`}
-  /* Optional follow-up after the card: a quick question (or one extra fact) and feedback. Nothing here is required. */
-  function learnAfter(c){const fb=feedback[c.id];
-    const extra=c.quiz?`<div class="quiz"><b>Quick question · optional</b><p>${c.quiz.q}</p><div class="quiz-opts">${c.quiz.opts.map((o,i)=>{const cls=state.quizPick==null?'':i===c.quiz.a?' right':i===state.quizPick?' wrong':'';return `<button class="pill sm${cls}" data-action="quiz" data-i="${i}"${state.quizPick!=null?' disabled':''}>${o}</button>`}).join('')}</div>${state.quizPick!=null?`<p class="quiz-why">${state.quizPick===c.quiz.a?'Right. ':'Not quite. '}${c.quiz.why}</p>`:''}</div>`
-      :`<div class="try-this"><b>One more thing</b>${c.fact}</div>`;
-    return `<div class="inner learn-inner">
-     <div class="brand-row"><span></span>${step('ONE THING')}</div>
-     <div class="checkmark" style="margin:22px 0 14px">✓</div>
-     <h2>That’s one thing learned.</h2>
-     <p class="lede learn-recap">${c.title}</p>
-     ${extra}
-     <div class="fb-box"><span class="small">Was this for you? <em>Optional</em></span>
-       <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
-       ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}</div>
-     <div class="spacer"></div>
-     <button class="btn full" data-action="learn-complete">Finish</button>
-     <p class="card-demo" style="text-align:center;margin-top:8px">Curated demo card, checked against the linked source. Not AI-generated and not live news.</p>
+     <button class="btn full" data-action="learn-complete">Done for now</button>
+     <p class="card-demo" style="text-align:center;margin-top:8px">Curated demo card, not AI-generated or live news.</p>
    </div>`}
   function topicPicker(c){const mine=new Set(profileSources().map(x=>x[0]));
     const forYou=TOPICS.filter(t=>t[2].some(g=>mine.has(g))),rest=TOPICS.filter(t=>!forYou.includes(t));
@@ -654,13 +646,12 @@
    </div>`}
 
   /* ---------- Reward the Exit: one personalised, optional idea ---------- */
-  const TIMES=[['2','2 min'],['10','10 min'],['30','30 min']];
-  function exitIdeas(){const mins=Number(state.freeTime),r=state.reason,a=state.after,I=k=>profile.interests.includes(k)||profile.explore.includes(k);
+  function exitIdeas(){const mins=30,r=state.reason,a=state.after,I=k=>profile.interests.includes(k)||profile.explore.includes(k);
     const planned=[...profile.planned,...profile.plannedOther.map(placeIn)].find(p=>PHRASES[p]);const ideas=[];
     const Iw=k=>I(k)||profile.inferred.includes(k)||[...profile.interestsOther,...profile.exploreOther].some(t=>matchTags(t).includes('interest:'+k));
     const add=(id,m,score,title,desc,why)=>{if(m<=mins)ideas.push({id,mins:m,score,title,desc,why})};
     if(planned)add('phrase',2,5+(I('languages')?2:0),`Learn one useful phrase for ${labelOf('places',planned)}`,'Thirty seconds, and you’ll use it on your trip.',`you’re planning to visit ${labelOf('places',planned)}`);
-    if(state.finishedBy!=='learn')add('card',2,(r==='learn'?7:3)+(a==='learn'?3:0)+(hasProfile()?1:0),'Learn one thing picked for you','One short card, then you’re done.',r==='learn'?'you came to find something useful':'it takes a minute');
+    add('card',2,(r==='learn'?7:3)+(a==='learn'?3:0)+(hasProfile()?1:0),'Learn one thing picked for you','One short card, then you’re done.',r==='learn'?'you came to find something useful':'it takes a minute');
     add('read',10,(a==='read'?6:0)+(Iw('books')?4:0)+(r==='habit'&&a==='read'?3:0),profile.book?`Read five pages of ${esc(profile.book)}`:'Read five pages of your book','Pick up where you left off.',I('books')?'you’re into books':'you planned to read afterwards');
     add('recipe',30,Iw('cooking')?5:0,'Try a recipe you saved','Cook something you bookmarked instead of scrolling past more.','you’re into cooking');
     add('history',10,Iw('history')?4:0,'Read a history article you’ve saved','Something you chose, not something the feed chose.','you’re into history');
@@ -669,24 +660,22 @@
     add('friend',2,(a==='friend'?6:0)+(r==='friends'?6:0),'Message one friend directly','Skip the feed and send one real message.',r==='friends'?'you came to catch up with friends':'you planned to message a friend');
     if(r==='habit')add('puzzle',2,3,'Try a two-minute puzzle','One question, one answer. Then you’re done.','you opened Instagram out of habit');
     return ideas.filter(x=>x.score>0).sort((x,y)=>y.score-x.score);}
-  function exitScreen(){const early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
+  function exitScreen(){const early=state.finishedBy==='early';const title=early?'You decided when to stop.':'You reached your finish line.';
     const ideas=exitIdeas();const idea=ideas.length?ideas[state.ideaIdx%ideas.length]:null;const ph=idea&&idea.id==='phrase'?PHRASES[[...profile.planned,...profile.plannedOther.map(placeIn)].find(p=>PHRASES[p])]:null;
+    const inApp=idea&&['card','puzzle','phrase'].includes(idea.id);
     return `<div class="inner">
       <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div>
       <div class="checkmark" style="margin:18px 0 16px">✓</div><h2>${title}</h2>
-      ${detour?'':`<div class="stat-grid" style="margin:14px 0 4px"><div class="stat"><strong>${state.views}</strong><small>Reels watched</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
-      <div class="section-title" style="margin:20px 0 8px">Something better to do? <span>Optional</span></div>
-      <div class="time-row"><span class="small">I have</span>${TIMES.map(([k,v])=>`<button class="pill sm${selected('freeTime',k)}" data-set="freeTime" data-value="${k}" aria-pressed="${state.freeTime===k}">${v}</button>`).join('')}</div>
-      ${idea?`<div class="idea${state.nextPick===idea.id?' picked':''}">
-        <span class="lcard-why">Because ${idea.why}${hasProfile()?'':''} · ${idea.mins} min</span>
+      <div class="stat-grid" style="margin:14px 0 4px"><div class="stat"><strong>${state.views}</strong><small>Reels watched</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>
+      ${idea?`<div class="section-title" style="margin:20px 0 8px">If you like <span>Optional</span></div>
+      <div class="idea${state.nextPick===idea.id?' picked':''}">
+        <span class="lcard-why">Because ${idea.why} · ${idea.mins} min</span>
         <b>${idea.title}</b><span class="small">${idea.desc}</span>
         ${state.nextPick===idea.id&&ph?`<div class="phrase"><b>${ph[1]}</b><span>${ph[2]}</span><small>${ph[0]} · ${ph[3]}</small></div>`:''}
-        ${state.nextPick===idea.id&&!['card','puzzle','phrase'].includes(idea.id)?'<p class="next-note">Good choice. Enjoy it, no need to report back.</p>':''}
-        <div class="btn-row">${state.nextPick===idea.id?'':`<button class="btn quiet btn-sm" data-action="do-idea" data-id="${idea.id}">Let’s do it</button>`}${ideas.length>1?'<button class="btn text btn-sm" data-action="next-idea">Another idea</button>':''}</div>
-      </div>`:'<p class="small">Nothing fits in that time. That’s fine.</p>'}
-      ${!hasProfile()?'<button class="btn text btn-sm" data-action="start-onboard" data-return="exit" style="align-self:flex-start">Make ideas more personal →</button>':''}
+        <div class="btn-row">${inApp&&state.nextPick!==idea.id?`<button class="btn quiet btn-sm" data-action="do-idea" data-id="${idea.id}">${idea.id==='phrase'?'Show me':'Start'}</button>`:''}${ideas.length>1?'<button class="btn text btn-sm" data-action="next-idea">Another idea</button>':''}</div>
+      </div>`:''}
       <div class="spacer"></div>
-      <button class="btn full" data-action="go-home">${state.nextPick?'Done':'I’m done for now'}</button>
+      <button class="btn full" data-action="go-home">I’m done for now</button>
       ${state.reelsDisabled?'<button class="btn text full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':''}
       <p class="tip">Ending your session is the reward. You don’t have to do anything else.</p>
     </div>`}
@@ -703,7 +692,7 @@
      <article class="lesson-card"><span class="mini-eyebrow">Think before you answer</span><h3 style="font-size:23px">${pz.q}</h3>
        ${state.puzzleShown?`<div class="try-this"><b>Answer</b>${pz.a}</div><p class="card-end">That’s it. Puzzle done.</p>`:''}</article>
      <div class="spacer"></div>
-     ${state.puzzleShown?'<button class="btn full" data-action="go-home">Done ✓</button>':'<button class="btn full" data-action="puzzle-reveal">Show the answer</button>'}
+     ${state.puzzleShown?'<button class="btn full" data-action="puzzle-done">Done for now</button>':'<button class="btn full" data-action="puzzle-reveal">Show the answer</button>'}
      <button class="btn text full" data-action="puzzle-back">Back</button>
    </div>`}
   const ICON={
@@ -837,7 +826,9 @@
     <form id="demo-chat" class="dm-compose"><label for="dm-input" class="sr-only">Message ${who}</label><input id="dm-input" name="message" maxlength="180" placeholder="Message..." autocomplete="off" required/><button type="submit">Send</button></form>
   </div>`}
   function goHome(){clearTimers();state.screen='home';state.notice=false;render()}
-  function open(){clearTimers();if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
+  /* One meaningful detour per session: finishing a card or puzzle ends the session. No further suggestions. */
+  function endDetour(msg){state.detourDone=true;goHome();toast(msg)}
+  function open(){clearTimers();state.detourDone=false;if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     state.screen='pause';state.countdown=5;startCountdown()}
   function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to feed →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000)}
   function begin(){if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
@@ -847,7 +838,7 @@
     if(reach){clearInterval(feedTimer);if(state.extraRounds>=2)protectInstagram();state.screen='checkpoint';state.notice=false;render();return}
     state.views++;state.progress=0;
     if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200)}render();lastTick=performance.now()}
-  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;state.nextPick='';state.ideaIdx=0;render()}
+  function finish(how){clearTimers();if(state.detourDone){goHome();return}state.screen='exit';state.finishedBy=how;state.nextPick='';state.ideaIdx=0;render()}
   function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.views++;state.extraRoundStart=state.views;state.checkpoint=state.views+2;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   root.addEventListener('click',event=>{
     const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;if(key==='freeTime'){state.ideaIdx=0;state.nextPick=''}save();render();return}
@@ -856,11 +847,10 @@
     switch(action){case 'open':open();break;case 'go-home':goHome();break;case 'purpose':if(state.countdown<=0){clearTimers();state.screen='setup';render();}break;
       case 'back-pause':open();break;case 'learn':enterLearn('pause');break;
       case 'learn-back':if(state.learnFrom==='exit'){state.screen='exit';render()}else{state.screen='pause';startCountdown()}break;
-      case 'learn-done':state.learnStage='after';render();root.scrollTop=0;break;
       case 'change-topic':state.learnStage='topics';render();root.scrollTop=0;break;
       case 'topic-cancel':state.learnStage='card';render();break;
       case 'pick-topic':{const pick=pickTopic(target.dataset.topic);if(pick)showCard(pick);else state.learnStage='card';render();root.scrollTop=0;break}
-      case 'learn-complete':if(state.learnFrom==='exit'){goHome()}else{state.views=0;state.elapsed=0;finish('learn')}break;
+      case 'learn-complete':endDetour('Nice. That was your break. Session ended.');break;
       case 'grayscale':state.grayscale=!state.grayscale;save();render();break;
       case 'start-feed':begin();break;case 'next':next();break;
       case 'protected-feed':state.screen='protected-feed';render();break;
@@ -884,7 +874,7 @@
       case 'ask-delete':state.confirmDelete=true;keepScroll(render);break;
       case 'cancel-delete':state.confirmDelete=false;keepScroll(render);break;
       case 'delete-all':profile=JSON.parse(JSON.stringify(EMPTY_PROFILE));feedback={};seen={};saves={};learnMore={};['pause_profile','pause_feedback','pause_seen','pause_saves','pause_learnmore'].forEach(store.del);state.confirmDelete=false;toast('Your preferences were deleted.');render();break;
-      case 'feedback':{const v=target.dataset.v;if(feedback[state.cardId]===v){delete feedback[state.cardId];state.fbNote=''}else{feedback[state.cardId]=v;state.fbNote=v==='interesting'?'Glad it was worth it.':v==='not'?'Got it. You won’t see this card again.':'Nice. We’ll skip this one next time.'}store.set('pause_feedback',feedback);keepScroll(render);break;}
+      case 'feedback':{const v=target.dataset.v;if(feedback[state.cardId]===v){delete feedback[state.cardId];state.fbNote=''}else{feedback[state.cardId]=v;state.fbNote=v==='interesting'?'Thanks. Pause will pick more like this.':v==='not'?'Got it. You won’t see this card again.':'Nice. We’ll skip this one next time.'}store.set('pause_feedback',feedback);keepScroll(render);break;}
       case 'quiz':state.quizPick=+target.dataset.i;keepScroll(render);break;
       case 'do-idea':{const id=target.dataset.id;state.nextPick=id;if(id==='card')enterLearn('exit');else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle';render()}else keepScroll(render);break;}
       case 'next-idea':state.ideaIdx++;state.nextPick='';keepScroll(render);break;
@@ -898,6 +888,7 @@
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
       case 'puzzle-reveal':state.puzzleShown=true;render();break;
+      case 'puzzle-done':endDetour('Puzzle done. Session ended.');break;
       case 'puzzle-back':state.screen='exit';render();break;
     }
   });
