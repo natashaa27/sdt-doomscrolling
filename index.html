@@ -157,6 +157,41 @@
     .next-opt em{position:absolute;right:12px;top:12px;font-style:normal;font-size:11px;font-weight:700;color:#5c7d66;background:#e7f0e7;border-radius:999px;padding:2px 8px}
     .next-opt.picked{border-color:#57886a;background:#e4efe6;box-shadow:inset 0 0 0 1px #57886a}
     .next-note{margin-top:10px;font-size:12.5px;color:#31533c;text-align:center}
+    .pill.sm{min-height:38px;padding:7px 11px;font-size:12px;text-align:center}
+    .chip-wrap{display:flex;flex-wrap:wrap;gap:7px}
+    .ob-body h2{margin:14px 0 6px}.ob-body .lede{margin-bottom:14px}
+    .pref-h{font-size:13px;font-weight:800;margin:16px 0 8px}
+    .pref-more{margin-top:16px}.pref-more summary{cursor:pointer;font-size:13px;font-weight:700;color:#305c45;padding:6px 0}.pref-more .small{margin:2px 0 8px}
+    .field-label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#446452}
+    .text-in{width:100%;border:1px solid #d7e0d7;background:#fffefa;border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink)}
+    .add-row{display:flex;gap:8px;margin:8px 0}.add-row .text-in{flex:1;min-width:0}
+    .ob-dots{display:flex;justify-content:center;gap:6px;margin:12px 0}.ob-dots span{width:7px;height:7px;border-radius:50%;background:#c9d6ca}.ob-dots span.on{background:#3d7653;width:18px;border-radius:4px}
+    .pref-card{background:var(--white);border:1px solid var(--edge);border-radius:16px;padding:12px 14px;margin-top:10px}.pref-card .pref-h{margin-top:0}
+    .suggest{display:flex;flex-direction:column;gap:6px;background:#e4efe6;border:1px solid #bcd3c1;border-radius:14px;padding:12px 14px;font-size:13px;color:#244235;margin:10px 0}
+    .danger-box{margin-top:14px;border:1px solid #e3c9c0;background:#fbf2ee;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;color:#5a3a30}
+    .invite{display:flex;flex-direction:column;gap:3px;text-align:left;border:1px dashed #9fbfa8;background:#eef5ee;border-radius:14px;padding:11px 13px;margin:12px 0 4px;color:#244235}.invite b{font-size:13.5px}.invite span{font-size:12px;color:#577063}
+    .lcard{margin-top:12px;background:var(--white);border:1px solid var(--edge);border-radius:20px;overflow:hidden}
+    .lcard-img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+    .lcard-band{height:10px}
+    .lcard-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
+    .lcard-why{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4e7a5f}
+    .lcard h3{font-family:Georgia,serif;font-size:24px;font-weight:400;letter-spacing:-.03em;line-height:1.15;margin:0}
+    .lcard-text{font-size:14px;line-height:1.6;color:#3c5446}
+    .quiz{background:#f0f4ed;border-radius:14px;padding:12px}.quiz b{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4e7a5f}.quiz p{font-size:13.5px;margin:4px 0 8px;line-height:1.45}
+    .quiz-opts{display:flex;flex-wrap:wrap;gap:7px}.quiz-opts .right{background:#dcedde;border-color:#3d7653;color:#1f4d33;opacity:1}.quiz-opts .wrong{background:#f6e7e2;border-color:#c99a8b;color:#6b3b2e;opacity:1}
+    .quiz-why{margin-top:8px!important;font-size:12.5px!important;color:#305c45}
+    .lcard-src{font-size:12px;color:#2f6b4a;font-weight:700;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+    .fb{display:flex;flex-wrap:wrap;gap:7px}.fb-note{font-size:12px;color:#577063}
+    .time-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+    .idea{display:flex;flex-direction:column;gap:5px;border:1px solid #dfe5dc;background:#fffefa;border-radius:16px;padding:13px 14px}.idea b{font-size:15px;color:#1f3a2c}.idea.picked{border-color:#57886a;background:#eef5ee}
+    .idea .btn-row{justify-content:flex-start;margin-top:6px}.idea .btn-row>*{flex:0 0 auto}
+    .phrase{display:flex;flex-direction:column;gap:2px;background:#e4efe6;border-radius:12px;padding:10px 12px;margin-top:4px}.phrase b{font-family:Georgia,serif;font-size:22px;font-weight:400}.phrase span{font-size:13px;color:#305c45}.phrase small{font-size:11px;color:#6a806f}
+    .pause-tile{background:#264c3d!important}
+    .ph-invite .btn-row{margin-top:8px}.ph-note .suggest{margin:0;background:transparent;border:0;padding:0}
+    .reel-rail .save-btn.on svg{fill:#fff}
+    .ig-actions .save-btn.on svg{fill:#111}
+    .app-toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);z-index:20;max-width:86%;background:rgba(20,32,36,.92);color:#fff;font-size:12.5px;line-height:1.4;padding:9px 14px;border-radius:12px;text-align:center;opacity:0;transition:opacity .2s;pointer-events:none}
+    .app-toast.show{opacity:1}
   </style>
 </head>
 <body>
@@ -174,6 +209,7 @@
   <main class="phone" aria-label="Pause interactive mobile prototype">
     <div class="device-status"><span>PAUSE · DEMO</span><span>●●● ▰</span></div>
     <div id="phone-screen" class="screen" aria-live="polite"></div>
+    <div class="app-toast" id="app-toast" role="status"></div>
   </main>
   <aside class="side-foot">Prototype v2<br/>Two extra portions → stronger grayscale → Reels off</aside>
 </div>
@@ -183,15 +219,7 @@
   const OPTIONS={
     reasons:[['friends','Catch up with friends'],['break','Take a short break'],['learn','Find something useful'],['habit','Just felt like scrolling']],
     limits:[['5','5 Reels'],['10','10 Reels'],['120','2 minutes']],
-    interests:[['psychology','Psychology'],['finance','Finance'],['science','Science'],['history','History'],['languages','Languages']]
-  };
-  /* One short card per interest, each with a clear ending. */
-  const CARDS={
-    psychology:{title:'Why you keep checking: variable rewards',body:['In the 1950s, B. F. Skinner found that animals rewarded on an unpredictable schedule kept pressing a lever far longer than animals rewarded every time. Not knowing when the next reward comes is what keeps the behaviour going.','Feeds work the same way. Most posts are forgettable, but now and then one is great, and you can’t tell which swipe will bring it. So “just one more” always feels worth it.'],tryThis:'Next time you reach for a refresh, notice the little “maybe this one” feeling. Naming it makes it easier to put the phone down.',source:'Based on Ferster & Skinner, Schedules of Reinforcement (1957).'},
-    finance:{title:'The rule of 72',body:['To estimate how long money takes to double, divide 72 by the yearly growth rate. At 6% a year, savings double in about 12 years (72 ÷ 6). At 9%, about 8 years.','It works backwards too: debt at 18% a year doubles in about 4 years if you don’t pay it down. The same maths that builds savings also makes debt grow fast.'],tryThis:'Look up the interest rate on one account or card you have and divide 72 by it.',source:'A standard approximation for compound growth; most accurate between about 4% and 12%.'},
-    science:{title:'Why the sky is blue',body:['Sunlight contains every colour. As it passes through the air, tiny gas molecules scatter short wavelengths (blue) much more strongly than long ones (red). That scattered blue light reaches your eyes from every direction, so the whole sky looks blue.','At sunset, light travels through far more air to reach you. Most of the blue is scattered away before it arrives, leaving the oranges and reds.'],tryThis:'Next sunset, notice that the sky overhead often stays blue while the horizon turns orange.',source:'This effect is called Rayleigh scattering.'},
-    history:{title:'The printing press changed who could know things',body:['Around 1440, Johannes Gutenberg in Mainz combined movable metal type with a screw press. Before that, most books in Europe were copied by hand, and a single book could take months.','Within about 50 years, printing presses were running in more than 200 European cities. Books became cheaper, ideas spread faster, and far more people could read for themselves.'],tryThis:'Think about which modern invention you’d compare to it, and why.',source:'Gutenberg’s printing began in Mainz in the 1440s–1450s.'},
-    languages:{title:'Saudade (Portuguese)',body:['Saudade is a Portuguese word for a deep, bittersweet longing for someone or something you love that is absent, and may never come back. It mixes sadness with warmth, because missing something means it mattered.','It’s often called untranslatable. English needs a whole sentence for what Portuguese says in one word.'],tryThis:'Say it out loud: “sow-DAH-jee” (Brazilian) or “sow-DAHD” (European). Who or what do you feel saudade for?',source:'A central idea in Portuguese and Brazilian music, especially fado.'}
+    afters:[['learn','Learn one thing'],['read','Read a few pages'],['move','Move a little'],['rest','Rest my eyes'],['friend','Message a friend']]
   };
   /* Two-minute puzzles with a clear answer (classic cognitive-reflection questions). */
   const PUZZLES=[
@@ -199,19 +227,160 @@
     {q:'If 5 machines take 5 minutes to make 5 widgets, how long would 100 machines take to make 100 widgets?',a:'5 minutes. Each machine makes one widget in 5 minutes.'},
     {q:'A patch of lily pads doubles in size every day. It takes 48 days to cover the whole lake. How long to cover half the lake?',a:'47 days. One more doubling covers the rest.'}
   ];
-  /* Optional next steps, matched to the reason for opening, the interest and the time available. */
-  const NEXT=[
-    {id:'card',mins:2,reasons:['learn','habit','break','friends'],title:i=>`Learn one thing about ${i}`,desc:'A one-minute card with a clear ending.'},
-    {id:'puzzle',mins:2,reasons:['habit','break'],title:()=>'Try a two-minute puzzle',desc:'One question, one answer. Then you’re done.'},
-    {id:'message',mins:2,reasons:['friends'],title:()=>'Message one friend directly',desc:'Skip the feed and send one real message.'},
-    {id:'eyes',mins:2,reasons:['break'],title:()=>'Rest your eyes',desc:'Look at something far away for twenty seconds.'},
-    {id:'walk',mins:10,reasons:['habit','break'],title:()=>'Take a short walk',desc:'A change of scene, no phone needed.'},
-    {id:'call',mins:10,reasons:['friends'],title:()=>'Call someone you’ve been meaning to',desc:'Ten minutes of real conversation.'},
-    {id:'article',mins:10,reasons:['learn','habit'],title:i=>`Read a saved article about ${i}`,desc:'Something you chose earlier, not something the feed chose.'},
-    {id:'podcast',mins:30,reasons:['learn','break','habit'],title:i=>`Listen to a ${i} podcast episode`,desc:'Good on a walk, too.'},
-    {id:'plan',mins:30,reasons:['friends'],title:()=>'Plan a meetup',desc:'Turn “we should hang out” into a date.'}
+  /* Curated learning cards. Each is short (60–100 words), fact-checked and linked to a source.
+     tags: place:<id> (visited or planned), interest:<id> (interests, subjects to explore, Instagram interests), field:<id>. */
+  const LEARN_CARDS=[
+    {id:'kyoto',tags:['place:kyoto'],title:'Why Kyoto was Japan’s capital for over 1,000 years',color:'#8a3b2e',
+     body:'In 794, Emperor Kanmu moved the court to a new city laid out on a grid: Heian-kyō, today’s Kyoto. It stayed the imperial capital until 1868, when the emperor moved to Tokyo. That long stretch is why Kyoto holds so many temples. At Kiyomizu-dera, founded in 778, the main hall’s wooden stage juts out over the hillside on tall pillars. The present buildings date from 1633, and the stage was built without nails.',
+     quiz:{q:'In which year did Heian-kyō (Kyoto) become Japan’s capital?',opts:['794','1185','1603'],a:0,why:'Emperor Kanmu moved the court there in 794.'},
+     source:{name:'Wikipedia: Heian-kyō',url:'https://en.wikipedia.org/wiki/Heian-ky%C5%8D'}},
+    {id:'trevi',tags:['place:rome'],title:'The Trevi Fountain still runs on an ancient aqueduct',color:'#3f6f8f',
+     body:'The Trevi Fountain was finished in 1762 to a design by Nicola Salvi. It marks the end of the Aqua Virgo, an aqueduct built in 19 BC under Marcus Agrippa, which still supplies the fountain today. Legend says a coin thrown over your left shoulder means you will return to Rome. Visitors throw in more than a million euros a year, and the city gives the money to the charity Caritas.',
+     quiz:{q:'Which ancient aqueduct feeds the Trevi Fountain?',opts:['Aqua Appia','Aqua Virgo','Aqua Claudia'],a:1,why:'The Aqua Virgo, built in 19 BC, still supplies it.'},
+     source:{name:'Wikipedia: Trevi Fountain',url:'https://en.wikipedia.org/wiki/Trevi_Fountain'}},
+    {id:'colosseum',tags:['place:rome'],title:'The Colosseum had a retractable roof',color:'#a0703c',
+     body:'Construction of the Colosseum began under Emperor Vespasian around AD 70, and his son Titus opened it in AD 80 with 100 days of games. It could hold an estimated 50,000 to 80,000 people. To shade the crowd, sailors rigged a huge canvas awning, the velarium, from wooden masts around the top. Holes for those masts can still be seen in the upper walls.',
+     quiz:{q:'Which emperor opened the Colosseum in AD 80?',opts:['Nero','Titus','Hadrian'],a:1,why:'Titus, Vespasian’s son, opened it with 100 days of games.'},
+     source:{name:'Wikipedia: Colosseum',url:'https://en.wikipedia.org/wiki/Colosseum'}},
+    {id:'eiffel',tags:['place:paris'],title:'The Eiffel Tower was meant to be temporary',color:'#6a5d4f',
+     body:'The Eiffel Tower was built for the 1889 World’s Fair and was only permitted to stand for 20 years. Gustave Eiffel helped save it by using it for science, especially radio experiments, and its value as a radio antenna convinced the city to keep it. The iron also responds to the weather: on hot days it expands, and the tower can grow by up to about 15 centimetres.',
+     quiz:{q:'What helped save the Eiffel Tower from demolition?',opts:['Its use as a radio antenna','A public vote','A royal decree'],a:0,why:'Radio transmission made it too useful to take down.'},
+     source:{name:'Wikipedia: Eiffel Tower',url:'https://en.wikipedia.org/wiki/Eiffel_Tower'}},
+    {id:'sagrada',tags:['place:barcelona'],title:'Gaudí knew he would never see the Sagrada Família finished',color:'#b0683a',
+     body:'Construction of the Sagrada Família began in 1882, and Antoni Gaudí took over the project a year later. He worked on it for the rest of his life, and when he died in 1926 less than a quarter of it was complete. He knew it would outlast him, and is often quoted as saying, “My client is not in a hurry.” Work has continued for more than a century since.',
+     fact:'Gaudí is buried in the crypt of the basilica he designed.',
+     source:{name:'Wikipedia: Sagrada Família',url:'https://en.wikipedia.org/wiki/Sagrada_Fam%C3%ADlia'}},
+    {id:'hagia',tags:['place:istanbul'],title:'Hagia Sophia’s dome seems to float',color:'#7a5a8c',
+     body:'Hagia Sophia was completed in 537 under the Byzantine emperor Justinian I, in just under six years. Its huge central dome sits on pendentives, curved triangles that let a round dome rest on a square base, and a ring of windows at its base makes it seem to float on light. For nearly a thousand years it was the largest cathedral in the world. It later became a mosque, then a museum, and a mosque again in 2020.',
+     quiz:{q:'Which emperor built Hagia Sophia?',opts:['Constantine','Justinian I','Theodosius'],a:1,why:'Justinian I completed it in 537.'},
+     source:{name:'Wikipedia: Hagia Sophia',url:'https://en.wikipedia.org/wiki/Hagia_Sophia'}},
+    {id:'bigben',tags:['place:london'],title:'Big Ben is a bell, not a tower',color:'#5b6a7a',
+     body:'Strictly speaking, “Big Ben” is the nickname of the Great Bell inside the clock tower at the Palace of Westminster, not the tower itself. The bell weighs about 13.7 tonnes and has a noticeable crack, which gives it a slightly unusual tone. The tower was called the Clock Tower until 2012, when it was renamed the Elizabeth Tower to mark Queen Elizabeth II’s Diamond Jubilee.',
+     quiz:{q:'What is the tower’s official name since 2012?',opts:['Victoria Tower','Elizabeth Tower','Westminster Tower'],a:1,why:'It was renamed for the Diamond Jubilee.'},
+     source:{name:'Wikipedia: Big Ben',url:'https://en.wikipedia.org/wiki/Big_Ben'}},
+    {id:'liberty',tags:['place:new-york'],title:'The Statue of Liberty used to be copper-brown',color:'#4f8a7a',
+     body:'The Statue of Liberty was a gift from France, designed by Frédéric Auguste Bartholdi and dedicated in 1886. Its internal iron framework was engineered by Gustave Eiffel, three years before his famous tower. The statue’s thin copper skin was originally a shiny reddish-brown. Weather slowly formed a green layer called a patina, and within about 20 to 30 years the whole statue had turned the colour we know today. The patina also protects the copper underneath.',
+     quiz:{q:'Who engineered the statue’s internal framework?',opts:['Gustave Eiffel','Frédéric Bartholdi','Frank Lloyd Wright'],a:0,why:'Eiffel designed the iron skeleton.'},
+     source:{name:'Wikipedia: Statue of Liberty',url:'https://en.wikipedia.org/wiki/Statue_of_Liberty'}},
+    {id:'scarcity',tags:['field:marketing','field:business','interest:psychology'],title:'Why “only 2 left” makes you want it more',color:'#8c4f5e',
+     body:'In a 1975 study, Stephen Worchel and colleagues gave people a cookie from a jar holding either ten cookies or just two. The same cookies were rated as more desirable when they came from the nearly empty jar. This is the scarcity effect: things seem more valuable when they seem limited. It explains “only 2 left in stock” labels and countdown timers, and why pausing before a limited offer helps you judge the product itself.',
+     quiz:{q:'In the study, which cookies were rated more desirable?',opts:['From the full jar','From the nearly empty jar','No difference'],a:1,why:'Scarcity made identical cookies seem better.'},
+     source:{name:'Wikipedia: Scarcity (social psychology)',url:'https://en.wikipedia.org/wiki/Scarcity_(social_psychology)'}},
+    {id:'monalisa',tags:['interest:art','field:design','field:arts'],title:'A theft made the Mona Lisa world-famous',color:'#6b5b3a',
+     body:'In 1911, the Mona Lisa was stolen from the Louvre by Vincenzo Peruggia, an Italian handyman who had worked there. He hid in the museum overnight and walked out with the painting under his clothes. It was missing for more than two years, until he tried to sell it in Florence in 1913. The worldwide news coverage turned a respected painting into the most famous artwork on Earth.',
+     quiz:{q:'How long was the Mona Lisa missing?',opts:['About two weeks','Over two years','Ten years'],a:1,why:'Stolen in 1911, it was recovered in December 1913.'},
+     source:{name:'Wikipedia: Mona Lisa',url:'https://en.wikipedia.org/wiki/Mona_Lisa'}},
+    {id:'maillard',tags:['interest:cooking'],title:'Why browned food tastes so good',color:'#9c5a2e',
+     body:'The deep flavour of toast, seared steak and roasted coffee comes from the Maillard reaction, first described by the French chemist Louis-Camille Maillard in 1912. When amino acids and sugars are heated, they react to form hundreds of new flavour and aroma compounds and a brown colour. It happens quickly above roughly 140 °C, which is why a wet surface, stuck near 100 °C while water evaporates, steams instead of browning.',
+     fact:'Pat meat or vegetables dry before searing. Less surface water means faster browning and more flavour.',
+     source:{name:'Wikipedia: Maillard reaction',url:'https://en.wikipedia.org/wiki/Maillard_reaction'}},
+    {id:'buttress',tags:['interest:architecture','field:architecture'],title:'How flying buttresses let cathedrals fill with light',color:'#58657a',
+     body:'Tall stone vaults push outwards, so early churches needed thick walls with small windows. Gothic builders solved this with flying buttresses: stone arches on the outside that carry that sideways push down to separate piers. With the walls no longer holding everything up, they could be thinner and filled with huge stained-glass windows. Notre-Dame de Paris, begun in 1163, was one of the first cathedrals to use them.',
+     quiz:{q:'What problem do flying buttresses solve?',opts:['Roof leaks','The outward push of heavy vaults','Earthquakes'],a:1,why:'They carry the sideways thrust away from the walls.'},
+     source:{name:'Wikipedia: Flying buttress',url:'https://en.wikipedia.org/wiki/Flying_buttress'}},
+    {id:'lighthouse',tags:['interest:architecture','interest:travel'],img:'kodim21',title:'Every lighthouse has its own signature',color:'#2c6aa0',
+     body:'Sailors need to know exactly which lighthouse they are looking at. By day, many towers are identified by their daymark, a distinctive shape or painted pattern such as stripes or bands. At night, each light has its own light characteristic, a unique pattern of flashes, colours and timing. These signatures are published in official lists of lights, so a navigator can match a pattern to a position on the chart.',
+     fact:'The pattern is often written in code on nautical charts, for example “Fl(2) 10s”: two flashes every ten seconds.',
+     source:{name:'Wikipedia: Light characteristic',url:'https://en.wikipedia.org/wiki/Light_characteristic'}},
+    {id:'parrots',tags:['interest:nature','interest:science'],img:'kodim23',title:'Parrots make colours no other birds can',color:'#2f8f5b',
+     body:'The reds and yellows of parrots come from pigments called psittacofulvins, which are found only in parrots. Most other birds get similar colours from carotenoids in their food, but parrots make these pigments themselves. Their blues are different again: there is no blue pigment at all. Tiny structures in the feathers scatter light so that blue is what reaches your eye. Greens usually combine that structural blue with yellow pigment.',
+     quiz:{q:'Where does the blue in parrot feathers come from?',opts:['Blue pigment','Feather structure scattering light','Their diet'],a:1,why:'Blue in feathers is structural, not a pigment.'},
+     source:{name:'Wikipedia: Psittacofulvin',url:'https://en.wikipedia.org/wiki/Psittacofulvin'}},
+    {id:'sky',tags:['interest:science','interest:nature'],img:'kodim16',title:'Why the sky is blue',color:'#2f86b6',
+     body:'Sunlight contains every colour. As it passes through the air, tiny gas molecules scatter short wavelengths such as blue much more strongly than long wavelengths such as red. That scattered blue light reaches your eyes from every direction, so the whole sky looks blue. At sunset, light travels through far more air to reach you. Most of the blue is scattered away before it arrives, leaving the oranges and reds.',
+     fact:'This is called Rayleigh scattering. Next sunset, notice that the sky overhead often stays blue while the horizon glows orange.',
+     source:{name:'NASA Space Place: Why is the sky blue?',url:'https://spaceplace.nasa.gov/blue-sky/en/'}},
+    {id:'variable',tags:['interest:psychology','field:psychology'],title:'Why you keep checking: variable rewards',color:'#5d6fb3',
+     body:'B. F. Skinner and colleagues found that animals rewarded on an unpredictable schedule kept pressing a lever far longer than animals rewarded every time. Not knowing when the next reward will come keeps the behaviour going. Feeds work in a similar way. Most posts are forgettable, but now and then one is great, and you cannot tell which swipe will bring it. So “just one more” always feels worth it.',
+     fact:'Next time you reach to refresh, notice the “maybe this one” feeling. Naming it makes it easier to stop.',
+     source:{name:'Wikipedia: Reinforcement (schedules)',url:'https://en.wikipedia.org/wiki/Reinforcement'}},
+    {id:'rule72',tags:['interest:finance','field:business'],title:'The rule of 72',color:'#3e7f5c',
+     body:'To estimate how long money takes to double, divide 72 by the yearly growth rate. At 6% a year, savings double in about 12 years, because 72 divided by 6 is 12. At 9%, it takes about 8 years. It works for debt too: a balance growing at 18% a year doubles in about 4 years if nothing is paid off. The same maths that builds savings makes debt grow fast.',
+     quiz:{q:'Roughly how long does money take to double at 8% a year?',opts:['6 years','9 years','12 years'],a:1,why:'72 ÷ 8 = 9 years.'},
+     source:{name:'Investopedia: Rule of 72',url:'https://www.investopedia.com/terms/r/ruleof72.asp'}},
+    {id:'gutenberg',tags:['interest:history'],title:'The printing press changed who could know things',color:'#7a5a3c',
+     body:'Around 1440 in Mainz, Johannes Gutenberg developed a press that combined movable metal type with oil-based ink and a screw press adapted from wine-making. Before that, most books in Europe were copied by hand, and a single book could take months. Within about fifty years, presses were running in more than two hundred European cities. Books became cheaper, ideas spread faster, and far more people could read for themselves.',
+     quiz:{q:'Where did Gutenberg develop his press?',opts:['Venice','Mainz','Paris'],a:1,why:'He worked in Mainz, in present-day Germany.'},
+     source:{name:'Britannica: Johannes Gutenberg',url:'https://www.britannica.com/biography/Johannes-Gutenberg'}},
+    {id:'genji',tags:['interest:books'],title:'The Tale of Genji, often called the first novel',color:'#9c5bb5',
+     body:'Around 1000 to 1012, Murasaki Shikibu, a lady at the Japanese imperial court, wrote The Tale of Genji. It follows the life and loves of Hikaru Genji, the son of an emperor, across more than fifty chapters. Its focus on characters’ inner lives, rather than only heroic deeds, is why it is often called the world’s first novel. Murasaki is not even her real name: it comes from a character in her book.',
+     quiz:{q:'Who wrote The Tale of Genji?',opts:['Sei Shōnagon','Murasaki Shikibu','Matsuo Bashō'],a:1,why:'Murasaki Shikibu, a lady of the Heian court.'},
+     source:{name:'Wikipedia: The Tale of Genji',url:'https://en.wikipedia.org/wiki/The_Tale_of_Genji'}},
+    {id:'who-activity',tags:['interest:fitness','field:medicine'],title:'150 minutes a week, in any size pieces',color:'#c9812b',
+     body:'The World Health Organization recommends that adults get 150 to 300 minutes of moderate activity each week, such as brisk walking or cycling, or 75 to 150 minutes of vigorous activity. Its 2020 guidelines dropped the idea that activity only counts in blocks of ten minutes or more. The message now is that every move counts: a short walk or a few flights of stairs all add up.',
+     quiz:{q:'How many minutes of moderate activity a week does the WHO recommend, at minimum?',opts:['60','150','300'],a:1,why:'150 to 300 minutes of moderate activity.'},
+     source:{name:'World Health Organization: Physical activity',url:'https://www.who.int/news-room/fact-sheets/detail/physical-activity'}},
+    {id:'bug',tags:['field:computing','field:engineering','interest:technology'],title:'The first computer “bug” was a real moth',color:'#51707a',
+     body:'In September 1947, operators of the Harvard Mark II computer found a moth trapped in one of its relays. They taped it into the logbook with the note “First actual case of bug being found.” The story was later popularised by computing pioneer Grace Hopper, whose team worked on the machine. Engineers had already called faults “bugs” for decades, but this moth gave the word its most famous example.',
+     quiz:{q:'What was found inside the Harvard Mark II?',opts:['A moth','A mouse','A beetle'],a:0,why:'A moth, taped into the logbook in 1947.'},
+     source:{name:'Wikipedia: Software bug',url:'https://en.wikipedia.org/wiki/Software_bug'}},
+    {id:'semmelweis',tags:['field:medicine'],title:'The doctor who asked colleagues to wash their hands',color:'#3f8f6b',
+     body:'In 1847, Ignaz Semmelweis noticed that mothers on a Vienna ward run by doctors died of childbed fever far more often than on a ward run by midwives. Doctors often came straight from autopsies. He required them to wash their hands in a chlorinated lime solution, and deaths dropped sharply, to around 1 to 2 percent. Many colleagues rejected his idea, and it was only widely accepted after his death.',
+     quiz:{q:'What did Semmelweis ask doctors to wash their hands with?',opts:['Soap and cold water','Chlorinated lime solution','Alcohol'],a:1,why:'A chlorinated lime solution.'},
+     source:{name:'Wikipedia: Ignaz Semmelweis',url:'https://en.wikipedia.org/wiki/Ignaz_Semmelweis'}},
+    {id:'forgetting',tags:['field:education','interest:languages','interest:psychology'],title:'Why cramming fades and spacing sticks',color:'#4b5e9a',
+     body:'In 1885, Hermann Ebbinghaus tested his own memory by learning lists of nonsense syllables. He found that we forget quickly at first, then more slowly. This became known as the forgetting curve. He also found that reviewing material spread out over time made it last much longer than studying it all at once. Language apps and flashcard systems still use this spacing idea today.',
+     fact:'Try reviewing something tomorrow, then in three days, then in a week. Each review can be shorter than the last.',
+     source:{name:'Wikipedia: Forgetting curve',url:'https://en.wikipedia.org/wiki/Forgetting_curve'}},
+    {id:'saudade',tags:['interest:languages'],title:'Saudade: a word Portuguese has and English lacks',color:'#8a4f7d',
+     body:'Saudade is a Portuguese word for a deep, bittersweet longing for someone or something you love that is absent, and may never return. It mixes sadness with warmth, because missing something means it mattered. It is central to Portuguese and Brazilian culture, especially the music style fado. It is often called untranslatable: English needs a whole sentence for what Portuguese says in one word.',
+     fact:'Say it out loud: “sow-DAH-jee” in Brazil or “sow-DAHD” in Portugal.',
+     source:{name:'Wikipedia: Saudade',url:'https://en.wikipedia.org/wiki/Saudade'}},
+    {id:'a440',tags:['interest:music'],title:'Why orchestras tune to 440',color:'#6a4f9c',
+     body:'Before the twentieth century, the note A could be tuned anywhere from about 400 to over 450 hertz, depending on the city and the decade. A piece sounded different in Vienna than in London. In 1939, an international conference in London recommended 440 hertz as the standard, and in 1955 it became the international standard ISO 16. When an orchestra tunes to the oboe’s A, it is usually this pitch.',
+     quiz:{q:'What frequency is the standard tuning A?',opts:['432 Hz','440 Hz','452 Hz'],a:1,why:'440 Hz, standardised as ISO 16.'},
+     source:{name:'Wikipedia: A440 (pitch standard)',url:'https://en.wikipedia.org/wiki/A440_(pitch_standard)'}},
+    {id:'jetlag',tags:['interest:travel'],title:'Why flying east is harder on your body clock',color:'#2c6aa0',
+     body:'Your body clock runs on a cycle of roughly 24 hours, set mainly by light. After crossing several time zones, it takes days to catch up. A common rule of thumb is about one day per time zone crossed. Flying east is usually harder, because your day gets shorter and your body has to go to sleep earlier than it wants to, which is harder than staying up later. Morning light helps after eastward trips.',
+     fact:'After flying east, get outside in the morning; after flying west, seek evening light.',
+     source:{name:'Wikipedia: Jet lag',url:'https://en.wikipedia.org/wiki/Jet_lag'}},
+    {id:'jeans',tags:['interest:fashion'],title:'The tiny pocket on your jeans was for a watch',color:'#3a5fc4',
+     body:'That small pocket inside the front right pocket of many jeans dates back to the late 1800s, when workers carried pocket watches. Levi Strauss and tailor Jacob Davis patented copper-riveted work trousers in 1873, and early designs included a small watch pocket to keep watches safe. Wristwatches later replaced pocket watches, but the pocket stayed. People now use it for coins, keys or guitar picks.',
+     quiz:{q:'What was the small jeans pocket originally for?',opts:['Coins','Pocket watches','Matches'],a:1,why:'It was a watch pocket.'},
+     source:{name:'Wikipedia: Jeans',url:'https://en.wikipedia.org/wiki/Jeans'}}
   ];
-  const TIMES=[['2','2 minutes'],['10','10 minutes'],['30','30 minutes']];
+  /* Shown when the profile is empty. */
+  const DEFAULT_CARD='variable';
+  /* ---------- Personalisation (stored only in this browser) ---------- */
+  const PREF={
+    interests:[['psychology','Psychology'],['history','History'],['science','Science'],['books','Books'],['art','Art'],['finance','Finance'],['fitness','Fitness'],['cooking','Cooking'],['architecture','Architecture'],['nature','Nature'],['travel','Travel'],['languages','Languages'],['music','Music'],['technology','Technology'],['fashion','Fashion']],
+    places:[['kyoto','Kyoto'],['rome','Rome'],['paris','Paris'],['barcelona','Barcelona'],['istanbul','Istanbul'],['london','London'],['new-york','New York']],
+    fields:[['marketing','Marketing'],['design','Design'],['computing','Computer science'],['engineering','Engineering'],['medicine','Medicine & health'],['business','Business & finance'],['education','Education'],['psychology','Psychology'],['architecture','Architecture'],['arts','Arts & media'],['law','Law'],['student','Still deciding']]
+  };
+  const PHRASES={kyoto:['Japanese','Arigatō gozaimasu','ah-ree-GAH-toh go-ZAI-mass','Thank you (polite)'],rome:['Italian','Grazie mille','GRAHT-see-eh MEEL-leh','Thanks a lot'],paris:['French','Excusez-moi','ex-koo-ZAY mwah','Excuse me'],barcelona:['Catalan','Moltes gràcies','MOL-tes GRAH-see-es','Thank you very much'],istanbul:['Turkish','Teşekkür ederim','teh-shek-KEWR eh-deh-reem','Thank you']};
+  const store={get:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+  const EMPTY_PROFILE={interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],book:'',declined:[],onboarded:false,dismissed:false};
+  let profile={...JSON.parse(JSON.stringify(EMPTY_PROFILE)),...store.get('pause_profile',{})};
+  let feedback=store.get('pause_feedback',{});   // cardId -> 'interesting' | 'not' | 'knew'
+  let seen=store.get('pause_seen',{});           // cardId -> times shown
+  let saves=store.get('pause_saves',{});         // demo-feed item -> topic
+  const saveProfile=()=>store.set('pause_profile',profile);
+  /* Where interest signals come from. This prototype uses only what the user types or taps (manual)
+     and what they save inside the simulated feed (demoFeed). instagramImport is a placeholder for a
+     future, consent-based import (for example, the user uploading their own Instagram data export).
+     It is NOT implemented: Pause never asks for Instagram passwords, calls Instagram APIs or reads
+     likes, saved posts or private activity. */
+  const INTEREST_SOURCES={manual:()=>profile,demoFeed:()=>topicCounts(),instagramImport:null};
+  const labelOf=(list,k)=>nameOf(PREF[list],k)||k;
+  const hasProfile=()=>['interests','ig','visited','planned','field','explore'].some(k=>profile[k].length)||profile.visitedOther.length||profile.plannedOther.length;
+  function topicCounts(){const c={};Object.values(saves).forEach(t=>{if(t)c[t]=(c[t]||0)+1});return c}
+  function pendingSuggestion(){const c=topicCounts();return Object.keys(c).find(t=>c[t]>=2&&!profile.interests.includes(t)&&!profile.ig.includes(t)&&!profile.declined.includes(t))||''}
+  /* Pick ONE card: planned trips first, then subjects to explore, work, interests, Instagram interests, places visited.
+     Cards rated "Not for me" or "Already knew this" are skipped; unseen cards win ties. */
+  function pickCard(){const sources=[
+      ...profile.planned.map(p=>['place:'+p,`Because you’re planning to visit ${labelOf('places',p)}`,6]),
+      ...profile.explore.map(i=>['interest:'+i,`Because you want to explore ${labelOf('interests',i).toLowerCase()}`,5]),
+      ...profile.field.map(f=>['field:'+f,`Because you work or study in ${labelOf('fields',f).toLowerCase()}`,4]),
+      ...profile.interests.map(i=>['interest:'+i,`Because you’re into ${labelOf('interests',i).toLowerCase()}`,4]),
+      ...profile.ig.map(i=>['interest:'+i,`Because you watch ${labelOf('interests',i).toLowerCase()} on Instagram`,3]),
+      ...profile.visited.map(p=>['place:'+p,`Because you’ve been to ${labelOf('places',p)}`,3])];
+    let best=null;
+    LEARN_CARDS.forEach(card=>{if(feedback[card.id]==='not'||feedback[card.id]==='knew')return;
+      sources.forEach(([tag,why,w])=>{if(!card.tags.includes(tag))return;const score=w*10-(seen[card.id]||0)*25+(feedback[card.id]==='interesting'?-3:0);
+        if(!best||score>best.score)best={card,why,score};});});
+    if(best)return {card:best.card,why:best.why,personal:true};
+    const fallback=LEARN_CARDS.find(c=>c.id===DEFAULT_CARD);
+    return {card:fallback,why:hasProfile()?'We’ve shown you everything that matches for now':'A card for anyone who scrolls',personal:false};}
   /* Photos: Kodak Lossless True Color Image Suite, released by Eastman Kodak for unrestricted use. */
   const FEED=[
     {img:'kodim23',pos:'45% 50%',user:'birdwatch.daily',color:'#2f8f5b',cap:'Two very talkative neighbours 🦜',audio:'Original audio',likes:'48.2K',comments:'612'},
@@ -229,13 +398,13 @@
     {img:'kodim10',pos:'50% 45%',user:'regatta.club',color:'#e0a100',cap:'Leaning into it.',audio:'Sea Breeze · regatta.club',likes:'11.3K',comments:'152'},
     {img:'kodim24',pos:'60% 50%',user:'alpine.villages',color:'#7a5a3c',cap:'Every house here is painted by hand.',audio:'Original audio',likes:'26.8K',comments:'377'}
   ];
-  const defaults={reason:'break',limit:'5',interest:'psychology',freeTime:'10',grayscale:true,platform:'instagram'};
+  const defaults={reason:'break',limit:'5',after:'learn',freeTime:'10',grayscale:true,platform:'instagram'};
   let saved={};try{saved=JSON.parse(localStorage.getItem('pause_prefs')||'{}')||{}}catch(e){}
   let prefs={...defaults,...saved,platform:'instagram'};
   // New v2 default is on even for people who turned off the experimental v1 setting.
   try{if(localStorage.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
   let existingGate=false;try{existingGate=sessionStorage.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
-  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,interest:OPTIONS.interests.some(x=>x[0]===prefs.interest)?prefs.interest:'psychology',freeTime:prefs.freeTime||'10',nextPick:'',puzzle:0,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
+  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:OPTIONS.afters.some(x=>x[0]===prefs.after)?prefs.after:'learn',freeTime:prefs.freeTime||'10',nextPick:'',ideaIdx:0,puzzle:0,obStep:0,obReturn:'home',profileReturn:'home',cardId:'',cardWhy:'',cardPersonal:false,quizPick:null,fbNote:'',confirmDelete:false,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
   let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const selected=(kind,v)=>state[kind]===v?' selected':'';
@@ -243,18 +412,22 @@
   const brand=()=>'<span class="brand" aria-label="Pause">pause<i>.</i></span>';
   const step=n=>`<span class="step-label">${n}</span>`;
   const time=secs=>{const s=Math.max(0,Math.floor(secs));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
-  const save=()=>{prefs={reason:state.reason,limit:state.limit,interest:state.interest,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
+  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
   const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(2,state.views-state.extraRoundStart))+Math.min(1,state.progress/100);return Math.min(100,Math.round((state.extraRounds===1?35:70)+n*10));};
   const displayCount=()=>{const t=time(state.elapsed);
     if(state.extraRounds)return `Extra ${Math.min(3,state.views-state.extraRoundStart+1)} of 3 · ${state.views} Reels · ${t} · ${grayPercent()}% gray`;
     return state.limit==='120'?`${state.views} Reels · ${t} / 2:00`:`${state.views} / ${state.checkpoint} Reels · ${t}`;};
   const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
+  const keepScroll=fn=>{const y=root.scrollTop;fn();root.scrollTop=y};
+  const toast=msg=>{const t=document.getElementById('app-toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)};
   const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
   const render=()=>{root.className='screen '+(state.screen==='home'?'home-screen':state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
     if(state.screen==='home')root.innerHTML=home();
     if(state.screen==='pause')root.innerHTML=pause();
     if(state.screen==='setup')root.innerHTML=setup();
     if(state.screen==='learn')root.innerHTML=learn();
+    if(state.screen==='onboard')root.innerHTML=onboard();
+    if(state.screen==='profile')root.innerHTML=profileScreen();
     if(state.screen==='puzzle')root.innerHTML=puzzle();
     if(state.screen==='feed')root.innerHTML=feed();
     if(state.screen==='checkpoint')root.innerHTML=checkpoint();
@@ -269,8 +442,10 @@
     const date=d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
     return `<div class="phone-home">
       <div class="ph-clock"><div class="ph-time">${t}</div><div class="ph-date">${date}</div></div>
-      <div class="ph-grid"><button class="ph-app" data-action="open" aria-label="Open Instagram"><span class="ph-tile">${IG_GLYPH}</span><span class="ph-label">Instagram</span></button>${OTHER_APPS().slice(0,7).map(([n,bg,svg])=>`<button class="ph-app other" data-action="other-app" aria-label="${n}"><span class="ph-tile" style="background:${bg}">${svg}</span><span class="ph-label">${n}</span></button>`).join('')}</div>
+      <div class="ph-grid"><button class="ph-app" data-action="open" aria-label="Open Instagram"><span class="ph-tile">${IG_GLYPH}</span><span class="ph-label">Instagram</span></button><button class="ph-app" data-action="open-profile" aria-label="Pause: My Interests"><span class="ph-tile pause-tile">${PAUSE_GLYPH}</span><span class="ph-label">Pause</span></button>${OTHER_APPS().slice(0,6).map(([n,bg,svg])=>`<button class="ph-app other" data-action="other-app" aria-label="${n}"><span class="ph-tile" style="background:${bg}">${svg}</span><span class="ph-label">${n}</span></button>`).join('')}</div>
       <div class="spacer"></div>
+      ${!profile.onboarded&&!profile.dismissed&&!hasProfile()?`<div class="ph-note ph-invite"><b>Make Pause yours</b>Add a few interests and places so learning cards fit you. Optional, about a minute.<div class="btn-row"><button class="btn btn-sm" data-action="start-onboard" data-return="home">Set up</button><button class="btn alt btn-sm" data-action="dismiss-onboard">Not now</button></div></div>`:''}
+      ${pendingSuggestion()?`<div class="ph-note">${suggestBox(pendingSuggestion())}</div>`:''}
       ${state.reelsDisabled
         ?'<div class="ph-note"><b>Reels are off for this session.</b>Instagram opens straight to posts and messages.<button class="ph-reset" data-action="reset-demo">Reset demo for another test</button></div>'
         :'<p class="ph-hint">Tap Instagram to begin.</p>'}
@@ -283,36 +458,128 @@
     <p class="lede" style="text-align:center">Pause for five seconds. Then choose why you’re opening Instagram and where you’ll stop.</p>
     <div class="breath-orbit" aria-label="Breathing countdown"><span class="breath-count" id="breath-count">${state.countdown}</span></div>
     <p class="breath-caption" id="breath-caption">Breathe in, then out.</p><div class="spacer"></div>
-    <button class="btn full" data-action="purpose" ${state.countdown?'disabled':''}>${state.countdown?'Pause for '+state.countdown+'s':'Choose my purpose →'}</button>
+    <button class="btn full" data-action="purpose" ${state.countdown?'disabled':''}>${state.countdown?'Pause for '+state.countdown+'s':'Continue to Instagram →'}</button>
     <button class="btn alt full" style="margin-top:10px" data-action="learn">Learn something instead ✦</button>
-    <button class="btn text full" data-action="go-home">Actually, not right now</button>
+    <button class="btn text full" data-action="go-home">Leave for now</button>
     <p class="tip">You can always leave. Nothing is blocked.</p>
   </div>`}
   function setup(){const reasonOpts=OPTIONS.reasons.map(([k,v])=>`<button class="pill${selected('reason',k)}" data-set="reason" data-value="${k}" aria-pressed="${state.reason===k}">${v}</button>`).join('');
     const limitOpts=OPTIONS.limits.map(([k,v])=>`<button class="pill${selected('limit',k)}" data-set="limit" data-value="${k}" aria-pressed="${state.limit===k}">${v}</button>`).join('');
-    const interestOpts=OPTIONS.interests.map(([k,v])=>`<button class="pill${selected('interest',k)}" data-set="interest" data-value="${k}" aria-pressed="${state.interest===k}">${v}</button>`).join('');
+    const afterOpts=OPTIONS.afters.map(([k,v])=>`<button class="pill${selected('after',k)}" data-set="after" data-value="${k}" aria-pressed="${state.after===k}">${v}</button>`).join('');
     return `<div class="inner">
       <div class="brand-row"><button class="btn text btn-sm" data-action="back-pause">← Back</button>${step('01 · PURPOSE SESSIONS')}</div>
       <h2 style="margin:16px 0 6px">Three little<br/>commitments.</h2><p class="lede" style="margin-bottom:19px">Set them once. Change them anytime.</p>
       <section class="card rule-card"><div class="rule-label"><span class="rule-number">1</span> Why am I here?</div><div class="pill-grid">${reasonOpts}</div></section>
       <section class="card rule-card"><div class="rule-label"><span class="rule-number">2</span> Where's my finish line?</div><div class="pill-grid three">${limitOpts}</div></section>
-      <section class="card rule-card"><div class="rule-label"><span class="rule-number">3</span> What are you curious about?</div><div class="pill-grid three">${interestOpts}</div></section>
+      <section class="card rule-card"><div class="rule-label"><span class="rule-number">3</span> What might I do afterwards?</div><div class="pill-grid">${afterOpts}</div></section>
     </div>
     <div class="setup-footer"><div class="switch-row gray-setting"><span><b>Progressive grayscale</b><br/><span style="font-size:10px">On by default · starts with the first +3 Reels</span></span><button role="switch" aria-checked="${state.grayscale}" aria-label="Progressive grayscale" class="switch${state.grayscale?' on':''}" data-action="grayscale"></button></div><button class="btn full" data-action="start-feed">Start my session →</button><p class="tip">The first portion stays colourful. Each extra portion gets grayer.</p></div>`;
   }
-  function learn(){const c=CARDS[state.interest];const label=nameOf(OPTIONS.interests,state.interest);return `<div class="inner">
+  /* ---------- My Interests: onboarding (optional, shown once) and profile ---------- */
+  const chips=(key,list)=>`<div class="chip-wrap">${PREF[list].map(([k,v])=>`<button class="pill sm${profile[key].includes(k)?' selected':''}" data-action="toggle-pref" data-key="${key}" data-val="${k}" aria-pressed="${profile[key].includes(k)}">${v}</button>`).join('')}</div>`;
+  const otherPlaces=key=>`<div class="add-row"><label class="sr-only" for="add-${key}">Add another place</label><input id="add-${key}" class="text-in" maxlength="40" placeholder="Somewhere else?"/><button class="btn quiet btn-sm" data-action="add-place" data-key="${key}">Add</button></div>
+    ${profile[key].length?`<div class="chip-wrap">${profile[key].map((p,i)=>`<button class="pill sm selected" data-action="remove-place" data-key="${key}" data-i="${i}" aria-label="Remove ${esc(p)}">${esc(p)} ×</button>`).join('')}</div>`:''}`;
+  const bookField=()=>profile.interests.includes('books')?`<label class="field-label" for="book-in">Currently reading (optional)</label><input id="book-in" class="text-in" maxlength="60" placeholder="Book title" value="${esc(profile.book)}" data-input="book"/>`:'';
+  const OB_STEPS=[
+    ()=>`<h2>What are you<br/><i>into?</i></h2><p class="lede">Pick a few. Pause uses them to choose one learning card, never a feed.</p>
+      <div class="pref-block">${chips('interests','interests')}</div>${bookField()}
+      <details class="pref-more"${profile.ig.length?' open':''}><summary>What do you watch a lot of on Instagram?</summary><p class="small">Chosen by you. Pause does not read your Instagram account.</p>${chips('ig','interests')}</details>`,
+    ()=>`<h2>Places</h2><p class="lede">Where you’ve been and where you’re going.</p>
+      <h3 class="pref-h">I’ve been to</h3>${chips('visited','places')}${otherPlaces('visitedOther')}
+      <h3 class="pref-h">I’m planning to visit</h3>${chips('planned','places')}${otherPlaces('plannedOther')}`,
+    ()=>`<h2>Work and<br/><i>curiosity</i></h2><p class="lede">What you do, and what you’d like to know more about.</p>
+      <h3 class="pref-h">I work or study in</h3>${chips('field','fields')}
+      <h3 class="pref-h">I’d like to explore</h3>${chips('explore','interests')}`
+  ];
+  function onboard(){const n=state.obStep,last=n===OB_STEPS.length-1;return `<div class="inner">
+      <div class="brand-row"><button class="btn text btn-sm" data-action="ob-close">Not now</button>${step('MY INTERESTS · '+(n+1)+' OF '+OB_STEPS.length)}</div>
+      <div class="ob-body">${OB_STEPS[n]()}</div>
+      <div class="spacer"></div>
+      <div class="ob-dots" aria-hidden="true">${OB_STEPS.map((_,i)=>`<span class="${i===n?'on':''}"></span>`).join('')}</div>
+      <button class="btn full" data-action="ob-next">${last?'Done':'Next →'}</button>
+      <button class="btn text full" data-action="ob-next" data-skip="1">Skip this question</button>
+      <p class="tip">Everything stays on this device. Change or delete it anytime in My Interests.</p>
+    </div>`}
+  function profileScreen(){const sug=pendingSuggestion();const rated=Object.keys(feedback).length;return `<div class="inner">
+      <div class="brand-row"><button class="btn text btn-sm" data-action="profile-back">← Back</button>${step('MY INTERESTS')}</div>
+      <h2 style="margin:14px 0 6px">My Interests</h2>
+      <p class="lede">Pause uses these to pick one learning card and one idea for after you scroll. Tap to add or remove. Saved only on this device.</p>
+      ${sug?suggestBox(sug):''}
+      <section class="pref-card"><h3 class="pref-h">Interests</h3>${chips('interests','interests')}${bookField()}</section>
+      <section class="pref-card"><h3 class="pref-h">I watch a lot of this on Instagram</h3><p class="small">Chosen by you.</p>${chips('ig','interests')}</section>
+      <section class="pref-card"><h3 class="pref-h">I’ve been to</h3>${chips('visited','places')}${otherPlaces('visitedOther')}</section>
+      <section class="pref-card"><h3 class="pref-h">I’m planning to visit</h3>${chips('planned','places')}${otherPlaces('plannedOther')}</section>
+      <section class="pref-card"><h3 class="pref-h">I work or study in</h3>${chips('field','fields')}</section>
+      <section class="pref-card"><h3 class="pref-h">I’d like to explore</h3>${chips('explore','interests')}</section>
+      <section class="pref-card"><h3 class="pref-h">Instagram import</h3><p class="small">Not available in this prototype. A future version could let you upload your own Instagram data export, only with your consent. Pause will never ask for your Instagram password.</p></section>
+      <section class="pref-card"><h3 class="pref-h">Learning history</h3><p class="small">${rated?`You’ve rated ${rated} card${rated===1?'':'s'}. Cards you marked “Not for me” or “Already knew this” are skipped.`:'No cards rated yet.'}</p>${rated||Object.keys(seen).length?'<button class="btn text btn-sm" data-action="clear-history">Clear learning history</button>':''}</section>
+      ${state.confirmDelete?'<div class="danger-box"><b>Delete all your preferences?</b><p class="small">This removes your interests, places, ratings and saved-topic signals from this device.</p><div class="btn-row"><button class="btn btn-sm" data-action="delete-all">Delete everything</button><button class="btn alt btn-sm" data-action="cancel-delete">Keep them</button></div></div>':'<button class="btn text full" data-action="ask-delete">Delete all my preferences</button>'}
+      <button class="btn text full" data-action="start-onboard">Run the short setup again</button>
+    </div>`}
+  function suggestBox(t){const n=topicCounts()[t];return `<div class="suggest"><b>You saved ${n} ${labelOf('interests',t).toLowerCase()} posts in the demo feed.</b><span>Add ${labelOf('interests',t).toLowerCase()} to your interests?</span><div class="btn-row"><button class="btn btn-sm" data-action="accept-suggest" data-topic="${t}">Add it</button><button class="btn alt btn-sm" data-action="decline-suggest" data-topic="${t}">No thanks</button></div></div>`}
+
+  /* ---------- One personalised learning card ---------- */
+  function enterLearn(from){clearTimers();const pick=pickCard();state.learnFrom=from;state.cardId=pick.card.id;state.cardWhy=pick.why;state.cardPersonal=pick.personal;state.quizPick=null;state.fbNote='';
+    seen[pick.card.id]=(seen[pick.card.id]||0)+1;store.set('pause_seen',seen);state.screen='learn';render()}
+  function learn(){const c=LEARN_CARDS.find(x=>x.id===state.cardId)||LEARN_CARDS[0];const fb=feedback[c.id];
+    const quiz=c.quiz?`<div class="quiz"><b>Quick question</b><p>${c.quiz.q}</p><div class="quiz-opts">${c.quiz.opts.map((o,i)=>{const cls=state.quizPick==null?'':i===c.quiz.a?' right':i===state.quizPick?' wrong':'';return `<button class="pill sm${cls}" data-action="quiz" data-i="${i}"${state.quizPick!=null?' disabled':''}>${o}</button>`}).join('')}</div>${state.quizPick!=null?`<p class="quiz-why">${state.quizPick===c.quiz.a?'Right. ':'Not quite. '}${c.quiz.why}</p>`:''}</div>`
+      :`<div class="try-this"><b>One more thing</b>${c.fact}</div>`;
+    return `<div class="inner">
      <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('LEARN ONE THING')}</div>
-     <h2 style="margin:14px 0 6px">One thing worth<br/>knowing.</h2>
-     <p class="lede" style="margin-bottom:14px">Pick what you’re curious about. One card, then you’re done.</p>
-     <div class="pill-grid three" style="margin-bottom:14px">${OPTIONS.interests.map(([k,v])=>`<button class="pill${selected('interest',k)}" data-set="interest" data-value="${k}" aria-pressed="${state.interest===k}">${v}</button>`).join('')}</div>
-     <article class="lesson-card"><span class="mini-eyebrow">${label} · 1-minute read</span><h3>${c.title}</h3>${c.body.map(t=>`<p>${t}</p>`).join('')}
-       <div class="try-this"><b>Try this</b>${c.tryThis}</div>
-       <p class="card-source">${c.source}</p>
-       <p class="card-end">That’s the whole card.</p></article>
+     ${!hasProfile()?'<button class="invite" data-action="start-onboard" data-return="learn"><b>Make it about you</b><span>Add a few interests or places (about a minute) and Pause will pick cards for you.</span></button>':''}
+     <article class="lcard">
+       ${c.img?`<img class="lcard-img" src="${photo(c.img)}" alt=""/>`:`<div class="lcard-band" style="background:${c.color}"></div>`}
+       <div class="lcard-body">
+         <span class="lcard-why">${state.cardWhy}</span>
+         <h3>${c.title}</h3>
+         <p class="lcard-text">${c.body}</p>
+         ${quiz}
+         <a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>
+         <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
+         ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}
+         <p class="card-end">That’s the whole card.</p>
+       </div>
+     </article>
      <div class="spacer"></div>
-     <button class="btn full" data-action="learn-complete">Done, I learned one thing ✓</button>
-     <button class="btn text full" data-action="learn-back">Back</button>
+     <button class="btn full" data-action="learn-complete">Done ✓</button>
+     <button class="btn text full" data-action="open-profile">Edit my interests</button>
    </div>`}
+
+  /* ---------- Reward the Exit: one personalised, optional idea ---------- */
+  const TIMES=[['2','2 min'],['10','10 min'],['30','30 min']];
+  function exitIdeas(){const mins=Number(state.freeTime),r=state.reason,a=state.after,I=k=>profile.interests.includes(k)||profile.explore.includes(k);
+    const planned=profile.planned.find(p=>PHRASES[p]);const ideas=[];
+    const add=(id,m,score,title,desc,why)=>{if(m<=mins)ideas.push({id,mins:m,score,title,desc,why})};
+    if(planned)add('phrase',2,5+(I('languages')?2:0),`Learn one useful phrase for ${labelOf('places',planned)}`,'Thirty seconds, and you’ll use it on your trip.',`you’re planning to visit ${labelOf('places',planned)}`);
+    if(state.finishedBy!=='learn')add('card',2,(r==='learn'?7:3)+(a==='learn'?3:0)+(hasProfile()?1:0),'Learn one thing picked for you','One short card, then you’re done.',r==='learn'?'you came to find something useful':'it takes a minute');
+    add('read',10,(a==='read'?6:0)+(I('books')?4:0)+(r==='habit'&&a==='read'?3:0),profile.book?`Read five pages of ${esc(profile.book)}`:'Read five pages of your book','Pick up where you left off.',I('books')?'you’re into books':'you planned to read afterwards');
+    add('history',10,I('history')?4:0,'Read a history article you’ve saved','Something you chose, not something the feed chose.','you’re into history');
+    add(mins>=10?'walk':'stretch',mins>=10?10:2,(a==='move'?6:0)+(I('fitness')?4:0)+(r==='break'?2:0)+(r==='habit'&&a==='move'?3:0),mins>=10?'Take a short walk':'Stretch for two minutes','Stand up, roll your shoulders, look out of a window.',I('fitness')?'you’re into fitness':'you planned to move afterwards');
+    add('eyes',2,(a==='rest'?6:0)+(r==='break'?2:0),'Rest your eyes','Look at something far away for twenty seconds.','you wanted a break');
+    add('friend',2,(a==='friend'?6:0)+(r==='friends'?6:0),'Message one friend directly','Skip the feed and send one real message.',r==='friends'?'you came to catch up with friends':'you planned to message a friend');
+    if(r==='habit')add('puzzle',2,3,'Try a two-minute puzzle','One question, one answer. Then you’re done.','you opened Instagram out of habit');
+    return ideas.filter(x=>x.score>0).sort((x,y)=>y.score-x.score);}
+  function exitScreen(){const early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
+    const ideas=exitIdeas();const idea=ideas.length?ideas[state.ideaIdx%ideas.length]:null;const ph=idea&&idea.id==='phrase'?PHRASES[profile.planned.find(p=>PHRASES[p])]:null;
+    return `<div class="inner">
+      <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div>
+      <div class="checkmark" style="margin:18px 0 16px">✓</div><h2>${title}</h2>
+      ${detour?'':`<div class="stat-grid" style="margin:14px 0 4px"><div class="stat"><strong>${state.views}</strong><small>Reels watched</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
+      <div class="section-title" style="margin:20px 0 8px">Something better to do? <span>Optional</span></div>
+      <div class="time-row"><span class="small">I have</span>${TIMES.map(([k,v])=>`<button class="pill sm${selected('freeTime',k)}" data-set="freeTime" data-value="${k}" aria-pressed="${state.freeTime===k}">${v}</button>`).join('')}</div>
+      ${idea?`<div class="idea${state.nextPick===idea.id?' picked':''}">
+        <span class="lcard-why">Because ${idea.why}${hasProfile()?'':''} · ${idea.mins} min</span>
+        <b>${idea.title}</b><span class="small">${idea.desc}</span>
+        ${state.nextPick===idea.id&&ph?`<div class="phrase"><b>${ph[1]}</b><span>${ph[2]}</span><small>${ph[0]} · ${ph[3]}</small></div>`:''}
+        ${state.nextPick===idea.id&&!['card','puzzle','phrase'].includes(idea.id)?'<p class="next-note">Good choice. Enjoy it, no need to report back.</p>':''}
+        <div class="btn-row">${state.nextPick===idea.id?'':`<button class="btn quiet btn-sm" data-action="do-idea" data-id="${idea.id}">Let’s do it</button>`}${ideas.length>1?'<button class="btn text btn-sm" data-action="next-idea">Another idea</button>':''}</div>
+      </div>`:'<p class="small">Nothing fits in that time. That’s fine.</p>'}
+      ${!hasProfile()?'<button class="btn text btn-sm" data-action="start-onboard" data-return="exit" style="align-self:flex-start">Make ideas more personal →</button>':''}
+      <div class="spacer"></div>
+      <button class="btn full" data-action="go-home">${state.nextPick?'Done':'I’m done for now'}</button>
+      ${state.reelsDisabled?'<button class="btn text full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':''}
+      <p class="tip">Ending your session is the reward. You don’t have to do anything else.</p>
+    </div>`}
   function puzzle(){const pz=PUZZLES[state.puzzle%PUZZLES.length];return `<div class="inner">
      <div class="brand-row"><button class="btn text btn-sm" data-action="puzzle-back">← Back</button>${step('TWO-MINUTE PUZZLE')}</div>
      <div class="spacer"></div>
@@ -353,7 +620,10 @@
     ['Settings','#8e8e93',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6"/></svg>`],
     ['Files','#2f7de1',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h6l2 2h8v10H4z"/></svg>`]
   ]};
+  const PAUSE_GLYPH='<svg viewBox="0 0 24 24" fill="#fff"><rect x="7" y="6" width="3.4" height="12" rx="1.2"/><rect x="13.6" y="6" width="3.4" height="12" rx="1.2"/></svg>';
   const IG_GLYPH='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r="1.1" fill="#fff" stroke="none"/></svg>';
+  /* Topics of demo posts, used only to suggest interests (the user confirms before anything is added). */
+  const TOPIC={kodim23:'nature',kodim03:'fashion',kodim14:'fitness',kodim07:'nature',kodim05:'',kodim21:'architecture',kodim09:'travel',kodim22:'architecture',kodim20:'history',kodim02:'architecture',kodim16:'travel',kodim13:'nature',kodim10:'travel',kodim24:'architecture',kodim08:'architecture',kodim06:'travel',kodim19:'architecture',kodim01:'architecture'};
   function currentReel(){return FEED[(Math.max(1,state.views)-1)%FEED.length]}
   function feed(){const reel=currentReel();const gray=grayPercent();const ig=state.platform==='instagram';
     return `<div class="reel" aria-label="Simulated Instagram Reels feed. Swipe up, scroll or use the arrow for the next one.">
@@ -370,7 +640,7 @@
         <button class="like" data-action="like" aria-label="Like">${ICON.heart}<span>${reel.likes}</span></button>
         <button aria-label="Comments">${ICON.comment}<span>${reel.comments}</span></button>
         <button aria-label="Share">${ICON.send}</button>
-        <button aria-label="More">${ICON.more}</button>
+        <button class="save-btn${saves['reel:'+reel.img]!==undefined?' on':''}" data-action="save-item" data-item="reel:${reel.img}" data-topic="${TOPIC[reel.img]||''}" aria-label="Save">${ICON.save}</button>
         <button class="reel-next" data-action="next" aria-label="Next">${ICON.down}</button>
       </div>
       <div class="reel-meta">
@@ -400,26 +670,6 @@
        <button class="btn alt full" style="margin-top:10px" data-action="continue">+3 more Reels ${state.extraRounds===0?'(first extra portion)':'(last extra portion)'}</button>`}
     <p class="tip">${final?'The Reels tab cannot be reopened in this demo until you reset it.':'You can always stop earlier.'}</p>
   </div>`}
-  function nextOptions(){const mins=Number(state.freeTime);const interest=nameOf(OPTIONS.interests,state.interest).toLowerCase();
-    let list=NEXT.filter(n=>n.mins<=mins&&n.reasons.includes(state.reason));
-    list.sort((a,b)=>(b.id==='card'&&state.reason==='learn')-(a.id==='card'&&state.reason==='learn')||b.mins-a.mins);
-    return list.slice(0,3).map(n=>({...n,label:n.title(interest)}));}
-  function exitScreen(){const early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
-    const why=nameOf(OPTIONS.reasons,state.reason).toLowerCase();const opts=nextOptions();const picked=opts.find(o=>o.id===state.nextPick);
-    return `<div class="inner">
-      <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div>
-      <div class="checkmark" style="margin:18px 0 16px">✓</div><h2>${title}</h2>
-      ${detour?'':`<div class="stat-grid" style="margin:14px 0 4px"><div class="stat"><strong>${state.views}</strong><small>Reels watched</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
-      <div class="section-title" style="margin:20px 0 8px">Want a next step? <span>Optional</span></div>
-      <p class="small" style="margin-bottom:10px">You came to ${esc(why)}. How much time do you have?</p>
-      <div class="pill-grid three" style="margin-bottom:10px">${TIMES.map(([k,v])=>`<button class="pill${selected('freeTime',k)}" data-set="freeTime" data-value="${k}" aria-pressed="${state.freeTime===k}" style="text-align:center">${v}</button>`).join('')}</div>
-      <div class="next-list">${opts.map(o=>`<button class="next-opt${state.nextPick===o.id?' picked':''}" data-action="pick-next" data-next="${o.id}"><b>${o.label}</b><span>${o.desc}</span><em>${o.mins} min</em></button>`).join('')}</div>
-      ${picked&&!['card','puzzle'].includes(picked.id)?`<p class="next-note">Good choice. Enjoy it, no need to report back.</p>`:''}
-      <div class="spacer"></div>
-      <button class="btn full" data-action="go-home">${picked?'Done':'I’m done for now'}</button>
-      ${state.reelsDisabled?'<button class="btn text full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':''}
-      <p class="tip">Ending your session is the reward. You don’t have to do anything else.</p>
-    </div>`}
   const mockPosts=[
     {img:'kodim22',user:'maya.outdoors',place:'Hollow Creek Farm',color:'#a8322d',likes:'1,204',cap:'Weekend at the farm. No signal, no complaints.',comments:23,time:'2 hours ago'},
     {img:'kodim08',user:'alex.photos',place:'Old Town',color:'#5d6fb3',likes:'842',cap:'Found the street with the painted houses at last.',comments:11,time:'5 hours ago'},
@@ -447,7 +697,7 @@
       ${mockPosts.map(p=>`<article class="ig-post">
         <div class="ig-post-head">${avatar(p.user,p.color)}<div><b>${p.user}</b>${p.place?`<small>${p.place}</small>`:''}</div><span class="more">···</span></div>
         <img class="ig-photo" src="${photo(p.img)}" alt="" loading="lazy"/>
-        <div class="ig-actions"><button class="like" data-action="like" aria-label="Like">${ICON.heart}</button><button aria-label="Comment" tabindex="-1">${ICON.comment}</button><button aria-label="Share" tabindex="-1">${ICON.send}</button><button class="save" aria-label="Save" tabindex="-1">${ICON.save}</button></div>
+        <div class="ig-actions"><button class="like" data-action="like" aria-label="Like">${ICON.heart}</button><button aria-label="Comment" tabindex="-1">${ICON.comment}</button><button aria-label="Share" tabindex="-1">${ICON.send}</button><button class="save save-btn${saves['post:'+p.img]!==undefined?' on':''}" data-action="save-item" data-item="post:${p.img}" data-topic="${TOPIC[p.img]||''}" aria-label="Save">${ICON.save}</button></div>
         <p class="ig-likes">${p.likes} likes</p>
         <p><b>${p.user}</b> ${p.cap}</p>
         <p class="ig-muted">View all ${p.comments} comments</p>
@@ -470,7 +720,8 @@
   </div>`}
   function goHome(){clearTimers();state.screen='home';state.notice=false;render()}
   function open(){clearTimers();if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
-    state.screen='pause';state.countdown=5;render();countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Choose my purpose →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose what you actually want.'}},1000)}
+    state.screen='pause';state.countdown=5;startCountdown()}
+  function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to Instagram →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000)}
   function begin(){if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     clearTimers();save();state.views=1;state.checkpoint=state.limit==='120'?120:Number(state.limit);state.extraRounds=0;state.extraRoundStart=0;state.elapsed=0;state.sessionStart=Date.now();state.progress=0;state.noticeShown=false;state.notice=false;state.finishedBy='';state.screen='feed';lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   function tick(){if(state.screen!=='feed')return;if(document.hidden){lastTick=performance.now();return}const now=performance.now(),delta=Math.min(250,now-lastTick);lastTick=now;state.elapsed+=delta/1000;state.progress=Math.min(100,state.progress+delta/70);const bar=document.getElementById('reel-progress');if(bar)bar.style.width=state.progress+'%';const countEl=document.getElementById('feed-count');if(countEl)countEl.textContent=displayCount();const art=document.getElementById('reel-art');if(art)art.style.filter=`grayscale(${grayPercent()}%)`;const label=document.getElementById('gray-label');if(label&&state.extraRounds)label.textContent=`Round ${state.extraRounds} of 2 · ${grayPercent()}% gray`;if(state.progress>=100)next();}
@@ -478,15 +729,15 @@
     if(reach){clearInterval(feedTimer);if(state.extraRounds>=2)protectInstagram();state.screen='checkpoint';state.notice=false;render();return}
     state.views++;state.progress=0;
     if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200)}render();lastTick=performance.now()}
-  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;state.nextPick='';render()}
+  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;state.nextPick='';state.ideaIdx=0;render()}
   function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.views++;state.extraRoundStart=state.views;state.checkpoint=state.views+2;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   root.addEventListener('click',event=>{
     const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;save();render();return}
     const target=event.target.closest('[data-action]');if(!target||target.disabled)return;
     const action=target.dataset.action;
     switch(action){case 'open':open();break;case 'go-home':goHome();break;case 'purpose':if(state.countdown<=0){clearTimers();state.screen='setup';render();}break;
-      case 'back-pause':open();break;case 'learn':state.learnFrom='pause';clearTimers();state.screen='learn';render();break;
-      case 'learn-back':if(state.learnFrom==='exit'){state.screen='exit';render()}else if(state.learnFrom==='home'){goHome()}else open();break;
+      case 'back-pause':open();break;case 'learn':enterLearn('pause');break;
+      case 'learn-back':if(state.learnFrom==='exit'){state.screen='exit';render()}else{state.screen='pause';startCountdown()}break;
       case 'learn-complete':if(state.learnFrom==='exit'){goHome()}else{state.views=0;state.elapsed=0;finish('learn')}break;
       case 'grayscale':state.grayscale=!state.grayscale;save();render();break;
       case 'start-feed':begin();break;case 'next':next();break;
@@ -495,15 +746,36 @@
       case 'open-chat':state.activeChat=target.dataset.chat;state.screen='protected-chat';render();break;
       case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();break;
       case 'other-app':{const t=document.getElementById('ph-toast');if(t){t.textContent='Only Instagram opens in this demo.';t.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>t.classList.remove('show'),1800)}break;}
+      case 'open-profile':state.profileReturn=state.screen;state.confirmDelete=false;state.screen='profile';render();break;
+      case 'profile-back':if(state.profileReturn==='learn'){state.screen='learn';render()}else goHome();break;
+      case 'start-onboard':state.obReturn=target.dataset.return||state.screen;state.obStep=0;state.screen='onboard';render();root.scrollTop=0;break;
+      case 'dismiss-onboard':profile.dismissed=true;saveProfile();render();break;
+      case 'ob-next':case 'ob-close':{if(action==='ob-next'&&state.obStep<OB_STEPS.length-1){state.obStep++;render();root.scrollTop=0;break}
+        if(action==='ob-next')profile.onboarded=true;else profile.dismissed=true;saveProfile();
+        const back=state.obReturn;if(back==='learn')enterLearn(state.learnFrom||'pause');else if(back==='exit'){state.screen='exit';render()}else if(back==='profile'){state.screen='profile';render()}else goHome();break;}
+      case 'toggle-pref':{const k=target.dataset.key,v=target.dataset.val,arr=profile[k];const at=arr.indexOf(v);if(at>=0)arr.splice(at,1);else arr.push(v);saveProfile();keepScroll(render);break;}
+      case 'add-place':{const k=target.dataset.key,inp=document.getElementById('add-'+k),v=(inp&&inp.value||'').trim().slice(0,40);if(v&&!profile[k].some(x=>x.toLowerCase()===v.toLowerCase())){profile[k].push(v);saveProfile()}keepScroll(render);break;}
+      case 'remove-place':profile[target.dataset.key].splice(+target.dataset.i,1);saveProfile();keepScroll(render);break;
+      case 'accept-suggest':{const t=target.dataset.topic;if(!profile.interests.includes(t))profile.interests.push(t);saveProfile();toast(`Added ${labelOf('interests',t).toLowerCase()} to your interests.`);keepScroll(render);break;}
+      case 'decline-suggest':profile.declined.push(target.dataset.topic);saveProfile();keepScroll(render);break;
+      case 'clear-history':feedback={};seen={};store.del('pause_feedback');store.del('pause_seen');keepScroll(render);break;
+      case 'ask-delete':state.confirmDelete=true;keepScroll(render);break;
+      case 'cancel-delete':state.confirmDelete=false;keepScroll(render);break;
+      case 'delete-all':profile={...EMPTY_PROFILE,interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],declined:[]};feedback={};seen={};saves={};['pause_profile','pause_feedback','pause_seen','pause_saves'].forEach(store.del);state.confirmDelete=false;toast('Your preferences were deleted.');render();break;
+      case 'feedback':{const v=target.dataset.v;if(feedback[state.cardId]===v){delete feedback[state.cardId];state.fbNote=''}else{feedback[state.cardId]=v;state.fbNote=v==='interesting'?'Glad it was worth it.':v==='not'?'Got it. You won’t see this card again.':'Nice. We’ll skip this one next time.'}store.set('pause_feedback',feedback);keepScroll(render);break;}
+      case 'quiz':state.quizPick=+target.dataset.i;keepScroll(render);break;
+      case 'do-idea':{const id=target.dataset.id;state.nextPick=id;if(id==='card')enterLearn('exit');else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle';render()}else keepScroll(render);break;}
+      case 'next-idea':state.ideaIdx++;state.nextPick='';keepScroll(render);break;
+      case 'save-item':{const item=target.dataset.item,topic=target.dataset.topic;if(saves[item]!==undefined){delete saves[item];target.classList.remove('on');toast('Removed from saved.')}else{saves[item]=topic;target.classList.add('on');const n=topicCounts()[topic]||0;toast(n>=2&&pendingSuggestion()===topic?`Saved. That’s ${n} ${labelOf('interests',topic).toLowerCase()} posts. Pause will ask before adding it to your interests.`:'Saved.')}store.set('pause_saves',saves);break;}
       case 'like':target.classList.toggle('on');break;
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
-      case 'learn-from-exit':state.learnFrom='exit';state.screen='learn';render();break;
-      case 'pick-next':{const id=target.dataset.next;state.nextPick=id;if(id==='card'){state.learnFrom='exit';state.screen='learn'}else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle'}render();break;}
       case 'puzzle-reveal':state.puzzleShown=true;render();break;
       case 'puzzle-back':state.screen='exit';render();break;
     }
   });
+  root.addEventListener('input',event=>{if(event.target.dataset.input==='book'){profile.book=event.target.value.slice(0,60);saveProfile()}});
+  root.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.classList.contains('text-in')&&event.target.id.startsWith('add-')){event.preventDefault();const b=event.target.parentNode.querySelector('[data-action="add-place"]');if(b)b.click()}});
   root.addEventListener('submit',event=>{if(event.target.id!=='demo-chat')return;event.preventDefault();const input=event.target.querySelector('input[name=message]');const msg=input?.value.trim();if(msg){state.messages[state.activeChat].push(msg.slice(0,180));render();}});
   root.addEventListener('wheel',event=>{if(state.screen==='feed'&&event.deltaY>18){event.preventDefault();const now=Date.now();if(now-lastWheel>550){lastWheel=now;next()}}},{passive:false});
   root.addEventListener('touchstart',event=>{if(state.screen==='feed')touchY=event.changedTouches[0].screenY},{passive:true});
