@@ -192,6 +192,15 @@
     .ig-actions .save-btn.on svg{fill:#111}
     .app-toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);z-index:20;max-width:86%;background:rgba(20,32,36,.92);color:#fff;font-size:12.5px;line-height:1.4;padding:9px 14px;border-radius:12px;text-align:center;opacity:0;transition:opacity .2s;pointer-events:none}
     .app-toast.show{opacity:1}
+    .lcard-src.as-link{border:0;background:transparent;padding:0;text-align:left;cursor:pointer;font:inherit;font-size:12px;font-weight:700;color:#2f6b4a;text-decoration:underline;text-underline-offset:3px}
+    .screen.web-screen{overflow:hidden;background:#fff}
+    .web{display:flex;flex-direction:column;height:100%;min-height:0;background:#fff}
+    .web-bar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #e6ebe6;background:#f7f7f5;flex:none}
+    .web-done{border:0;background:transparent;color:#2f6b4a;font-weight:700;font-size:15px;padding:6px 4px;min-height:36px}
+    .web-host{justify-self:center;font-size:12.5px;color:#56645c;background:#e9ece8;border-radius:10px;padding:5px 12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .web-ext{color:#2f6b4a;font-size:18px;text-decoration:none;padding:4px 6px}
+    .web-frame{flex:1;width:100%;min-height:0;border:0;background:#fff}
+    .web-foot{flex:none;margin:0;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));font-size:11.5px;color:#6a786f;text-align:center;border-top:1px solid #eef1ee}.web-foot a{color:#2f6b4a;font-weight:700}
   </style>
 </head>
 <body>
@@ -421,11 +430,12 @@
   const keepScroll=fn=>{const y=root.scrollTop;fn();root.scrollTop=y};
   const toast=msg=>{const t=document.getElementById('app-toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)};
   const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
-  const render=()=>{root.className='screen '+(state.screen==='home'?'home-screen':state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
+  const render=()=>{root.className='screen '+(state.screen==='web'?'web-screen':state.screen==='home'?'home-screen':state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
     if(state.screen==='home')root.innerHTML=home();
     if(state.screen==='pause')root.innerHTML=pause();
     if(state.screen==='setup')root.innerHTML=setup();
     if(state.screen==='learn')root.innerHTML=learn();
+    if(state.screen==='web')root.innerHTML=web();
     if(state.screen==='onboard')root.innerHTML=onboard();
     if(state.screen==='profile')root.innerHTML=profileScreen();
     if(state.screen==='puzzle')root.innerHTML=puzzle();
@@ -534,7 +544,7 @@
          <h3>${c.title}</h3>
          <p class="lcard-text">${c.body}</p>
          ${quiz}
-         <a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>
+         ${/wikipedia\.org/.test(c.source.url)?`<button class="lcard-src as-link" data-action="open-web" data-url="${c.source.url}">Source: ${c.source.name} →</button>`:`<a class="lcard-src" href="${c.source.url}" target="_blank" rel="noopener noreferrer">Source: ${c.source.name} ↗</a>`}
          <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
          ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}
          <p class="card-end">That’s the whole card.</p>
@@ -579,6 +589,13 @@
       <button class="btn full" data-action="go-home">${state.nextPick?'Done':'I’m done for now'}</button>
       ${state.reelsDisabled?'<button class="btn text full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':''}
       <p class="tip">Ending your session is the reward. You don’t have to do anything else.</p>
+    </div>`}
+  /* In-phone viewer for Wikipedia sources (Wikipedia allows its pages to be shown in a frame; most other sites don't). */
+  function web(){const u=state.webUrl||'';const mobile=u.replace('://en.wikipedia.org/','://en.m.wikipedia.org/');let host='';try{host=new URL(u).host}catch(e){}
+    return `<div class="web">
+      <div class="web-bar"><button class="web-done" data-action="web-done">Done</button><span class="web-host">${esc(host)}</span><a class="web-ext" href="${esc(u)}" target="_blank" rel="noopener noreferrer" aria-label="Open in your browser">↗</a></div>
+      <iframe class="web-frame" src="${esc(mobile)}" title="Source article" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+      <p class="web-foot">Page not loading? <a href="${esc(u)}" target="_blank" rel="noopener noreferrer">Open it in your browser ↗</a></p>
     </div>`}
   function puzzle(){const pz=PUZZLES[state.puzzle%PUZZLES.length];return `<div class="inner">
      <div class="brand-row"><button class="btn text btn-sm" data-action="puzzle-back">← Back</button>${step('TWO-MINUTE PUZZLE')}</div>
@@ -767,6 +784,8 @@
       case 'do-idea':{const id=target.dataset.id;state.nextPick=id;if(id==='card')enterLearn('exit');else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle';render()}else keepScroll(render);break;}
       case 'next-idea':state.ideaIdx++;state.nextPick='';keepScroll(render);break;
       case 'save-item':{const item=target.dataset.item,topic=target.dataset.topic;if(saves[item]!==undefined){delete saves[item];target.classList.remove('on');toast('Removed from saved.')}else{saves[item]=topic;target.classList.add('on');const n=topicCounts()[topic]||0;toast(n>=2&&pendingSuggestion()===topic?`Saved. That’s ${n} ${labelOf('interests',topic).toLowerCase()} posts. Pause will ask before adding it to your interests.`:'Saved.')}store.set('pause_saves',saves);break;}
+      case 'open-web':state.webUrl=target.dataset.url;state.learnScroll=root.scrollTop;state.screen='web';render();break;
+      case 'web-done':state.screen='learn';render();root.scrollTop=state.learnScroll||0;break;
       case 'like':target.classList.toggle('on');break;
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;

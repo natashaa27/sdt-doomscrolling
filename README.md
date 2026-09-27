@@ -36,7 +36,7 @@ The counter under the progress bar always shows Reels and time together, for exa
 - a photo where a relevant one exists (sky, parrots, lighthouse); otherwise a colour band
 - a 60–100-word explanation (about 30–60 seconds)
 - a one-question quiz or one extra fact
-- a source link (Wikipedia, NASA, WHO, Britannica, Investopedia)
+- a source link (Wikipedia, NASA, WHO, Britannica, Investopedia). Wikipedia sources open inside the phone in a small viewer with **Done** to return to the card; other sites don't allow being shown inside another page, so they open in a new tab
 - feedback: Interesting / Not for me / Already knew this (cards marked "Not for me" or "Already knew this" are skipped next time)
 - a Done button. There is no next card, autoplay, streak or quota.
 
