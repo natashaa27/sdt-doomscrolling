@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f5f4ef" />
-  <meta name="description" content="Loop — a research-inspired prototype for intentional entry and intentional exit from social feeds." />
-  <title>Loop v2 — Intentional scrolling</title>
+  <meta name="description" content="Pause — a research-inspired prototype for intentional entry and intentional exit from social feeds." />
+  <title>Pause — Intentional scrolling</title>
   <style>
     :root { --paper:#f5f4ef;--white:#fffefa;--ink:#1c2724;--sub:#64736c;--edge:#dce2d9;--green:#264c3d;--mist:#e4eee5;--dark:#121b18;--shadow:0 18px 70px rgba(19,39,28,.15);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     * { box-sizing:border-box; }
@@ -46,7 +46,6 @@
     .reel-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.45) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 55%,rgba(0,0,0,.72) 100%)}
     .reel-top{position:absolute;top:0;left:0;right:0;z-index:3;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px 14px 6px}
     .reel-title{font-size:20px;font-weight:750;letter-spacing:-.01em;text-align:center}
-    .reel-title.loop{font-weight:900;letter-spacing:-.07em}.reel-title.loop span{color:#b6d2ba}
     .reel-finish{justify-self:start;border:0;border-radius:999px;background:rgba(255,255,255,.92);color:#1c2724;font-weight:750;font-size:13px;padding:8px 14px;min-height:36px}
     .reel-count{justify-self:end;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.28);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
     .reel-bar{position:absolute;top:58px;left:14px;right:14px;z-index:3;height:3px;border-radius:3px;background:rgba(255,255,255,.3);overflow:hidden}
@@ -74,7 +73,6 @@
     .ig-back{border:0;background:transparent;width:36px;height:36px;display:grid;place-items:center;color:#111;padding:0}
     .ig-back svg,.ig-icon svg{width:24px;height:24px}
     .ig-word{font-family:"Snell Roundhand","Segoe Script","Brush Script MT","Lucida Handwriting",cursive;font-size:27px;font-weight:600;line-height:1;padding-top:2px}
-    .ig-word.loop{font-family:inherit;font-weight:900;letter-spacing:-.07em;font-size:24px}.ig-word.loop span{color:#88ac91}
     .ig-title{font-size:17px;font-weight:700}
     .ig-top-icons{margin-left:auto;display:flex;gap:4px}
     .ig-icon{border:0;background:transparent;color:#111;width:40px;height:40px;display:grid;place-items:center;padding:0;position:relative}
@@ -134,7 +132,7 @@
 <div id="app">
   <aside class="site-note" aria-label="Prototype explanation">
     <div class="eyebrow">A behavioural design prototype</div>
-    <h1>Meet<br/><i style="font-weight:400;color:#527b60">Loop.</i></h1>
+    <h1>Meet<br/><i style="font-weight:400;color:#527b60">Pause.</i></h1>
     <p>Scroll on purpose. Stop by choice. One feed, two linked experiments—not another phone lock.</p>
     <div class="phase-list">
       <div class="phase"><div class="phase-index">01</div><div><b>Purpose Sessions</b>Pause for five seconds, choose why you came and set your own finish line.</div></div>
@@ -142,8 +140,8 @@
     </div>
     <p style="font-size:11px;margin-top:35px;color:#819285">The Instagram view is a simulation. Blocking real Instagram Reels requires a compatible browser or browser extension; this page cannot alter the native app.</p>
   </aside>
-  <main class="phone" aria-label="Loop interactive mobile prototype">
-    <div class="device-status"><span>LOOP · DEMO</span><span>●●● ▰</span></div>
+  <main class="phone" aria-label="Pause interactive mobile prototype">
+    <div class="device-status"><span>PAUSE · DEMO</span><span>●●● ▰</span></div>
     <div id="phone-screen" class="screen" aria-live="polite"></div>
   </main>
   <aside class="side-foot">Prototype v2<br/>Two extra portions → stronger grayscale → Reels off</aside>
@@ -186,23 +184,23 @@
     {img:'kodim24',pos:'60% 50%',user:'alpine.villages',color:'#7a5a3c',cap:'Every house here is painted by hand.',audio:'Original audio',likes:'26.8K',comments:'377'}
   ];
   const defaults={reason:'break',limit:'5',after:'reading',grayscale:true,platform:'instagram'};
-  let saved={};try{saved=JSON.parse(localStorage.getItem('loop_prefs')||'{}')||{}}catch(e){}
-  let prefs={...defaults,...saved};
+  let saved={};try{saved=JSON.parse(localStorage.getItem('pause_prefs')||'{}')||{}}catch(e){}
+  let prefs={...defaults,...saved,platform:'instagram'};
   // New v2 default is on even for people who turned off the experimental v1 setting.
-  try{if(localStorage.getItem('loop_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
-  let existingGate=false;try{existingGate=sessionStorage.getItem('loop_instagram_reels_disabled')==='true'}catch(e){}
+  try{if(localStorage.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
+  let existingGate=false;try{existingGate=sessionStorage.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
   let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:prefs.after,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
   let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const selected=(kind,v)=>state[kind]===v?' selected':'';
   const nameOf=(arr,id)=>arr.find(x=>x[0]===id)?.[1]||'';
-  const brand=()=>'<span class="brand" aria-label="Loop">l<i>oo</i>p.</span>';
+  const brand=()=>'<span class="brand" aria-label="Pause">pause<i>.</i></span>';
   const step=n=>`<span class="step-label">${n}</span>`;
   const time=secs=>{const s=Math.max(0,Math.floor(secs));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
-  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('loop_prefs',JSON.stringify(prefs));localStorage.setItem('loop_prefs_version','2')}catch(e){}};
+  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
   const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(2,state.views-state.extraRoundStart))+Math.min(1,state.progress/100);return Math.min(100,Math.round((state.extraRounds===1?35:70)+n*10));};
   const displayCount=()=>state.extraRounds?`Extra ${Math.min(3,state.views-state.extraRoundStart+1)} / 3`:state.limit==='120'?`${time(state.elapsed)} / 2:00`:`${state.views} / ${state.checkpoint} Reels`;
-  const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('loop_instagram_reels_disabled','true')}catch(e){}}};
+  const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
   const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
   const render=()=>{root.className='screen '+(state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
     if(state.screen==='home')root.innerHTML=home();
@@ -222,15 +220,9 @@
     <h2>Scroll on purpose.<br/>Leave by choice.</h2>
     <p class="lede">Pause for five seconds, choose your finish line, then get just two chances for three more Reels. After that, the short-video feed stops.</p>
     <div class="home-mini"><i></i> No plants · No points · Only intentional choices</div>
-    <section class="card mode-choice"><div class="section-title">What are you opening? <span>Demo modes</span></div>
-      <div class="pill-grid">
-        <button class="pill${selected('platform','instagram')}" data-set="platform" data-value="instagram" aria-pressed="${state.platform==='instagram'}">Instagram <span class="hint">Simulated feed + DMs</span></button>
-        <button class="pill${selected('platform','loop')}" data-set="platform" data-value="loop" aria-pressed="${state.platform==='loop'}">Loop feed <span class="hint">Simulated short videos</span></button>
-      </div>
-      ${state.reelsDisabled&&state.platform==='instagram'?'<div class="protected-note"><b>Reels are currently unavailable.</b><br/>You can still view posts and use DMs in the simulated Instagram interface.</div>':''}
-    </section>
+    ${state.reelsDisabled?'<div class="protected-note"><b>Reels are currently unavailable.</b><br/>You can still view posts and use DMs in the simulated Instagram interface.</div>':''}
     <div class="spacer"></div>
-    <button class="btn full" data-action="open">${state.reelsDisabled&&state.platform==='instagram'?'Open Instagram feed →':'Open '+(state.platform==='instagram'?'Instagram':'Loop')+' →'}</button>
+    <button class="btn full" data-action="open">${state.reelsDisabled?'Open Instagram feed →':'Open Instagram →'}</button>
     <button class="btn text full" data-action="direct-learn">Learn one thing instead ✦</button>
     ${state.reelsDisabled?'<button class="btn text full" data-action="reset-demo">Reset demo for another test</button>':''}
     <p class="tip">Prototype simulation only: no access to real Instagram, accounts or messages.</p>
@@ -289,12 +281,12 @@
   const photo=id=>`photos/${id}.jpg`;
   function currentReel(){return FEED[(Math.max(1,state.views)-1)%FEED.length]}
   function feed(){const reel=currentReel();const gray=grayPercent();const ig=state.platform==='instagram';
-    return `<div class="reel" aria-label="Simulated ${ig?'Instagram Reels':'Loop'} feed. Swipe up, scroll or use the arrow for the next one.">
+    return `<div class="reel" aria-label="Simulated Instagram Reels feed. Swipe up, scroll or use the arrow for the next one.">
       <img class="reel-img" id="reel-art" src="${photo(reel.img)}" alt="" style="object-position:${reel.pos};filter:grayscale(${gray}%)"/>
       <div class="reel-shade"></div>
       <div class="reel-top">
         <button class="reel-finish" data-action="early-exit">Finish</button>
-        <span class="reel-title${ig?'':' loop'}">${ig?'Reels':'l<span>oo</span>p.'}</span>
+        <span class="reel-title">Reels</span>
         <span class="reel-count" id="feed-count">${displayCount()}</span>
       </div>
       <div class="reel-bar"><div id="reel-progress" style="width:${state.progress}%"></div></div>
@@ -314,7 +306,7 @@
     </div>
     ${state.notice?`<div class="feed-nudge" role="status">You came here to <b>${esc(nameOf(OPTIONS.reasons,state.reason).toLowerCase())}</b>. Still what you want to do?<button class="nudge-x" data-action="dismiss-notice" aria-label="Dismiss">×</button></div>`:''}`;
   }
-  function checkpoint(){const final=state.extraRounds>=2;const noun=state.platform==='instagram'?'Instagram':'Loop';return `<div class="inner">
+  function checkpoint(){const final=state.extraRounds>=2;const noun='Instagram';return `<div class="inner">
     <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div><div class="spacer"></div>
     <div class="checkmark">${final?'✓':'Ⅱ'}</div>
     <h2>${final?'That’s your two<br/>extra portions.':'Here’s your<br/>finish line.'}</h2>
@@ -324,7 +316,7 @@
       <b>${nameOf(OPTIONS.reasons,state.reason)}</b><div class="small" style="margin-top:5px">Planned finish: ${nameOf(OPTIONS.limits,state.limit)}</div>
       <div class="round-indicators" aria-label="${state.extraRounds} of 2 extra portions used"><span class="${state.extraRounds>=1?'used':''}"></span><span class="${state.extraRounds>=2?'used':''}"></span><small>${state.extraRounds}/2 extensions used</small></div>
     </div>
-    <p class="small">${final?'The scrolling loop ends here, but messages and regular posts stay available.':'No phone lock. If you choose three more Reels, grayscale starts immediately and gets stronger.'}</p>
+    <p class="small">${final?'Endless scrolling ends here, but messages and regular posts stay available.':'No phone lock. If you choose three more Reels, grayscale starts immediately and gets stronger.'}</p>
     <div class="spacer"></div>
     ${final?`<button class="btn full" data-action="protected-feed">Open ${noun} feed (no Reels) →</button>
       <button class="btn alt full" style="margin-top:10px" data-action="protected-dms">Open DMs →</button>
@@ -356,7 +348,7 @@
   const STORIES=[['Your story','#8e8e8e',true],['alex.photos','#5d6fb3'],['maya.outdoors','#a8322d'],['sam.sails','#2c6aa0'],['priya.k','#9c5bb5'],['jonas_w','#3f8f6b'],['lena.draws','#c9812b']];
   const CHATS=[['Alex','alex.photos','#5d6fb3','Are we still meeting later?','12m',true],['Sam','sam.sails','#2c6aa0','Sent you those notes!','1h',true],['Maya','maya.outdoors','#a8322d','Want to grab a coffee?','3h',false]];
   const avatar=(name,color,cls='')=>`<span class="ring${cls}"><span style="background:${color}">${name[0].toUpperCase()}</span></span>`;
-  function wordmark(){return state.platform==='instagram'?'<span class="ig-word">Instagram</span>':'<span class="ig-word loop">l<span>oo</span>p.</span>'}
+  function wordmark(){return '<span class="ig-word">Instagram</span>'}
   function tabbar(){return `<nav class="ig-tabbar" aria-label="App navigation">
     <button data-action="protected-feed" aria-label="Home">${ICON.home}</button>
     <button aria-label="Search" tabindex="-1">${ICON.search}</button>
@@ -365,7 +357,7 @@
     <button aria-label="Profile" tabindex="-1">${ICON.profile}</button>
   </nav>`}
   function protectedFeed(){return `<div class="ig">
-    <header class="ig-top"><button class="ig-back" data-action="go-home" aria-label="Back to Loop">${ICON.back}</button>${wordmark()}
+    <header class="ig-top"><button class="ig-back" data-action="go-home" aria-label="Back to Pause">${ICON.back}</button>${wordmark()}
       <span class="ig-top-icons"><button class="ig-icon" aria-label="Notifications" tabindex="-1">${ICON.heart}<span class="dot"></span></button><button class="ig-icon" data-action="protected-dms" aria-label="Messages">${ICON.send}<span class="dot"></span></button></span></header>
     <div class="ig-scroll">
       <div class="ig-note"><div><b>Reels are off for this session.</b>Posts from people you follow and your messages still work.</div><span class="tag">SIMULATED</span></div>
@@ -419,7 +411,7 @@
       case 'protected-feed':state.screen='protected-feed';render();break;
       case 'protected-dms':state.screen='protected-dms';render();break;
       case 'open-chat':state.activeChat=target.dataset.chat;state.screen='protected-chat';render();break;
-      case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('loop_instagram_reels_disabled')}catch(e){}render();break;
+      case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();break;
       case 'like':target.classList.toggle('on');break;
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
@@ -434,7 +426,7 @@
   document.addEventListener('visibilitychange',()=>{lastTick=performance.now()});
   render();
   // Non-user-facing test interface; no external analytics or network requests.
-  window.__loopTest={get:()=>({...state}),begin,finish,next,open,render,continueAfter,grayPercent,reset:()=>{state.reelsDisabled=false;state.extraRounds=0;state.platform='instagram';state.screen='home';try{sessionStorage.removeItem('loop_instagram_reels_disabled')}catch(e){}render();}};
+  window.__pauseTest={get:()=>({...state}),begin,finish,next,open,render,continueAfter,grayPercent,reset:()=>{state.reelsDisabled=false;state.extraRounds=0;state.platform='instagram';state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();}};
 })();
 </script>
 </body>
