@@ -4,7 +4,7 @@ Double-click `index.html` to use this **offline demo** (keep the `photos/` folde
 
 ## Exact experience
 
-1. On the home screen, tap **Open Instagram**. Instagram is a simulation; the demo does not connect to your account.
+1. The demo opens on a phone home screen. Tap the **Instagram** app. Pause steps in first with a five-second timer. Instagram is a simulation; the demo does not connect to your account.
 2. Complete the five-second pause and choose the three commitments (why, finish line, after). **Progressive grayscale is checked by default**. It remains off visually during the initial portion.
 3. Scroll to the initial finish line (for quick tests, select **5 Reels**) using swipe up, mouse wheel or Next. Select **+3 more Reels** at the checkpoint. The next Reel is a new one, grayscale begins **immediately at 35%** and fades steadily to **65%** across these three Reels.
 4. At the second checkpoint, select the **second and final +3 Reels**. Grayscale begins at **70%** and fades steadily to **100%** across these three Reels.
