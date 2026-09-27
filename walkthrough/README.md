@@ -51,7 +51,6 @@ On screens narrower than 900 px, the explanation moves into a bottom sheet (tap 
 - Without `?demo`, the prototype behaves exactly as before.
 - The walkthrough presses the prototype's real buttons (`click`) and moves the highlight. It can also start from a known state (`set`), for example the second checkpoint, so jumping to grayscale or protected mode needs no replay.
 - The prototype reports the highlighted element's position every frame. The page redraws the highlight, numbered bubble and connecting line from it, so they follow scrolling, re-rendering and window resizing.
-- The grayscale indicator beside the phone reads the prototype's own grayscale value.
 - Repetitive scrolling is sped up by running the prototype's Reel timer faster. The Reels, counter and grayscale sequence are unchanged: 35→65% for the first extension, 70→100% for the second.
 
 Files:

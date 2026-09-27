@@ -14,7 +14,7 @@
   let msgId=0,ready=false,readyWaiters=[];const pending=new Map();let track={rect:null};
   addEventListener('message',e=>{const m=e.data;if(!m||m.pw!==1||e.source!==frame.contentWindow)return;
     if(m.type==='ready'){ready=true;readyWaiters.splice(0).forEach(f=>f());return}
-    if(m.type==='track'){track=m;layoutOverlay();updateMeter();return}
+    if(m.type==='track'){track=m;layoutOverlay();return}
     if(m.re&&pending.has(m.re)){pending.get(m.re)(m.result);pending.delete(m.re)}});
   const whenReady=()=>ready?Promise.resolve():new Promise(r=>readyWaiters.push(r));
   const cmd=(name,...args)=>new Promise(res=>{const id=++msgId;pending.set(id,res);frame.contentWindow.postMessage({pw:1,id,cmd:name,args},'*');setTimeout(()=>{if(pending.has(id)){pending.delete(id);res(null)}},4000)});
@@ -128,12 +128,10 @@
       $('hl-path').setAttribute('d',`M${sx},${sy} C${mx},${sy} ${mx},${ay} ${ax},${ay}`);$('hl-dot').setAttribute('cx',ax);$('hl-dot').setAttribute('cy',ay);line.classList.add('on')}
     else line.classList.remove('on');
   }
-  function updateMeter(){const m=$('gray-meter');const show=track.screen==='feed'&&track.extraRounds>0&&track.gray!=null&&$('card-intro').hidden;
-    m.hidden=!show;if(show){$('gm-value').textContent=track.gray+'%';$('gm-fill').style.width=track.gray+'%'}}
 
   /* ---------- Title and summary cards ---------- */
   let summaryFlow='main';
-  function hideCards(){$('card-intro').hidden=true;$('card-summary').hidden=true;layoutOverlay();updateMeter()}
+  function hideCards(){$('card-intro').hidden=true;$('card-summary').hidden=true;layoutOverlay()}
   function showSummary(flow,manual){summaryFlow=flow;if(manual)auto=false;token++;cmd('highlight',null);
     const body=$('summary-body');
     body.innerHTML=flow==='learn'?`
@@ -155,7 +153,7 @@
       </div>
       <p class="sum-note">Prototype demonstration with simulated Instagram screens. Effects on behaviour have not yet been evaluated.</p>
       <div class="card-ints"><button class="card-btn" data-card="restart-main">↺ Restart</button><button class="card-btn alt" data-card="learn">Optional: personalised learning</button><a class="card-btn alt" href="index.html" style="display:inline-flex;align-items:center;text-decoration:none">Try Pause</a></div>`;
-    $('card-summary').hidden=false;layoutOverlay();updateMeter();updateButtons();renderProgress();log('summary',{flow});
+    $('card-summary').hidden=false;layoutOverlay();updateButtons();renderProgress();log('summary',{flow});
   }
   $('card-summary').addEventListener('click',e=>{const b=e.target.closest('[data-card]');if(!b)return;const a=b.dataset.card;
     if(a==='restart-main'||a==='main')restart('main');else start('learn')});

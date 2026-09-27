@@ -113,7 +113,7 @@
   {id:'extra1',chapter:'exit',num:'6',name:'First extension: grayscale begins',label:'Automatic Scrolling Interruption',loop:'B2',continues:true,
    now:'Three more Reels. Grayscale starts at 35% and deepens to 65%.',
    insight:'Each Reel past the goal weakens the reward signal that drives the reinforcing loop.',
-   phone:'The user chooses three more Reels. Grayscale starts immediately at 35% and deepens with each Reel, reaching 65% by the end of this portion. The indicator beside the phone shows the current level.',
+   phone:'The user chooses three more Reels. Grayscale starts immediately at 35% and deepens with each Reel, reaching 65% by the end of this portion.',
    user:'Scrolling continues, but the feed gradually looks less vivid. The counter reads “Extra 1 of 3”.',
    why:'Colour contributes to the visual appeal of feeds. Reducing it gradually is intended to make continued scrolling feel less rewarding and more noticeable, rather than stopping it abruptly.',
    systems:'Weakens the reinforcing reward signal step by step: the further use overshoots the goal, the weaker the stimulus.',
