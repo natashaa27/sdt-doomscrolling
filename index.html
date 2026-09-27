@@ -136,6 +136,14 @@
     .ph-hint{text-align:center;font-size:13px;opacity:.85}
     .ph-note{background:rgba(255,255,255,.92);color:#23402f;border-radius:16px;padding:14px 16px;font-size:13px;line-height:1.5}.ph-note b{display:block;font-size:14px;margin-bottom:2px}
     .ph-reset{display:block;margin-top:8px;border:0;background:transparent;color:#2f6b4a;font-weight:700;padding:6px 0;text-decoration:underline;text-underline-offset:3px}
+    .ph-tile svg{width:34px;height:34px}
+    .ph-app.other .ph-tile{box-shadow:0 4px 10px -5px rgba(0,0,0,.4)}
+    .ph-dock{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center;margin-top:14px;padding:12px 10px;border-radius:26px;background:rgba(255,255,255,.22);backdrop-filter:blur(10px)}
+    .ph-hint{margin:0 0 4px}
+    .ph-note{margin-bottom:2px}
+    .phone-home{position:relative}
+    .ph-toast{position:absolute;left:50%;bottom:170px;transform:translateX(-50%);background:rgba(20,32,36,.9);color:#fff;font-size:13px;padding:9px 14px;border-radius:12px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+    .ph-toast.show{opacity:1}
   </style>
 </head>
 <body>
@@ -230,11 +238,13 @@
     const date=d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
     return `<div class="phone-home">
       <div class="ph-clock"><div class="ph-time">${t}</div><div class="ph-date">${date}</div></div>
-      <div class="ph-grid"><button class="ph-app" data-action="open" aria-label="Open Instagram"><span class="ph-tile">${IG_GLYPH}</span><span class="ph-label">Instagram</span></button></div>
+      <div class="ph-grid"><button class="ph-app" data-action="open" aria-label="Open Instagram"><span class="ph-tile">${IG_GLYPH}</span><span class="ph-label">Instagram</span></button>${OTHER_APPS().slice(0,7).map(([n,bg,svg])=>`<button class="ph-app other" data-action="other-app" aria-label="${n}"><span class="ph-tile" style="background:${bg}">${svg}</span><span class="ph-label">${n}</span></button>`).join('')}</div>
       <div class="spacer"></div>
       ${state.reelsDisabled
         ?'<div class="ph-note"><b>Reels are off for this session.</b>Instagram opens straight to posts and messages.<button class="ph-reset" data-action="reset-demo">Reset demo for another test</button></div>'
         :'<p class="ph-hint">Tap Instagram to begin.</p>'}
+      <div class="ph-dock">${OTHER_APPS().slice(7).map(([n,bg,svg])=>`<button class="ph-app other" data-action="other-app" aria-label="${n}"><span class="ph-tile" style="background:${bg}">${svg}</span></button>`).join('')}</div>
+      <div class="ph-toast" id="ph-toast" role="status"></div>
     </div>`}
   function pause(){return `<div class="inner">
     <div class="brand-row"><button class="btn text btn-sm" data-action="go-home">← Back</button>${step('01 · PURPOSE SESSIONS')}</div>
@@ -288,6 +298,20 @@
     camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13.5" r="3.6"/></svg>'
   };
   const photo=id=>`photos/${id}.jpg`;
+  /* Other home-screen apps: decoration only; only Instagram opens in this demo. */
+  const OTHER_APPS=()=>{const d=new Date(),DAY=d.toLocaleDateString([],{weekday:'short'}).toUpperCase(),DATE=d.getDate();return [
+    ['Messages','#34c759',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c4.7 0 8 3 8 6.7s-3.3 6.7-8 6.7c-.9 0-1.7-.1-2.5-.3L5 19l1.2-3.3C4.8 14.5 4 12.7 4 10.7 4 7 7.3 4 12 4z"/></svg>`],
+    ['Camera','#6e7478',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8h3.5l1.5-2.5h7L17 8h3.5v11h-17z"/><circle cx="12" cy="13.3" r="3.3"/></svg>`],
+    ['Photos','#f2f2f2',`<svg viewBox="0 0 24 24"><g transform="translate(12 12)"><ellipse rx="2.6" ry="5.2" cy="-5" fill="#f7b52c" opacity=".9" transform="rotate(0)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#f47a2d" opacity=".9" transform="rotate(45)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#e8465a" opacity=".9" transform="rotate(90)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#c7479c" opacity=".9" transform="rotate(135)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#8a5cd0" opacity=".9" transform="rotate(180)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#3b82e4" opacity=".9" transform="rotate(225)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#2fb5a7" opacity=".9" transform="rotate(270)"/><ellipse rx="2.6" ry="5.2" cy="-5" fill="#7cc24a" opacity=".9" transform="rotate(315)"/></g></svg>`],
+    ['Calendar','#ffffff',`<svg viewBox="0 0 24 24"><text x="12" y="8.2" text-anchor="middle" font-size="5" font-weight="700" fill="#e5484d" font-family="-apple-system,Segoe UI,sans-serif">${DAY}</text><text x="12" y="19.5" text-anchor="middle" font-size="11" font-weight="300" fill="#111" font-family="-apple-system,Segoe UI,sans-serif">${DATE}</text></svg>`],
+    ['Maps','#4ca56b',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.3-6-10a6 6 0 1 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg>`],
+    ['Weather','#3b8ee8',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M8 18h9a3.5 3.5 0 0 0 0-7 4.5 4.5 0 0 0-8.3 1.3A3 3 0 0 0 8 18z" fill="#3b8ee8"/></svg>`],
+    ['Notes','#f5c542',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v16H7z"/><path d="M9.5 9h5M9.5 12.5h5M9.5 16h3"/></svg>`],
+    ['Clock','#1c1c1e',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>`],
+    ['Music','#fa2d48',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18a2.5 2.5 0 1 1-2-2.4V6l11-2v11a2.5 2.5 0 1 1-2-2.4V7.2L9 8.5z"/></svg>`],
+    ['Settings','#8e8e93',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6"/></svg>`],
+    ['Files','#2f7de1',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h6l2 2h8v10H4z"/></svg>`]
+  ]};
   const IG_GLYPH='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8.5h3l1.6-2.5h6.8L17 8.5h3V19H4z"/><circle cx="12" cy="13.3" r="3.4"/></svg>';
   function currentReel(){return FEED[(Math.max(1,state.views)-1)%FEED.length]}
   function feed(){const reel=currentReel();const gray=grayPercent();const ig=state.platform==='instagram';
@@ -422,6 +446,7 @@
       case 'protected-dms':state.screen='protected-dms';render();break;
       case 'open-chat':state.activeChat=target.dataset.chat;state.screen='protected-chat';render();break;
       case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();break;
+      case 'other-app':{const t=document.getElementById('ph-toast');if(t){t.textContent='Only Instagram opens in this demo.';t.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>t.classList.remove('show'),1800)}break;}
       case 'like':target.classList.toggle('on');break;
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
