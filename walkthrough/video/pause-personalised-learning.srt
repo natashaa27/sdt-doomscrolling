@@ -1,0 +1,63 @@
+1
+00:00:00,200 --> 00:00:04,363
+Pause: an optional chapter on
+personalised learning.
+
+2
+00:00:04,813 --> 00:00:05,914
+In the optional learning path,
+
+3
+00:00:05,964 --> 00:00:08,101
+the user chooses to learn something
+instead of scrolling.
+
+4
+00:00:08,151 --> 00:00:11,095
+Pause already knows a little about them,
+because they told it: a trip to Rome,
+
+5
+00:00:11,145 --> 00:00:12,822
+an interest in history, and business studies.
+
+6
+00:00:13,272 --> 00:00:18,663
+Pause shows one short card, chosen because
+the user is planning to visit Rome.
+
+7
+00:00:18,713 --> 00:00:22,150
+It has an image, a short
+explanation and a source.
+
+8
+00:00:22,200 --> 00:00:25,150
+The content is curated, not generated live.
+
+9
+00:00:25,600 --> 00:00:30,964
+A quick question and thumbs-up feedback
+are available but optional.
+
+10
+00:00:31,014 --> 00:00:36,862
+When the user taps Done for now, they
+return straight to the home screen.
+
+11
+00:00:36,912 --> 00:00:39,691
+No completion screen, no next card.
+
+12
+00:00:40,141 --> 00:00:41,798
+One detour, then done.
+
+13
+00:00:41,848 --> 00:00:47,230
+Learning stays optional, personalised
+from what users choose to share,
+
+14
+00:00:47,280 --> 00:00:49,170
+and ends cleanly at home.

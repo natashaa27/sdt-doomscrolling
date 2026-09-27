@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f4ef" />
+  <title>Pause — Walkthrough</title>
+  <meta name="description" content="An automated walkthrough of the Pause prototype: Purpose Sessions and Reward the Exit." />
+  <link rel="stylesheet" href="walkthrough/walkthrough.css" />
+</head>
+<body>
+<div class="wt" id="wt">
+  <!-- Left: compact project overview (collapsible) -->
+  <aside class="wt-overview" id="overview" aria-label="Project overview">
+    <button class="ov-toggle" id="ov-toggle" aria-expanded="true" aria-controls="ov-body" title="Collapse overview (O)"><span class="ov-toggle-icon">«</span></button>
+    <div class="ov-rail"><span class="logo">pause<i>.</i></span></div>
+    <div class="ov-body" id="ov-body">
+      <span class="logo">pause<i>.</i></span>
+      <p class="ov-kicker">Systems Thinking &amp; Design Thinking · MBA project</p>
+      <p class="ov-desc">A behavioural design prototype for doomscrolling among students and young adults. Pause adds deliberate choices at the moments where scrolling usually becomes automatic.</p>
+      <div class="ov-int" data-int="1"><span class="ov-num">01</span><div><b>Purpose Sessions</b>Recognise the trigger and choose a purpose, a finish line and a next step before entering the feed.</div></div>
+      <div class="ov-int" data-int="2"><span class="ov-num">02</span><div><b>Reward the Exit</b>Notice automatic scrolling, meet natural stopping points and make leaving easier.</div></div>
+      <div class="ov-loops" id="ov-loops"></div>
+      <p class="ov-foot">The Instagram screens are a simulation. The walkthrough uses a sample user and does not change your saved preferences.</p>
+    </div>
+  </aside>
+
+  <!-- Centre: the real prototype inside a phone frame -->
+  <main class="wt-stage" id="stage" aria-label="Pause prototype, controlled by the walkthrough">
+    <div class="phone-wrap" id="phone-wrap">
+      <div class="phone-frame" id="phone-frame">
+        <iframe id="app" title="Pause prototype" src="index.html?demo" tabindex="-1"></iframe>
+      </div>
+      <div class="gray-meter" id="gray-meter" aria-live="polite" hidden>
+        <span class="gm-label">Grayscale</span><b id="gm-value">0%</b>
+        <span class="gm-bar"><i id="gm-fill"></i></span><span class="gm-note">walkthrough indicator</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: contextual explanation -->
+  <section class="wt-panel" id="panel" aria-live="polite" aria-label="Step explanation">
+    <div class="panel-inner" id="panel-inner"></div>
+  </section>
+
+  <!-- Highlight, bubble and connector (drawn over everything, never intercepting clicks) -->
+  <div class="hl-clip" id="hl-clip"><div class="hl-box" id="hl-box"></div></div>
+  <div class="hl-bubble" id="hl-bubble" aria-hidden="true"></div>
+  <svg class="hl-line" id="hl-line" aria-hidden="true"><path id="hl-path"/><circle id="hl-dot" r="3.5"/></svg>
+
+  <!-- Controls -->
+  <nav class="wt-controls" id="controls" aria-label="Walkthrough controls">
+    <div class="ctl-group">
+      <label class="sr-only" for="chapter">Chapter</label>
+      <select id="chapter" class="ctl-select" title="Chapter"></select>
+    </div>
+    <div class="ctl-group ctl-main">
+      <button class="ctl" id="btn-prev" title="Previous step (←)" aria-label="Previous step">‹</button>
+      <button class="ctl play" id="btn-play" title="Play / Pause (Space)" aria-label="Play">▶</button>
+      <button class="ctl" id="btn-next" title="Next step (→)" aria-label="Next step">›</button>
+    </div>
+    <div class="ctl-progress" id="progress" role="tablist" aria-label="Steps"></div>
+    <div class="ctl-group">
+      <div class="speed" role="group" aria-label="Playback speed"><button class="spd on" data-speed="1" aria-pressed="true">1×</button><button class="spd" data-speed="1.5" aria-pressed="false">1.5×</button></div>
+      <button class="ctl text" id="btn-restart" title="Restart (R)" aria-label="Restart">↺<span class="lbl">&nbsp;Restart</span></button>
+      <a class="ctl text exit" id="btn-exit" href="index.html" title="Exit walkthrough (Esc)">Exit</a>
+    </div>
+  </nav>
+
+  <!-- Title and summary cards -->
+  <div class="wt-card" id="card-intro" hidden>
+    <div class="card-body">
+      <span class="logo big">pause<i>.</i></span>
+      <h1>Scroll on purpose.<br/><i>Stop by choice.</i></h1>
+      <p>An interactive walkthrough of two connected behavioural interventions for doomscrolling among students and young adults.</p>
+      <div class="card-ints"><div><span>01</span>Purpose Sessions</div><div><span>02</span>Reward the Exit</div></div>
+      <p class="card-meta">Systems Thinking &amp; Design Thinking · MBA project · Prototype demonstration</p>
+      <button class="card-btn" id="intro-start">▶ Start walkthrough</button>
+    </div>
+  </div>
+  <div class="wt-card" id="card-summary" hidden>
+    <div class="card-body" id="summary-body"></div>
+  </div>
+</div>
+<script src="walkthrough/steps.js"></script>
+<script src="walkthrough/walkthrough.js"></script>
+</body>
+</html>

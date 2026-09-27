@@ -34,6 +34,11 @@
     .tip {font-size:11px;color:#84968b;line-height:1.5;text-align:center;margin-top:14px;} .home-mini{display:flex;gap:9px;align-items:center;margin:16px 0 22px;font-size:12px;color:#60776a;}.home-mini i{display:inline-block;height:8px;width:8px;background:#8cb19a;border-radius:50%;}.side-foot{color:#7f9485;align-self:end;font-size:11px;line-height:1.5;max-width:160px}.debug{display:none}
     @media(max-width:950px){#app{grid-template-columns:minmax(0,1fr) 402px;padding:18px;gap:22px}.side-foot{display:none}.site-note h1{font-size:50px}.site-note{padding-left:20px;}}
     @media(max-width:700px){body{background:var(--paper)}#app{display:block;padding:0;min-height:100dvh}.site-note,.side-foot{display:none}.phone{height:100dvh;min-height:0;max-width:none;width:100%;border:0;border-radius:0;box-shadow:none}.device-status{padding-top:env(safe-area-inset-top,0px);height:calc(31px + env(safe-area-inset-top,0px));flex-basis:calc(31px + env(safe-area-inset-top,0px));}.screen{padding-bottom:env(safe-area-inset-bottom,0px)}.inner{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));}}
+    .landing-actions{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}.land-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:14px;border:1px solid #b9ccbc;background:#fffefa;color:#264c3d;font-size:14px;font-weight:750;text-decoration:none}.land-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+    .landing-bar{display:none}.phone:focus{outline:none}
+    .demo-tap{position:absolute;z-index:40;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(38,76,61,.28);border:2px solid rgba(38,76,61,.55);pointer-events:none;animation:demotap .65s ease-out forwards}@keyframes demotap{from{transform:scale(.35);opacity:1}to{transform:scale(1.25);opacity:0}}
+    @media(max-width:700px){.landing-bar{display:flex;gap:8px;justify-content:center;padding:7px 10px;background:#e4eee5}.landing-bar .land-btn{min-height:34px;font-size:12.5px;padding:0 13px;border-radius:11px;flex:1;max-width:190px}.phone{height:calc(100dvh - 48px)}}
+    html.embed .landing-bar{display:none}html.embed .phone{height:100dvh}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 
     .gray-setting{background:#ebf2ea;border:1px solid #d6e4d6;border-radius:12px;padding:10px 12px;margin-bottom:9px;line-height:1.3}.setup-panel .rule-card{padding:13px;margin-bottom:9px}.setup-panel .inner{padding-top:13px}.setup-panel .pill{padding:9px;min-height:42px}.setup-panel .rule-label{margin-bottom:9px}.setup-footer .tip{margin-top:5px}.mode-choice{padding:14px;margin-top:8px}.mode-choice .pill{text-align:center}.protected-note,.safe-banner{margin-top:12px;background:#e6eee6;border:1px solid #c7d8cb;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.5;color:#31533c}
@@ -224,6 +229,7 @@
   </style>
 </head>
 <body>
+<nav class="landing-bar" aria-label="Choose a mode"><a class="land-btn primary" href="#phone" data-land="try">Try Pause</a><a class="land-btn" href="walkthrough.html">▶ Watch Walkthrough</a></nav>
 <div id="app">
   <aside class="site-note" aria-label="Prototype explanation">
     <div class="eyebrow">A behavioural design prototype</div>
@@ -233,9 +239,10 @@
       <div class="phase"><div class="phase-index">01</div><div><b>Purpose Sessions</b>Pause for five seconds, choose why you came and set your own finish line.</div></div>
       <div class="phase"><div class="phase-index">02</div><div><b>Reward the Exit</b>Two optional +3 portions, increasingly gray Reels, then a protected feed with no Reels.</div></div>
     </div>
-    <p style="font-size:11px;margin-top:35px;color:#819285">The Instagram view is a simulation. Blocking real Instagram Reels requires a compatible browser or browser extension; this page cannot alter the native app.</p>
+    <div class="landing-actions"><a class="land-btn primary" href="#phone" data-land="try">Try Pause</a><a class="land-btn" href="walkthrough.html">▶ Watch Walkthrough</a></div>
+    <p style="font-size:11px;margin-top:28px;color:#819285">The Instagram view is a simulation. Blocking real Instagram Reels requires a compatible browser or browser extension; this page cannot alter the native app.</p>
   </aside>
-  <main class="phone" aria-label="Pause interactive mobile prototype">
+  <main class="phone" id="phone" tabindex="-1" aria-label="Pause interactive mobile prototype">
     <div class="device-status"><span>PAUSE · DEMO</span><span>●●● ▰</span></div>
     <div id="phone-screen" class="screen" aria-live="polite"></div>
     <div class="app-toast" id="app-toast" role="status"></div>
@@ -245,6 +252,11 @@
 <script>
 (()=>{'use strict';
   const root=document.getElementById('phone-screen');
+  /* ?demo = driven by the walkthrough page. It uses in-memory storage so it never reads or changes saved preferences. */
+  const DEMO=new URLSearchParams(location.search).has('demo');
+  const memStore=()=>{const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>{m.set(k,String(v))},removeItem:k=>{m.delete(k)},clear:()=>m.clear()}};
+  let LS,SS;try{LS=DEMO?memStore():localStorage;SS=DEMO?memStore():sessionStorage}catch(e){LS=memStore();SS=memStore()}
+  const demo={rate:1,speed:1,hold:1,frozen:false};  // walkthrough playback controls; defaults leave normal behaviour unchanged
   const OPTIONS={
     reasons:[['friends','Catch up with friends'],['break','Take a short break'],['learn','Find something useful'],['habit','Just felt like scrolling']],
     limits:[['5','5 Reels'],['10','10 Reels'],['120','2 minutes']],
@@ -393,7 +405,7 @@
     fields:[['marketing','Marketing'],['design','Design'],['computing','Computer science'],['engineering','Engineering'],['medicine','Medicine & health'],['business','Business & finance'],['education','Education'],['psychology','Psychology'],['architecture','Architecture'],['arts','Arts & media'],['law','Law'],['student','Still deciding']]
   };
   const PHRASES={kyoto:['Japanese','Arigatō gozaimasu','ah-ree-GAH-toh go-ZAI-mass','Thank you (polite)'],rome:['Italian','Grazie mille','GRAHT-see-eh MEEL-leh','Thanks a lot'],paris:['French','Excusez-moi','ex-koo-ZAY mwah','Excuse me'],barcelona:['Catalan','Moltes gràcies','MOL-tes GRAH-see-es','Thank you very much'],istanbul:['Turkish','Teşekkür ederim','teh-shek-KEWR eh-deh-reem','Thank you']};
-  const store={get:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+  const store={get:(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}},set:(k,v)=>{try{LS.setItem(k,JSON.stringify(v))}catch(e){}},del:k=>{try{LS.removeItem(k)}catch(e){}}};
   const EMPTY_PROFILE={interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],interestsOther:[],igOther:[],fieldOther:[],exploreOther:[],inferred:[],book:'',declined:[],onboarded:false,dismissed:false};
   let profile={...JSON.parse(JSON.stringify(EMPTY_PROFILE)),...store.get('pause_profile',{})};
   let feedback=store.get('pause_feedback',{});   // cardId -> 'interesting' | 'not' | 'knew'
@@ -477,11 +489,11 @@
     {img:'kodim24',pos:'60% 50%',user:'alpine.villages',color:'#7a5a3c',cap:'Every house here is painted by hand.',audio:'Original audio',likes:'26.8K',comments:'377'}
   ];
   const defaults={reason:'break',limit:'5',after:'learn',freeTime:'10',grayscale:true,platform:'instagram'};
-  let saved={};try{saved=JSON.parse(localStorage.getItem('pause_prefs')||'{}')||{}}catch(e){}
+  let saved={};try{saved=JSON.parse(LS.getItem('pause_prefs')||'{}')||{}}catch(e){}
   let prefs={...defaults,...saved,platform:'instagram'};
   // New v2 default is on even for people who turned off the experimental v1 setting.
-  try{if(localStorage.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
-  let existingGate=false;try{existingGate=sessionStorage.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
+  try{if(LS.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
+  let existingGate=false;try{existingGate=SS.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
   let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:OPTIONS.afters.some(x=>x[0]===prefs.after)?prefs.after:'learn',freeTime:prefs.freeTime||'10',nextPick:'',ideaIdx:0,puzzle:0,obStep:0,obReturn:'home',profileReturn:'home',cardId:'',cardWhy:'',learnStage:'card',cardPersonal:false,quizPick:null,fbNote:'',confirmDelete:false,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
   let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -490,12 +502,12 @@
   const brand=()=>'<span class="brand" aria-label="Pause">pause<i>.</i></span>';
   const step=n=>`<span class="step-label">${n}</span>`;
   const time=secs=>{const s=Math.max(0,Math.floor(secs));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
-  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
+  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{LS.setItem('pause_prefs',JSON.stringify(prefs));LS.setItem('pause_prefs_version','2')}catch(e){}};
   const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(2,state.views-state.extraRoundStart))+Math.min(1,state.progress/100);return Math.min(100,Math.round((state.extraRounds===1?35:70)+n*10));};
   const displayCount=()=>{const t=time(state.elapsed);
     if(state.extraRounds)return `Extra ${Math.min(3,state.views-state.extraRoundStart+1)} of 3 · ${state.views} Reels · ${t} · ${grayPercent()}% gray`;
     return state.limit==='120'?`${state.views} Reels · ${t} / 2:00`:`${state.views} / ${state.checkpoint} Reels · ${t}`;};
-  const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
+  const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{SS.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
   const keepScroll=fn=>{const y=root.scrollTop;fn();root.scrollTop=y};
   const toast=msg=>{const t=document.getElementById('app-toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)};
   const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
@@ -830,14 +842,14 @@
   function endDetour(msg){state.detourDone=true;goHome();toast(msg)}
   function open(){clearTimers();state.detourDone=false;if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     state.screen='pause';state.countdown=5;startCountdown()}
-  function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to feed →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000)}
+  function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}if(demo.frozen)return;state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to feed →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000/demo.speed)}
   function begin(){if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     clearTimers();save();state.views=1;state.checkpoint=state.limit==='120'?120:Number(state.limit);state.extraRounds=0;state.extraRoundStart=0;state.elapsed=0;state.sessionStart=Date.now();state.progress=0;state.noticeShown=false;state.notice=false;state.finishedBy='';state.screen='feed';lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
-  function tick(){if(state.screen!=='feed')return;if(document.hidden){lastTick=performance.now();return}const now=performance.now(),delta=Math.min(250,now-lastTick);lastTick=now;state.elapsed+=delta/1000;state.progress=Math.min(100,state.progress+delta/70);const bar=document.getElementById('reel-progress');if(bar)bar.style.width=state.progress+'%';const countEl=document.getElementById('feed-count');if(countEl)countEl.textContent=displayCount();const art=document.getElementById('reel-art');if(art)art.style.filter=`grayscale(${grayPercent()}%)`;const label=document.getElementById('gray-label');if(label&&state.extraRounds)label.textContent=`Round ${state.extraRounds} of 2 · ${grayPercent()}% gray`;if(state.progress>=100)next();}
+  function tick(){if(state.screen!=='feed')return;if(document.hidden||demo.frozen){lastTick=performance.now();return}const now=performance.now(),delta=Math.min(250,now-lastTick)*demo.rate;lastTick=now;state.elapsed+=delta/1000;state.progress=Math.min(100,state.progress+delta/70);const bar=document.getElementById('reel-progress');if(bar)bar.style.width=state.progress+'%';const countEl=document.getElementById('feed-count');if(countEl)countEl.textContent=displayCount();const art=document.getElementById('reel-art');if(art)art.style.filter=`grayscale(${grayPercent()}%)`;const label=document.getElementById('gray-label');if(label&&state.extraRounds)label.textContent=`Round ${state.extraRounds} of 2 · ${grayPercent()}% gray`;if(state.progress>=100)next();}
   function next(){if(state.screen!=='feed'||state.reelsDisabled&&state.platform==='instagram')return;const reach=state.extraRounds===0&&state.limit==='120'?state.elapsed>=state.checkpoint:state.views>=state.checkpoint;
     if(reach){clearInterval(feedTimer);if(state.extraRounds>=2)protectInstagram();state.screen='checkpoint';state.notice=false;render();return}
     state.views++;state.progress=0;
-    if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200)}render();lastTick=performance.now()}
+    if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200*demo.hold)}render();lastTick=performance.now()}
   function finish(how){clearTimers();if(state.detourDone){goHome();return}state.screen='exit';state.finishedBy=how;state.nextPick='';state.ideaIdx=0;render()}
   function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.views++;state.extraRoundStart=state.views;state.checkpoint=state.views+2;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   root.addEventListener('click',event=>{
@@ -856,7 +868,7 @@
       case 'protected-feed':state.screen='protected-feed';render();break;
       case 'protected-dms':state.screen='protected-dms';render();break;
       case 'open-chat':state.activeChat=target.dataset.chat;state.screen='protected-chat';render();break;
-      case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();break;
+      case 'reset-demo':clearTimers();state.reelsDisabled=false;state.extraRounds=0;state.extraRoundStart=0;state.views=0;state.screen='home';try{SS.removeItem('pause_instagram_reels_disabled')}catch(e){}render();break;
       case 'other-app':{const t=document.getElementById('ph-toast');if(t){t.textContent='Only Instagram opens in this demo.';t.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>t.classList.remove('show'),1800)}break;}
       case 'open-profile':state.profileReturn=state.screen;state.confirmDelete=false;state.screen='profile';render();break;
       case 'profile-back':if(state.profileReturn==='learn'){state.screen='learn';render()}else goHome();break;
@@ -900,10 +912,41 @@
   root.addEventListener('touchend',event=>{if(state.screen==='feed'&&touchY!==null){const diff=touchY-event.changedTouches[0].screenY;if(diff>55)next();touchY=null}},{passive:true});
   document.addEventListener('keydown',event=>{if(state.screen==='feed'&&['ArrowDown','PageDown',' '].includes(event.key)&&!event.repeat){event.preventDefault();next()}if(event.key==='Escape'&&state.screen==='feed')finish('early')});
   document.addEventListener('visibilitychange',()=>{lastTick=performance.now()});
+  document.querySelectorAll('[data-land="try"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const ph=document.getElementById('phone');ph.scrollIntoView({block:'center'});ph.focus({preventScroll:true})}));
   setInterval(()=>{if(state.screen==='home')render()},30000);
   render();
+  /* ---------- Walkthrough bridge (?demo only). The walkthrough page drives this real UI with postMessage:
+     it clicks real buttons, sets deterministic starting states and receives the position of the highlighted element. ---------- */
+  if(DEMO){
+    document.documentElement.classList.add('embed');
+    let hl=null,lastSent='';
+    const q=spec=>{if(!spec)return null;const css=typeof spec==='string'?spec:spec.sel;let el=css?document.querySelector(css):null;if(el&&spec.closest)el=el.closest(spec.closest);return el};
+    /* A highlight is a selector, {sel,closest} or {union:[...]} (one box around several elements). */
+    const rectOf=spec=>{if(!spec)return null;if(spec.union){const rs=spec.union.map(rectOf).filter(Boolean);if(!rs.length)return null;const l=Math.min(...rs.map(r=>r[0])),t=Math.min(...rs.map(r=>r[1])),rr=Math.max(...rs.map(r=>r[0]+r[2])),b=Math.max(...rs.map(r=>r[1]+r[3]));return [l,t,rr-l,b-t]}
+      const el=q(spec);if(!el)return null;const r=el.getBoundingClientRect();return r.width&&r.height?[r.left,r.top,r.width,r.height].map(v=>Math.round(v)):null};
+    const ripple=el=>{const r=el.getBoundingClientRect(),ph=document.querySelector('.phone').getBoundingClientRect(),d=document.createElement('span');d.className='demo-tap';d.style.left=(r.left-ph.left+r.width/2)+'px';d.style.top=(r.top-ph.top+r.height/2)+'px';document.querySelector('.phone').appendChild(d);setTimeout(()=>d.remove(),700)};
+    const cmds={
+      reset({profile:p={},prefs:pr={}}={}){clearTimers();LS.clear();SS.clear();profile={...JSON.parse(JSON.stringify(EMPTY_PROFILE)),...JSON.parse(JSON.stringify(p))};feedback={};seen={};saves={};learnMore={};saveProfile();
+        Object.assign(state,{...defaults,...pr,screen:'home',countdown:5,views:0,checkpoint:5,progress:0,elapsed:0,extraRounds:0,extraRoundStart:0,reelsDisabled:false,notice:false,noticeShown:false,finishedBy:'',detourDone:false,nextPick:'',ideaIdx:0,learnStage:'card',quizPick:null,fbNote:'',messages:{Alex:[],Sam:[],Maya:[]}});
+        demo.rate=1;demo.frozen=false;hl=null;render();document.getElementById('app-toast').classList.remove('show')},
+      set(o){Object.assign(state,o);if(o.reelsDisabled)SS.setItem('pause_instagram_reels_disabled','true');render()},
+      stop:clearTimers, play(){clearInterval(feedTimer);lastTick=performance.now();feedTimer=setInterval(tick,100)},
+      open,begin,next,finish,continueAfter,goHome,
+      playback(o){Object.assign(demo,o);lastTick=performance.now()},
+      click(sel){const el=q(sel);if(!el)return false;ripple(el);el.click();return true},
+      scroll(sel){const el=q(sel);if(el)el.scrollIntoView({block:'center',behavior:'smooth'});return !!el},
+      highlight(spec){hl=spec;lastSent='';return !!rectOf(spec)},
+      exists(spec){return !!rectOf(spec)},
+      query(){return {screen:state.screen,views:state.views,extraRounds:state.extraRounds,gray:grayPercent(),reelsDisabled:state.reelsDisabled,countdown:state.countdown,notice:state.notice,cardId:state.cardId}}
+    };
+    addEventListener('message',e=>{const m=e.data;if(!m||m.pw!==1||!m.cmd||!cmds[m.cmd])return;let result=null,error=null;try{result=cmds[m.cmd](...(m.args||[]))}catch(err){error=String(err)}
+      (e.source||parent).postMessage({pw:1,re:m.id,result:result===undefined||typeof result==='function'?null:result,error},'*')});
+    const track=()=>{const rect=rectOf(hl);
+      const info={pw:1,type:'track',rect,screen:state.screen,gray:state.screen==='feed'?grayPercent():null,views:state.views,extraRounds:state.extraRounds};const str=JSON.stringify(info);if(str!==lastSent){lastSent=str;parent.postMessage(info,'*')}requestAnimationFrame(track)};
+    track();parent.postMessage({pw:1,type:'ready'},'*');
+  }
   // Non-user-facing test interface; no external analytics or network requests.
-  window.__pauseTest={get:()=>({...state}),begin,finish,next,open,render,continueAfter,grayPercent,reset:()=>{state.reelsDisabled=false;state.extraRounds=0;state.platform='instagram';state.screen='home';try{sessionStorage.removeItem('pause_instagram_reels_disabled')}catch(e){}render();}};
+  window.__pauseTest={get:()=>({...state}),begin,finish,next,open,render,continueAfter,grayPercent,reset:()=>{state.reelsDisabled=false;state.extraRounds=0;state.platform='instagram';state.screen='home';try{SS.removeItem('pause_instagram_reels_disabled')}catch(e){}render();}};
 })();
 </script>
 </body>

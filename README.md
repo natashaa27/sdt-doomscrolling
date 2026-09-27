@@ -2,6 +2,10 @@
 
 Double-click `index.html` to use this **offline demo** (keep the `photos/` folder next to it). There are no trackers or network dependencies.
 
+## Walkthrough (for presentations)
+
+The landing page has two options: **Try Pause** (this prototype) and **▶ Watch Walkthrough** (`walkthrough.html`). The walkthrough is an automated, interactive demonstration of both interventions, with explanations and systems-thinking links. It drives the real prototype in a separate demo mode that never touches saved preferences. Recorded videos, subtitles and narration are in `walkthrough/video/`. See [walkthrough/README.md](walkthrough/README.md).
+
 ## Exact experience
 
 1. The demo opens on a phone home screen. Tap the **Instagram** app. Pause steps in first with a five-second timer. Instagram is a simulation; the demo does not connect to your account.
