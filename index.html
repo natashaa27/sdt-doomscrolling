@@ -505,7 +505,7 @@
   const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{LS.setItem('pause_prefs',JSON.stringify(prefs));LS.setItem('pause_prefs_version','2')}catch(e){}};
   const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(2,state.views-state.extraRoundStart))+Math.min(1,state.progress/100);return Math.min(100,Math.round((state.extraRounds===1?35:70)+n*10));};
   const displayCount=()=>{const t=time(state.elapsed);
-    if(state.extraRounds)return `Extra ${Math.min(3,state.views-state.extraRoundStart+1)} of 3 · ${state.views} Reels · ${t} · ${grayPercent()}% gray`;
+    if(state.extraRounds)return `Extra ${Math.min(3,state.views-state.extraRoundStart+1)} of 3 · ${state.views} Reels · ${t}`;
     return state.limit==='120'?`${state.views} Reels · ${t} / 2:00`:`${state.views} / ${state.checkpoint} Reels · ${t}`;};
   const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{SS.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
   const keepScroll=fn=>{const y=root.scrollTop;fn();root.scrollTop=y};

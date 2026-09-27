@@ -6,11 +6,11 @@ Timings match `pause-personalised-learning.mp4` (0:49). Read at a calm pace; eac
 
 Pause: an optional chapter on personalised learning.
 
-**0:04–0:13** · L1 · Choosing to learn instead
+**0:04–0:12** · L1 · Choosing to learn instead
 
 In the optional learning path, the user chooses to learn something instead of scrolling. Pause already knows a little about them, because they told it: a trip to Rome, an interest in history, and business studies.
 
-**0:13–0:25** · L2 · One personalised card
+**0:12–0:25** · L2 · One personalised card
 
 Pause shows one short card, chosen because the user is planning to visit Rome. It has an image, a short explanation and a source. The content is curated, not generated live.
 

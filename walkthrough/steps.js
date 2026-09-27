@@ -122,7 +122,7 @@
    async run(d){
      await d.hl('[data-action="continue"]','+3 more Reels (first extra portion)');await d.wait(1600);
      await d.click('[data-action="continue"]');await d.rate(1.6);await d.wait(300);
-     await d.hl('#feed-count','Extra Reel counter with grayscale level');
+     await d.hl('#feed-count','Extra Reel counter');
      await d.until(q=>q.screen==='checkpoint',20000);await d.wait(700);
      await d.hl('.round-indicators','1 of 2 extensions used');await d.wait(3000);
    }},
@@ -138,7 +138,7 @@
    async run(d){
      await d.hl('[data-action="continue"]','+3 more Reels (last extra portion)');await d.wait(1600);
      await d.click('[data-action="continue"]');await d.rate(1.6);await d.wait(300);
-     await d.hl('#feed-count','Grayscale from 70% to 100%');
+     await d.hl('#feed-count','Extra Reel counter');
      await d.until(q=>q.screen==='checkpoint',20000);await d.wait(700);
      await d.hl('.round-indicators','2 of 2 extensions used');await d.wait(3600);
    }},
