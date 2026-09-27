@@ -5,7 +5,7 @@ Double-click `index.html` to use this **offline demo** (keep the `photos/` folde
 ## Exact experience
 
 1. The demo opens on a phone home screen. Tap the **Instagram** app. Pause steps in first with a five-second timer. Instagram is a simulation; the demo does not connect to your account.
-2. Complete the five-second pause and choose the three commitments (why you're here, your finish line, and what you might do afterwards). After the pause there are three options: **Continue to Instagram**, **Learn something instead**, or **Leave for now**. **Progressive grayscale is checked by default**. It remains off visually during the initial portion.
+2. Complete the five-second pause and choose the three commitments (why you're here, your finish line, and what you might do afterwards). After the pause there are three options: **Continue to feed**, **Learn something instead**, or **Leave for now**. **Progressive grayscale is checked by default**. It remains off visually during the initial portion.
 3. Scroll to the initial finish line (for quick tests, select **5 Reels**) using swipe up, mouse wheel or Next. Select **+3 more Reels** at the checkpoint. The next Reel is a new one, grayscale begins **immediately at 35%** and fades steadily to **65%** across these three Reels.
 4. At the second checkpoint, select the **second and final +3 Reels**. Grayscale begins at **70%** and fades steadily to **100%** across these three Reels.
 5. At the third checkpoint **there is no more +3 button**. The Reels section is disabled and only **regular feed and DMs** remain accessible; the protected view excludes in-feed Reels as well. You can browse sample posts, enter a sample chat, and send a **local-only demo message**.
@@ -29,9 +29,11 @@ The counter under the progress bar always shows Reels and time together, for exa
 
 ## Personalised micro-learning
 
-**My Interests (optional).** The first time, the home screen offers a short, skippable setup in three steps: interests (plus what you watch a lot of on Instagram, chosen by you), places you've been and places you're planning to visit, and work or study plus subjects to explore. Every step can be skipped, it isn't shown again, and everything can be edited or deleted later from the **Pause** app on the home screen.
+**My Interests (optional).** The first time, the home screen offers a short, skippable setup in three steps: interests (plus what you watch, like or save a lot on Instagram, chosen by you), places you've been and places you're planning to visit, and work or study plus subjects you'd like to learn more about. Every question has chips **and a box for your own words** (for example "Formula 1", "Marketing student" or "Nara, Japan"). Every step can be skipped and setup isn't shown again. Once you have a profile, a **My Interests** section on the home screen shows it; tap it (or the **Pause** app) to edit or delete anything.
 
-**Learn something instead.** After the five-second pause, this shows **one** card picked from your profile: planned trips first, then subjects to explore, work or study, interests, Instagram interests, and places visited. Each card has:
+Your own words are matched to card topics with a plain keyword list (for example "marketing" → the scarcity card, "Formula 1" → the F1 card, "Japan" → the Kyoto card). This is simple matching, not AI.
+
+**Learn something instead.** After the five-second pause, this shows **one** card (examples: Kyoto, Rome, marketing, Formula 1, fashion, cooking) picked from your profile: planned trips first, then subjects to explore, work or study, interests, Instagram interests, and places visited. Each card has:
 - a heading saying why it was picked ("Because you're planning to visit Rome")
 - a photo where a relevant one exists (sky, parrots, lighthouse); otherwise a colour band
 - a 60–100-word explanation (about 30–60 seconds)
@@ -39,12 +41,13 @@ The counter under the progress bar always shows Reels and time together, for exa
 - a source link (Wikipedia, NASA, WHO, Britannica, Investopedia). Wikipedia sources open inside the phone in a small viewer with **Done** to return to the card; other sites don't allow being shown inside another page, so they open in a new tab
 - feedback: Interesting / Not for me / Already knew this (cards marked "Not for me" or "Already knew this" are skipped next time)
 - a Done button. There is no next card, autoplay, streak or quota.
+- a note that it is a curated demo card checked against its source, not AI-generated and not live news.
 
 If you skip setup, you get a general card about variable rewards and an invitation to personalise.
 
-**Learning from the demo feed.** You can save Reels and posts in the simulated Instagram. When you've saved two posts on the same topic (for example, architecture), Pause asks on the home screen and in My Interests whether to add it. Nothing is added without your confirmation.
+**Learning from the demo feed.** In the simulated Instagram you can save Reels and posts, and some Reels have an **ⓘ Learn more about …** button. When you've saved or tapped Learn more twice on the same topic (for example, nature), Pause asks on the home screen and in My Interests whether to add it. Nothing is added without your confirmation. Confirmed topics appear under **From the demo feed** in My Interests, where you can remove them, see the raw signal counts, and clear all signals.
 
-**Reward the Exit.** When you stop, Pause offers **one** optional idea based on why you opened Instagram, what you planned to do afterwards, your profile and how much time you have (2, 10 or 30 minutes). Examples: read five pages of the book you're reading, learn one phrase for a city you're visiting (Japanese, Italian, French, Catalan, Turkish), stretch or take a short walk, message a friend, a two-minute puzzle, or one learning card. "Another idea" shows a different one, and "I'm done for now" is always there.
+**Reward the Exit.** When you stop, Pause offers **one** optional idea based on why you opened Instagram, what you planned to do afterwards, your profile and how much time you have (2, 10 or 30 minutes). Examples: read five pages of the book you're reading, learn one phrase for a city you're visiting (Japanese, Italian, French, Catalan, Turkish), take a five-minute walk or stretch, try a recipe you saved (30 minutes, if you're into cooking), read a history article you saved, message a friend, a two-minute puzzle, or one learning card. "Another idea" shows a different one, and "I'm done for now" is always there.
 
 ## What is real and what is simulated
 
@@ -52,9 +55,10 @@ If you skip setup, you get a general card about variable rewards and an invitati
 |---|---|
 | Five-second pause, commitments, purpose reminder, Reel counter, finish line, grayscale extensions, protected mode | Fully working in the simulation |
 | My Interests setup, editing and deleting | Fully working; stored only in this browser (localStorage) |
-| Card selection, quiz, feedback, source links | Fully working; 27 hand-written, fact-checked cards |
+| Card selection, quiz, feedback, source links | Fully working; 29 hand-written cards checked against their linked sources |
+| Matching your own words to cards | Working; simple keyword list, not AI |
 | Exit ideas and travel phrases | Fully working; chosen from a fixed list |
-| Saving posts and interest suggestions | Working inside the demo feed only |
+| Saving posts, Learn more and interest suggestions | Working inside the demo feed only |
 | Instagram feed, Reels, messages | Simulated. No connection to Instagram |
 | Importing Instagram interests | **Not implemented.** The code has a placeholder (`INTEREST_SOURCES.instagramImport`) for a future, consent-based import such as uploading your own Instagram data export. Pause never asks for Instagram passwords, calls Instagram APIs or reads likes, saved posts or private activity. |
 | Current professional news | Not included. Cards cover stable topics, not live news. |

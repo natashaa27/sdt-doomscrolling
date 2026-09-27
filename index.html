@@ -201,6 +201,11 @@
     .web-ext{color:#2f6b4a;font-size:18px;text-decoration:none;padding:4px 6px}
     .web-frame{flex:1;width:100%;min-height:0;border:0;background:#fff}
     .web-foot{flex:none;margin:0;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px));font-size:11.5px;color:#6a786f;text-align:center;border-top:1px solid #eef1ee}.web-foot a{color:#2f6b4a;font-weight:700}
+    .card-demo{font-size:10.5px!important;color:#8a998d!important;line-height:1.4}
+    .ph-interests{display:flex;flex-direction:column;gap:3px;text-align:left;margin-top:18px;border:0;border-radius:16px;padding:11px 14px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);color:#fff}
+    .ph-int-h{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between}.ph-int-h em{font-style:normal;font-weight:700;text-transform:none;letter-spacing:0;text-decoration:underline;text-underline-offset:3px}
+    .ph-int-list{font-size:13px;line-height:1.4;opacity:.95}
+    .learn-more{align-self:flex-start;border:1px solid rgba(255,255,255,.6);background:rgba(0,0,0,.28);color:#fff;border-radius:999px;padding:6px 11px;font-size:12px;font-weight:650;backdrop-filter:blur(6px)}
   </style>
 </head>
 <body>
@@ -346,19 +351,31 @@
     {id:'jeans',tags:['interest:fashion'],title:'The tiny pocket on your jeans was for a watch',color:'#3a5fc4',
      body:'That small pocket inside the front right pocket of many jeans dates back to the late 1800s, when workers carried pocket watches. Levi Strauss and tailor Jacob Davis patented copper-riveted work trousers in 1873, and early designs included a small watch pocket to keep watches safe. Wristwatches later replaced pocket watches, but the pocket stayed. People now use it for coins, keys or guitar picks.',
      quiz:{q:'What was the small jeans pocket originally for?',opts:['Coins','Pocket watches','Matches'],a:1,why:'It was a watch pocket.'},
-     source:{name:'Wikipedia: Jeans',url:'https://en.wikipedia.org/wiki/Jeans'}}
+     source:{name:'Wikipedia: Jeans',url:'https://en.wikipedia.org/wiki/Jeans'}},
+    {id:'f1',tags:['interest:sports','topic:f1'],title:'An F1 car is an upside-down aeroplane',color:'#b3262d',
+     body:'An aeroplane wing is shaped to create lift. A Formula 1 car’s wings are turned the other way, so the air pushes the car down onto the track instead. This force is called downforce, and together with the shaped floor it presses the tyres into the road. The grip lets drivers take corners far faster than tyres alone would allow, with sideways forces of around five to six g.',
+     fact:'Engineers often say that, in theory, an F1 car produces enough downforce at high speed to drive upside down on a ceiling.',
+     source:{name:'Wikipedia: Formula One car',url:'https://en.wikipedia.org/wiki/Formula_One_car'}},
+    {id:'horyuji',tags:['topic:japan','interest:architecture'],title:'Why old Japanese pagodas survive earthquakes',color:'#7c4a2c',
+     body:'Hōryū-ji, a temple near Nara founded by Prince Shōtoku in 607, has wooden buildings from around the late 600s, among the oldest surviving wooden buildings in the world. Its five-storey pagoda has come through centuries of earthquakes. Japanese pagodas have a central pillar, the shinbashira, and stacked storeys that can sway separately, which helps absorb shaking. Carpenters joined the timbers with interlocking joints rather than relying on nails.',
+     quiz:{q:'What is the central pillar of a Japanese pagoda called?',opts:['Torii','Shinbashira','Tatami'],a:1,why:'The shinbashira runs up the centre of the pagoda.'},
+     source:{name:'Wikipedia: Hōryū-ji',url:'https://en.wikipedia.org/wiki/H%C5%8Dry%C5%AB-ji'}},
+    {id:'lbd',tags:['interest:fashion'],title:'The little black dress was called “Chanel’s Ford”',color:'#1f1f24',
+     body:'In 1926, American Vogue published a drawing of a short, simple black dress by Coco Chanel. The magazine compared it to the Ford Model T, calling it “Chanel’s Ford”, because, like the car, it was simple, practical and available to many women. Before then, black was mostly worn for mourning. The little black dress became a wardrobe staple that designers still reinvent almost every season.',
+     quiz:{q:'What did Vogue compare Chanel’s black dress to in 1926?',opts:['A Ford car','A tuxedo','A uniform'],a:0,why:'It called the dress “Chanel’s Ford”.'},
+     source:{name:'Wikipedia: Little black dress',url:'https://en.wikipedia.org/wiki/Little_black_dress'}},
   ];
   /* Shown when the profile is empty. */
   const DEFAULT_CARD='variable';
   /* ---------- Personalisation (stored only in this browser) ---------- */
   const PREF={
-    interests:[['psychology','Psychology'],['history','History'],['science','Science'],['books','Books'],['art','Art'],['finance','Finance'],['fitness','Fitness'],['cooking','Cooking'],['architecture','Architecture'],['nature','Nature'],['travel','Travel'],['languages','Languages'],['music','Music'],['technology','Technology'],['fashion','Fashion']],
+    interests:[['psychology','Psychology'],['history','History'],['science','Science'],['books','Books'],['art','Art'],['finance','Finance'],['fitness','Fitness'],['cooking','Cooking'],['architecture','Architecture'],['nature','Nature'],['travel','Travel'],['languages','Languages'],['music','Music'],['technology','Technology'],['fashion','Fashion'],['sports','Sports']],
     places:[['kyoto','Kyoto'],['rome','Rome'],['paris','Paris'],['barcelona','Barcelona'],['istanbul','Istanbul'],['london','London'],['new-york','New York']],
     fields:[['marketing','Marketing'],['design','Design'],['computing','Computer science'],['engineering','Engineering'],['medicine','Medicine & health'],['business','Business & finance'],['education','Education'],['psychology','Psychology'],['architecture','Architecture'],['arts','Arts & media'],['law','Law'],['student','Still deciding']]
   };
   const PHRASES={kyoto:['Japanese','Arigatō gozaimasu','ah-ree-GAH-toh go-ZAI-mass','Thank you (polite)'],rome:['Italian','Grazie mille','GRAHT-see-eh MEEL-leh','Thanks a lot'],paris:['French','Excusez-moi','ex-koo-ZAY mwah','Excuse me'],barcelona:['Catalan','Moltes gràcies','MOL-tes GRAH-see-es','Thank you very much'],istanbul:['Turkish','Teşekkür ederim','teh-shek-KEWR eh-deh-reem','Thank you']};
   const store={get:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
-  const EMPTY_PROFILE={interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],book:'',declined:[],onboarded:false,dismissed:false};
+  const EMPTY_PROFILE={interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],interestsOther:[],igOther:[],fieldOther:[],exploreOther:[],inferred:[],book:'',declined:[],onboarded:false,dismissed:false};
   let profile={...JSON.parse(JSON.stringify(EMPTY_PROFILE)),...store.get('pause_profile',{})};
   let feedback=store.get('pause_feedback',{});   // cardId -> 'interesting' | 'not' | 'knew'
   let seen=store.get('pause_seen',{});           // cardId -> times shown
@@ -371,9 +388,31 @@
      likes, saved posts or private activity. */
   const INTEREST_SOURCES={manual:()=>profile,demoFeed:()=>topicCounts(),instagramImport:null};
   const labelOf=(list,k)=>nameOf(PREF[list],k)||k;
-  const hasProfile=()=>['interests','ig','visited','planned','field','explore'].some(k=>profile[k].length)||profile.visitedOther.length||profile.plannedOther.length;
-  function topicCounts(){const c={};Object.values(saves).forEach(t=>{if(t)c[t]=(c[t]||0)+1});return c}
-  function pendingSuggestion(){const c=topicCounts();return Object.keys(c).find(t=>c[t]>=2&&!profile.interests.includes(t)&&!profile.ig.includes(t)&&!profile.declined.includes(t))||''}
+  const LIST_KEYS=['interests','ig','visited','planned','field','explore','visitedOther','plannedOther','interestsOther','igOther','fieldOther','exploreOther','inferred'];
+  const hasProfile=()=>LIST_KEYS.some(k=>(profile[k]||[]).length);
+  let learnMore=store.get('pause_learnmore',{});  // topic -> "Learn more" taps in the demo feed
+  /* Signals from the simulated feed only: saves plus "Learn more" taps, per topic. */
+  function topicCounts(){const c={};Object.values(saves).forEach(t=>{if(t)c[t]=(c[t]||0)+1});Object.entries(learnMore).forEach(([t,n])=>{c[t]=(c[t]||0)+n});return c}
+  /* Match the user's own words ("Formula 1", "Japanese architecture", "UX design") to card tags. Plain keyword matching, no AI. */
+  const KEYWORDS=[
+    [/formula ?1|\bf1\b|motorsport|grand prix|racing/,['interest:sports','topic:f1']],
+    [/japan|japanese|kyoto|nara|temple|pagoda|shrine/,['topic:japan','place:kyoto']],
+    [/\brome\b|roman|italy|italian/,['place:rome']],[/paris|france|french/,['place:paris']],[/barcelona|spain|spanish|gaud[ií]|catalan/,['place:barcelona']],
+    [/istanbul|turkey|turkish|byzantine/,['place:istanbul']],[/london|england|british/,['place:london']],[/new york|\bnyc\b|manhattan/,['place:new-york']],
+    [/marketing|advertis|brand|consumer|sales/,['field:marketing']],[/design|\bux\b|\bui\b|graphic/,['field:design']],
+    [/software|develop|programm|coding|computer|data|\bai\b|tech/,['field:computing','interest:technology']],[/engineer/,['field:engineering']],
+    [/medic|doctor|nurs|health|pharma|hospital/,['field:medicine']],[/teach|educat|school|tutor/,['field:education']],
+    [/financ|bank|invest|money|account|economic/,['interest:finance','field:business']],[/business|startup|entrepreneur|management/,['field:business']],
+    [/cook|food|bak|chef|recipe|kitchen/,['interest:cooking']],[/fashion|style|clothing|textile/,['interest:fashion']],
+    [/music|guitar|piano|sing|orchestra/,['interest:music']],[/book|read|novel|literature|poetry/,['interest:books']],
+    [/\bart\b|painting|museum|gallery|artist/,['interest:art']],[/architect|building/,['interest:architecture']],
+    [/psych|behaviou?r|mind|brain/,['interest:psychology']],[/histor|ancient|medieval/,['interest:history']],
+    [/scien|physics|chemistry|biology|space|astronom/,['interest:science']],[/bird|nature|animal|wildlife|plant|garden/,['interest:nature']],
+    [/travel|trip|backpack/,['interest:travel']],[/language|portuguese|linguist|vocabulary/,['interest:languages']],
+    [/fitness|gym|running|yoga|workout|sport|football|tennis|cycling/,['interest:fitness','interest:sports']]];
+  const matchTags=text=>{const t=String(text).toLowerCase(),out=[];KEYWORDS.forEach(([re,tags])=>{if(re.test(t))tags.forEach(x=>{if(!out.includes(x))out.push(x)})});return out};
+  const placeIn=text=>{const tag=matchTags(text).find(x=>x.startsWith('place:'));return tag?tag.slice(6):''};
+  function pendingSuggestion(){const c=topicCounts();return Object.keys(c).find(t=>c[t]>=2&&!profile.interests.includes(t)&&!profile.ig.includes(t)&&!profile.inferred.includes(t)&&!profile.declined.includes(t))||''}
   /* Pick ONE card: planned trips first, then subjects to explore, work, interests, Instagram interests, places visited.
      Cards rated "Not for me" or "Already knew this" are skipped; unseen cards win ties. */
   function pickCard(){const sources=[
@@ -382,7 +421,12 @@
       ...profile.field.map(f=>['field:'+f,`Because you work or study in ${labelOf('fields',f).toLowerCase()}`,4]),
       ...profile.interests.map(i=>['interest:'+i,`Because you’re into ${labelOf('interests',i).toLowerCase()}`,4]),
       ...profile.ig.map(i=>['interest:'+i,`Because you watch ${labelOf('interests',i).toLowerCase()} on Instagram`,3]),
-      ...profile.visited.map(p=>['place:'+p,`Because you’ve been to ${labelOf('places',p)}`,3])];
+      ...profile.visited.map(p=>['place:'+p,`Because you’ve been to ${labelOf('places',p)}`,3]),
+      ...profile.inferred.map(i=>['interest:'+i,`Because you often save ${labelOf('interests',i).toLowerCase()} posts`,3])];
+    /* The user's own words, matched to cards by keyword. */
+    [['plannedOther',6,t=>`Because you’re planning to visit ${t}`],['exploreOther',5,t=>`Because you want to learn about ${t}`],['fieldOther',4,t=>`Because you work or study in ${t}`],
+     ['interestsOther',4,t=>`Because you’re into ${t}`],['igOther',3,t=>`Because you watch ${t} on Instagram`],['visitedOther',3,t=>`Because you’ve been to ${t}`]]
+      .forEach(([k,w,why])=>profile[k].forEach(text=>matchTags(text).forEach(tag=>sources.push([tag,why(`“${esc(text)}”`),w]))));
     let best=null;
     LEARN_CARDS.forEach(card=>{if(feedback[card.id]==='not'||feedback[card.id]==='knew')return;
       sources.forEach(([tag,why,w])=>{if(!card.tags.includes(tag))return;const score=w*10-(seen[card.id]||0)*25+(feedback[card.id]==='interesting'?-3:0);
@@ -453,6 +497,7 @@
     return `<div class="phone-home">
       <div class="ph-clock"><div class="ph-time">${t}</div><div class="ph-date">${date}</div></div>
       <div class="ph-grid"><button class="ph-app" data-action="open" aria-label="Open Instagram"><span class="ph-tile">${IG_GLYPH}</span><span class="ph-label">Instagram</span></button><button class="ph-app" data-action="open-profile" aria-label="Pause: My Interests"><span class="ph-tile pause-tile">${PAUSE_GLYPH}</span><span class="ph-label">Pause</span></button>${OTHER_APPS().slice(0,6).map(([n,bg,svg])=>`<button class="ph-app other" data-action="other-app" aria-label="${n}"><span class="ph-tile" style="background:${bg}">${svg}</span><span class="ph-label">${n}</span></button>`).join('')}</div>
+      ${hasProfile()?`<button class="ph-interests" data-action="open-profile"><span class="ph-int-h">My Interests <em>Edit</em></span><span class="ph-int-list">${profileSummary()}</span></button>`:''}
       <div class="spacer"></div>
       ${!profile.onboarded&&!profile.dismissed&&!hasProfile()?`<div class="ph-note ph-invite"><b>Make Pause yours</b>Add a few interests and places so learning cards fit you. Optional, about a minute.<div class="btn-row"><button class="btn btn-sm" data-action="start-onboard" data-return="home">Set up</button><button class="btn alt btn-sm" data-action="dismiss-onboard">Not now</button></div></div>`:''}
       ${pendingSuggestion()?`<div class="ph-note">${suggestBox(pendingSuggestion())}</div>`:''}
@@ -468,7 +513,7 @@
     <p class="lede" style="text-align:center">Pause for five seconds. Then choose why you’re opening Instagram and where you’ll stop.</p>
     <div class="breath-orbit" aria-label="Breathing countdown"><span class="breath-count" id="breath-count">${state.countdown}</span></div>
     <p class="breath-caption" id="breath-caption">Breathe in, then out.</p><div class="spacer"></div>
-    <button class="btn full" data-action="purpose" ${state.countdown?'disabled':''}>${state.countdown?'Pause for '+state.countdown+'s':'Continue to Instagram →'}</button>
+    <button class="btn full" data-action="purpose" ${state.countdown?'disabled':''}>${state.countdown?'Pause for '+state.countdown+'s':'Continue to feed →'}</button>
     <button class="btn alt full" style="margin-top:10px" data-action="learn">Learn something instead ✦</button>
     <button class="btn text full" data-action="go-home">Leave for now</button>
     <p class="tip">You can always leave. Nothing is blocked.</p>
@@ -487,19 +532,20 @@
   }
   /* ---------- My Interests: onboarding (optional, shown once) and profile ---------- */
   const chips=(key,list)=>`<div class="chip-wrap">${PREF[list].map(([k,v])=>`<button class="pill sm${profile[key].includes(k)?' selected':''}" data-action="toggle-pref" data-key="${key}" data-val="${k}" aria-pressed="${profile[key].includes(k)}">${v}</button>`).join('')}</div>`;
-  const otherPlaces=key=>`<div class="add-row"><label class="sr-only" for="add-${key}">Add another place</label><input id="add-${key}" class="text-in" maxlength="40" placeholder="Somewhere else?"/><button class="btn quiet btn-sm" data-action="add-place" data-key="${key}">Add</button></div>
+  const customAdd=(key,ph)=>`<div class="add-row"><label class="sr-only" for="add-${key}">${ph}</label><input id="add-${key}" class="text-in" maxlength="40" placeholder="${ph}"/><button class="btn quiet btn-sm" data-action="add-place" data-key="${key}">Add</button></div>
     ${profile[key].length?`<div class="chip-wrap">${profile[key].map((p,i)=>`<button class="pill sm selected" data-action="remove-place" data-key="${key}" data-i="${i}" aria-label="Remove ${esc(p)}">${esc(p)} ×</button>`).join('')}</div>`:''}`;
+  const otherPlaces=key=>customAdd(key,'Somewhere else?');
   const bookField=()=>profile.interests.includes('books')?`<label class="field-label" for="book-in">Currently reading (optional)</label><input id="book-in" class="text-in" maxlength="60" placeholder="Book title" value="${esc(profile.book)}" data-input="book"/>`:'';
   const OB_STEPS=[
     ()=>`<h2>What are you<br/><i>into?</i></h2><p class="lede">Pick a few. Pause uses them to choose one learning card, never a feed.</p>
-      <div class="pref-block">${chips('interests','interests')}</div>${bookField()}
-      <details class="pref-more"${profile.ig.length?' open':''}><summary>What do you watch a lot of on Instagram?</summary><p class="small">Chosen by you. Pause does not read your Instagram account.</p>${chips('ig','interests')}</details>`,
+      <div class="pref-block">${chips('interests','interests')}</div>${customAdd('interestsOther','Something else? e.g. Formula 1')}${bookField()}
+      <details class="pref-more"${profile.ig.length||profile.igOther.length?' open':''}><summary>What do you watch, like or save a lot on Instagram?</summary><p class="small">Chosen by you. Pause does not read your Instagram account.</p>${chips('ig','interests')}${customAdd('igOther','e.g. Japanese architecture')}</details>`,
     ()=>`<h2>Places</h2><p class="lede">Where you’ve been and where you’re going.</p>
       <h3 class="pref-h">I’ve been to</h3>${chips('visited','places')}${otherPlaces('visitedOther')}
       <h3 class="pref-h">I’m planning to visit</h3>${chips('planned','places')}${otherPlaces('plannedOther')}`,
     ()=>`<h2>Work and<br/><i>curiosity</i></h2><p class="lede">What you do, and what you’d like to know more about.</p>
-      <h3 class="pref-h">I work or study in</h3>${chips('field','fields')}
-      <h3 class="pref-h">I’d like to explore</h3>${chips('explore','interests')}`
+      <h3 class="pref-h">What I do (work or study)</h3>${chips('field','fields')}${customAdd('fieldOther','Your own words, e.g. UX research')}
+      <h3 class="pref-h">I’d like to learn more about</h3>${chips('explore','interests')}${customAdd('exploreOther','e.g. Roman history')}`
   ];
   function onboard(){const n=state.obStep,last=n===OB_STEPS.length-1;return `<div class="inner">
       <div class="brand-row"><button class="btn text btn-sm" data-action="ob-close">Not now</button>${step('MY INTERESTS · '+(n+1)+' OF '+OB_STEPS.length)}</div>
@@ -515,18 +561,23 @@
       <h2 style="margin:14px 0 6px">My Interests</h2>
       <p class="lede">Pause uses these to pick one learning card and one idea for after you scroll. Tap to add or remove. Saved only on this device.</p>
       ${sug?suggestBox(sug):''}
-      <section class="pref-card"><h3 class="pref-h">Interests</h3>${chips('interests','interests')}${bookField()}</section>
-      <section class="pref-card"><h3 class="pref-h">I watch a lot of this on Instagram</h3><p class="small">Chosen by you.</p>${chips('ig','interests')}</section>
+      <section class="pref-card"><h3 class="pref-h">Interests</h3>${chips('interests','interests')}${customAdd('interestsOther','Something else?')}${bookField()}</section>
+      <section class="pref-card"><h3 class="pref-h">I watch, like or save this on Instagram</h3><p class="small">Chosen by you.</p>${chips('ig','interests')}${customAdd('igOther','Add a topic')}</section>
+      <section class="pref-card"><h3 class="pref-h">From the demo feed</h3><p class="small">Interests you confirmed after saving or tapping “Learn more”. Tap to remove.</p>
+        ${profile.inferred.length?`<div class="chip-wrap">${profile.inferred.map((t,i)=>`<button class="pill sm selected" data-action="remove-place" data-key="inferred" data-i="${i}" aria-label="Remove ${labelOf('interests',t)}">${labelOf('interests',t)} ×</button>`).join('')}</div>`:'<p class="small">None yet.</p>'}
+        ${Object.keys(topicCounts()).length?`<p class="small" style="margin-top:8px">Signals so far: ${Object.entries(topicCounts()).map(([t,n])=>`${labelOf('interests',t).toLowerCase()} (${n})`).join(', ')}</p><button class="btn text btn-sm" data-action="clear-signals">Clear demo-feed signals</button>`:''}</section>
       <section class="pref-card"><h3 class="pref-h">I’ve been to</h3>${chips('visited','places')}${otherPlaces('visitedOther')}</section>
       <section class="pref-card"><h3 class="pref-h">I’m planning to visit</h3>${chips('planned','places')}${otherPlaces('plannedOther')}</section>
-      <section class="pref-card"><h3 class="pref-h">I work or study in</h3>${chips('field','fields')}</section>
-      <section class="pref-card"><h3 class="pref-h">I’d like to explore</h3>${chips('explore','interests')}</section>
+      <section class="pref-card"><h3 class="pref-h">What I do (work or study)</h3>${chips('field','fields')}${customAdd('fieldOther','Your own words')}</section>
+      <section class="pref-card"><h3 class="pref-h">I’d like to learn more about</h3>${chips('explore','interests')}${customAdd('exploreOther','Add a subject')}</section>
       <section class="pref-card"><h3 class="pref-h">Instagram import</h3><p class="small">Not available in this prototype. A future version could let you upload your own Instagram data export, only with your consent. Pause will never ask for your Instagram password.</p></section>
       <section class="pref-card"><h3 class="pref-h">Learning history</h3><p class="small">${rated?`You’ve rated ${rated} card${rated===1?'':'s'}. Cards you marked “Not for me” or “Already knew this” are skipped.`:'No cards rated yet.'}</p>${rated||Object.keys(seen).length?'<button class="btn text btn-sm" data-action="clear-history">Clear learning history</button>':''}</section>
       ${state.confirmDelete?'<div class="danger-box"><b>Delete all your preferences?</b><p class="small">This removes your interests, places, ratings and saved-topic signals from this device.</p><div class="btn-row"><button class="btn btn-sm" data-action="delete-all">Delete everything</button><button class="btn alt btn-sm" data-action="cancel-delete">Keep them</button></div></div>':'<button class="btn text full" data-action="ask-delete">Delete all my preferences</button>'}
       <button class="btn text full" data-action="start-onboard">Run the short setup again</button>
     </div>`}
-  function suggestBox(t){const n=topicCounts()[t];return `<div class="suggest"><b>You saved ${n} ${labelOf('interests',t).toLowerCase()} posts in the demo feed.</b><span>Add ${labelOf('interests',t).toLowerCase()} to your interests?</span><div class="btn-row"><button class="btn btn-sm" data-action="accept-suggest" data-topic="${t}">Add it</button><button class="btn alt btn-sm" data-action="decline-suggest" data-topic="${t}">No thanks</button></div></div>`}
+  function profileSummary(){const items=[...profile.planned.map(p=>'✈ '+labelOf('places',p)),...profile.plannedOther.map(t=>'✈ '+esc(t)),...profile.interests.map(i=>labelOf('interests',i)),...profile.interestsOther.map(esc),...profile.field.map(f=>labelOf('fields',f)),...profile.fieldOther.map(esc),...profile.explore.map(i=>labelOf('interests',i)),...profile.exploreOther.map(esc),...profile.inferred.map(i=>labelOf('interests',i)),...profile.ig.map(i=>labelOf('interests',i)),...profile.igOther.map(esc),...profile.visited.map(p=>labelOf('places',p)),...profile.visitedOther.map(esc)];
+    const uniq=[...new Set(items)];return uniq.slice(0,5).join(' · ')+(uniq.length>5?` · +${uniq.length-5} more`:'')}
+  function suggestBox(t){const n=topicCounts()[t];return `<div class="suggest"><b>You saved or tapped “Learn more” on ${n} ${labelOf('interests',t).toLowerCase()} posts in the demo feed.</b><span>Add ${labelOf('interests',t).toLowerCase()} to your interests?</span><div class="btn-row"><button class="btn btn-sm" data-action="accept-suggest" data-topic="${t}">Add it</button><button class="btn alt btn-sm" data-action="decline-suggest" data-topic="${t}">No thanks</button></div></div>`}
 
   /* ---------- One personalised learning card ---------- */
   function enterLearn(from){clearTimers();const pick=pickCard();state.learnFrom=from;state.cardId=pick.card.id;state.cardWhy=pick.why;state.cardPersonal=pick.personal;state.quizPick=null;state.fbNote='';
@@ -548,6 +599,7 @@
          <div class="fb" role="group" aria-label="Was this card for you?">${[['interesting','Interesting'],['not','Not for me'],['knew','Already knew this']].map(([k,v])=>`<button class="pill sm${fb===k?' selected':''}" data-action="feedback" data-v="${k}" aria-pressed="${fb===k}">${v}</button>`).join('')}</div>
          ${state.fbNote?`<p class="fb-note">${state.fbNote}</p>`:''}
          <p class="card-end">That’s the whole card.</p>
+         <p class="card-demo">Curated demo card, checked against the linked source. Not AI-generated and not live news.</p>
        </div>
      </article>
      <div class="spacer"></div>
@@ -558,19 +610,21 @@
   /* ---------- Reward the Exit: one personalised, optional idea ---------- */
   const TIMES=[['2','2 min'],['10','10 min'],['30','30 min']];
   function exitIdeas(){const mins=Number(state.freeTime),r=state.reason,a=state.after,I=k=>profile.interests.includes(k)||profile.explore.includes(k);
-    const planned=profile.planned.find(p=>PHRASES[p]);const ideas=[];
+    const planned=[...profile.planned,...profile.plannedOther.map(placeIn)].find(p=>PHRASES[p]);const ideas=[];
+    const Iw=k=>I(k)||profile.inferred.includes(k)||[...profile.interestsOther,...profile.exploreOther].some(t=>matchTags(t).includes('interest:'+k));
     const add=(id,m,score,title,desc,why)=>{if(m<=mins)ideas.push({id,mins:m,score,title,desc,why})};
     if(planned)add('phrase',2,5+(I('languages')?2:0),`Learn one useful phrase for ${labelOf('places',planned)}`,'Thirty seconds, and you’ll use it on your trip.',`you’re planning to visit ${labelOf('places',planned)}`);
     if(state.finishedBy!=='learn')add('card',2,(r==='learn'?7:3)+(a==='learn'?3:0)+(hasProfile()?1:0),'Learn one thing picked for you','One short card, then you’re done.',r==='learn'?'you came to find something useful':'it takes a minute');
-    add('read',10,(a==='read'?6:0)+(I('books')?4:0)+(r==='habit'&&a==='read'?3:0),profile.book?`Read five pages of ${esc(profile.book)}`:'Read five pages of your book','Pick up where you left off.',I('books')?'you’re into books':'you planned to read afterwards');
-    add('history',10,I('history')?4:0,'Read a history article you’ve saved','Something you chose, not something the feed chose.','you’re into history');
-    add(mins>=10?'walk':'stretch',mins>=10?10:2,(a==='move'?6:0)+(I('fitness')?4:0)+(r==='break'?2:0)+(r==='habit'&&a==='move'?3:0),mins>=10?'Take a short walk':'Stretch for two minutes','Stand up, roll your shoulders, look out of a window.',I('fitness')?'you’re into fitness':'you planned to move afterwards');
+    add('read',10,(a==='read'?6:0)+(Iw('books')?4:0)+(r==='habit'&&a==='read'?3:0),profile.book?`Read five pages of ${esc(profile.book)}`:'Read five pages of your book','Pick up where you left off.',I('books')?'you’re into books':'you planned to read afterwards');
+    add('recipe',30,Iw('cooking')?5:0,'Try a recipe you saved','Cook something you bookmarked instead of scrolling past more.','you’re into cooking');
+    add('history',10,Iw('history')?4:0,'Read a history article you’ve saved','Something you chose, not something the feed chose.','you’re into history');
+    add(mins>=10?'walk':'stretch',mins>=10?10:2,(a==='move'?6:0)+(Iw('fitness')?4:0)+(r==='break'?2:0)+(r==='habit'&&a==='move'?3:0),mins>=10?'Take a five-minute walk or stretch':'Stretch for two minutes','Stand up, roll your shoulders, look out of a window.',Iw('fitness')?'you’re into fitness':'you planned to move afterwards');
     add('eyes',2,(a==='rest'?6:0)+(r==='break'?2:0),'Rest your eyes','Look at something far away for twenty seconds.','you wanted a break');
     add('friend',2,(a==='friend'?6:0)+(r==='friends'?6:0),'Message one friend directly','Skip the feed and send one real message.',r==='friends'?'you came to catch up with friends':'you planned to message a friend');
     if(r==='habit')add('puzzle',2,3,'Try a two-minute puzzle','One question, one answer. Then you’re done.','you opened Instagram out of habit');
     return ideas.filter(x=>x.score>0).sort((x,y)=>y.score-x.score);}
   function exitScreen(){const early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
-    const ideas=exitIdeas();const idea=ideas.length?ideas[state.ideaIdx%ideas.length]:null;const ph=idea&&idea.id==='phrase'?PHRASES[profile.planned.find(p=>PHRASES[p])]:null;
+    const ideas=exitIdeas();const idea=ideas.length?ideas[state.ideaIdx%ideas.length]:null;const ph=idea&&idea.id==='phrase'?PHRASES[[...profile.planned,...profile.plannedOther.map(placeIn)].find(p=>PHRASES[p])]:null;
     return `<div class="inner">
       <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div>
       <div class="checkmark" style="margin:18px 0 16px">✓</div><h2>${title}</h2>
@@ -664,6 +718,7 @@
         <div class="reel-user"><span class="av" style="background:${reel.color}">${reel.user[0].toUpperCase()}</span>${reel.user}<button class="follow" tabindex="-1">Follow</button></div>
         <p class="reel-cap">${reel.cap}</p>
         <p class="reel-audio">${ICON.music}${reel.audio}</p>
+        ${TOPIC[reel.img]?`<button class="learn-more" data-action="learn-more" data-topic="${TOPIC[reel.img]}">ⓘ Learn more about ${labelOf('interests',TOPIC[reel.img]).toLowerCase()}</button>`:''}
       </div>
     </div>
     ${state.notice?`<div class="feed-nudge" role="status">You came here to <b>${esc(nameOf(OPTIONS.reasons,state.reason).toLowerCase())}</b>. Still what you want to do?<button class="nudge-x" data-action="dismiss-notice" aria-label="Dismiss">×</button></div>`:''}`;
@@ -738,7 +793,7 @@
   function goHome(){clearTimers();state.screen='home';state.notice=false;render()}
   function open(){clearTimers();if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     state.screen='pause';state.countdown=5;startCountdown()}
-  function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to Instagram →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000)}
+  function startCountdown(){clearInterval(countdownTimer);render();if(state.countdown<=0)return;countdownTimer=setInterval(()=>{if(state.screen!=='pause'){clearInterval(countdownTimer);return}state.countdown--;const number=document.getElementById('breath-count');if(number)number.textContent=state.countdown||'✓';const button=root.querySelector('[data-action="purpose"]');if(button){button.disabled=!!state.countdown;button.textContent=state.countdown?'Pause for '+state.countdown+'s':'Continue to feed →'}if(state.countdown<=0){clearInterval(countdownTimer);const caption=document.getElementById('breath-caption');if(caption)caption.textContent='Now choose: Instagram, one thing to learn, or leave.'}},1000)}
   function begin(){if(state.platform==='instagram'&&state.reelsDisabled){state.screen='protected-feed';render();return}
     clearTimers();save();state.views=1;state.checkpoint=state.limit==='120'?120:Number(state.limit);state.extraRounds=0;state.extraRoundStart=0;state.elapsed=0;state.sessionStart=Date.now();state.progress=0;state.noticeShown=false;state.notice=false;state.finishedBy='';state.screen='feed';lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   function tick(){if(state.screen!=='feed')return;if(document.hidden){lastTick=performance.now();return}const now=performance.now(),delta=Math.min(250,now-lastTick);lastTick=now;state.elapsed+=delta/1000;state.progress=Math.min(100,state.progress+delta/70);const bar=document.getElementById('reel-progress');if(bar)bar.style.width=state.progress+'%';const countEl=document.getElementById('feed-count');if(countEl)countEl.textContent=displayCount();const art=document.getElementById('reel-art');if(art)art.style.filter=`grayscale(${grayPercent()}%)`;const label=document.getElementById('gray-label');if(label&&state.extraRounds)label.textContent=`Round ${state.extraRounds} of 2 · ${grayPercent()}% gray`;if(state.progress>=100)next();}
@@ -749,7 +804,7 @@
   function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;state.nextPick='';state.ideaIdx=0;render()}
   function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.views++;state.extraRoundStart=state.views;state.checkpoint=state.views+2;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   root.addEventListener('click',event=>{
-    const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;save();render();return}
+    const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;if(key==='freeTime'){state.ideaIdx=0;state.nextPick=''}save();render();return}
     const target=event.target.closest('[data-action]');if(!target||target.disabled)return;
     const action=target.dataset.action;
     switch(action){case 'open':open();break;case 'go-home':goHome();break;case 'purpose':if(state.countdown<=0){clearTimers();state.screen='setup';render();}break;
@@ -773,16 +828,19 @@
       case 'toggle-pref':{const k=target.dataset.key,v=target.dataset.val,arr=profile[k];const at=arr.indexOf(v);if(at>=0)arr.splice(at,1);else arr.push(v);saveProfile();keepScroll(render);break;}
       case 'add-place':{const k=target.dataset.key,inp=document.getElementById('add-'+k),v=(inp&&inp.value||'').trim().slice(0,40);if(v&&!profile[k].some(x=>x.toLowerCase()===v.toLowerCase())){profile[k].push(v);saveProfile()}keepScroll(render);break;}
       case 'remove-place':profile[target.dataset.key].splice(+target.dataset.i,1);saveProfile();keepScroll(render);break;
-      case 'accept-suggest':{const t=target.dataset.topic;if(!profile.interests.includes(t))profile.interests.push(t);saveProfile();toast(`Added ${labelOf('interests',t).toLowerCase()} to your interests.`);keepScroll(render);break;}
+      case 'accept-suggest':{const t=target.dataset.topic;if(!profile.inferred.includes(t))profile.inferred.push(t);saveProfile();toast(`Added ${labelOf('interests',t).toLowerCase()} to your interests.`);keepScroll(render);break;}
       case 'decline-suggest':profile.declined.push(target.dataset.topic);saveProfile();keepScroll(render);break;
       case 'clear-history':feedback={};seen={};store.del('pause_feedback');store.del('pause_seen');keepScroll(render);break;
       case 'ask-delete':state.confirmDelete=true;keepScroll(render);break;
       case 'cancel-delete':state.confirmDelete=false;keepScroll(render);break;
-      case 'delete-all':profile={...EMPTY_PROFILE,interests:[],ig:[],visited:[],planned:[],visitedOther:[],plannedOther:[],field:[],explore:[],declined:[]};feedback={};seen={};saves={};['pause_profile','pause_feedback','pause_seen','pause_saves'].forEach(store.del);state.confirmDelete=false;toast('Your preferences were deleted.');render();break;
+      case 'delete-all':profile=JSON.parse(JSON.stringify(EMPTY_PROFILE));feedback={};seen={};saves={};learnMore={};['pause_profile','pause_feedback','pause_seen','pause_saves','pause_learnmore'].forEach(store.del);state.confirmDelete=false;toast('Your preferences were deleted.');render();break;
       case 'feedback':{const v=target.dataset.v;if(feedback[state.cardId]===v){delete feedback[state.cardId];state.fbNote=''}else{feedback[state.cardId]=v;state.fbNote=v==='interesting'?'Glad it was worth it.':v==='not'?'Got it. You won’t see this card again.':'Nice. We’ll skip this one next time.'}store.set('pause_feedback',feedback);keepScroll(render);break;}
       case 'quiz':state.quizPick=+target.dataset.i;keepScroll(render);break;
       case 'do-idea':{const id=target.dataset.id;state.nextPick=id;if(id==='card')enterLearn('exit');else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle';render()}else keepScroll(render);break;}
       case 'next-idea':state.ideaIdx++;state.nextPick='';keepScroll(render);break;
+      case 'learn-more':{const t=target.dataset.topic;learnMore[t]=(learnMore[t]||0)+1;store.set('pause_learnmore',learnMore);const n=topicCounts()[t]||0;
+        toast(pendingSuggestion()===t?`Noted. You’ve shown interest in ${labelOf('interests',t).toLowerCase()} ${n} times. Pause will ask before adding it to your interests.`:`Noted. Pause may suggest ${labelOf('interests',t).toLowerCase()} for a learning card later.`);break;}
+      case 'clear-signals':saves={};learnMore={};store.del('pause_saves');store.del('pause_learnmore');keepScroll(render);break;
       case 'save-item':{const item=target.dataset.item,topic=target.dataset.topic;if(saves[item]!==undefined){delete saves[item];target.classList.remove('on');toast('Removed from saved.')}else{saves[item]=topic;target.classList.add('on');const n=topicCounts()[topic]||0;toast(n>=2&&pendingSuggestion()===topic?`Saved. That’s ${n} ${labelOf('interests',topic).toLowerCase()} posts. Pause will ask before adding it to your interests.`:'Saved.')}store.set('pause_saves',saves);break;}
       case 'open-web':state.webUrl=target.dataset.url;state.learnScroll=root.scrollTop;state.screen='web';render();break;
       case 'web-done':state.screen='learn';render();root.scrollTop=state.learnScroll||0;break;
