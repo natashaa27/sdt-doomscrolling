@@ -5,7 +5,7 @@ Double-click `index.html` to use this **offline demo** (keep the `photos/` folde
 ## Exact experience
 
 1. The demo opens on a phone home screen. Tap the **Instagram** app. Pause steps in first with a five-second timer. Instagram is a simulation; the demo does not connect to your account.
-2. Complete the five-second pause and choose the three commitments (why, finish line, after). **Progressive grayscale is checked by default**. It remains off visually during the initial portion.
+2. Complete the five-second pause and choose the three commitments (why you're here, your finish line, and what you're curious about: psychology, finance, science, history or languages). **Progressive grayscale is checked by default**. It remains off visually during the initial portion.
 3. Scroll to the initial finish line (for quick tests, select **5 Reels**) using swipe up, mouse wheel or Next. Select **+3 more Reels** at the checkpoint. The next Reel is a new one, grayscale begins **immediately at 35%** and fades steadily to **65%** across these three Reels.
 4. At the second checkpoint, select the **second and final +3 Reels**. Grayscale begins at **70%** and fades steadily to **100%** across these three Reels.
 5. At the third checkpoint **there is no more +3 button**. The Reels section is disabled and only **regular feed and DMs** remain accessible; the protected view excludes in-feed Reels as well. You can browse sample posts, enter a sample chat, and send a **local-only demo message**.
@@ -22,6 +22,12 @@ Double-click `index.html` to use this **offline demo** (keep the `photos/` folde
 - Only **two** extra portions are possible, and the third checkpoint has no Continue option.
 - After two extra portions, the Instagram mock Reels tab is disabled; regular posts and DMs remain accessible.
 - No plants, points, streaks, or automatic phone locks.
+
+## Making consumption visible, and a better way out
+
+- **Reels and time together:** the counter under the progress bar always shows both, for example "17 Reels · 1:52 / 2:00". The checkpoint repeats it ("So far: 17 Reels in 2:00") and the exit screen shows Reels watched and time in feed.
+- **Learn one thing:** instead of scrolling, pick an interest and read one short card with a clear ending ("That's the whole card."). Cards cover variable rewards (psychology), the rule of 72 (finance), why the sky is blue (science), the printing press (history) and *saudade* (languages), each with a "Try this" prompt.
+- **Optional next step:** the exit screen asks how much time you have (2, 10 or 30 minutes) and suggests up to three activities that fit your reason for opening Instagram and your interest. For example, someone who "just felt like scrolling" with 2 minutes gets a learning card or a two-minute puzzle; with 10 minutes, a short walk or a saved article. "I'm done for now" is always there, so no extra activity is required.
 
 ## What the screens look like
 

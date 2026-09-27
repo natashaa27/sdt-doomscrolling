@@ -144,6 +144,19 @@
     .phone-home{position:relative}
     .ph-toast{position:absolute;left:50%;bottom:170px;transform:translateX(-50%);background:rgba(20,32,36,.9);color:#fff;font-size:13px;padding:9px 14px;border-radius:12px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
     .ph-toast.show{opacity:1}
+    .reel-cam{justify-self:end;width:26px;height:26px}.reel-cam svg{width:26px;height:26px}
+    .reel-stats{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:3;font-size:11.5px;font-weight:650;padding:5px 11px;border-radius:999px;background:rgba(0,0,0,.45);white-space:nowrap;font-variant-numeric:tabular-nums}
+    .reel-stats.gray{background:rgba(40,40,40,.7)}
+    .lesson-card{gap:10px}.lesson-card p{margin:0}
+    .try-this{background:#fffefa;border:1px solid #d6e4d6;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;color:#35523f}.try-this b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4e7a5f;margin-bottom:3px}
+    .card-source{font-size:11px!important;color:#7d917f!important}
+    .card-end{font-size:12px!important;font-weight:700;color:#305c45!important;border-top:1px solid #cfdccf;padding-top:8px}
+    .next-list{display:grid;gap:8px}
+    .next-opt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid #dfe5dc;background:#fffefa;border-radius:14px;padding:11px 60px 11px 13px;color:#244235}
+    .next-opt b{font-size:13.5px}.next-opt span{font-size:12px;color:#6d7b6e}
+    .next-opt em{position:absolute;right:12px;top:12px;font-style:normal;font-size:11px;font-weight:700;color:#5c7d66;background:#e7f0e7;border-radius:999px;padding:2px 8px}
+    .next-opt.picked{border-color:#57886a;background:#e4efe6;box-shadow:inset 0 0 0 1px #57886a}
+    .next-note{margin-top:10px;font-size:12.5px;color:#31533c;text-align:center}
   </style>
 </head>
 <body>
@@ -170,20 +183,35 @@
   const OPTIONS={
     reasons:[['friends','Catch up with friends'],['break','Take a short break'],['learn','Find something useful'],['habit','Just felt like scrolling']],
     limits:[['5','5 Reels'],['10','10 Reels'],['120','2 minutes']],
-    afters:[['reading','Read something'],['move','Move a little'],['learn','Learn something'],['rest','Rest my eyes']]
+    interests:[['psychology','Psychology'],['finance','Finance'],['science','Science'],['history','History'],['languages','Languages']]
   };
-  const lessons={
-    reading:{label:'Reading · 30 seconds',title:'The one-sentence takeaway',body:'Think of the last article or chapter you enjoyed. Can you explain its most interesting idea in one sentence?'},
-    move:{label:'Movement · 30 seconds',title:'The posture reset',body:'Stand up, relax your shoulders and slowly look left and right. Notice whether your body feels different from a moment ago.'},
-    learn:{label:'Curiosity · 30 seconds',title:'Explain it like a beginner',body:'Pick something you learned recently. Try explaining it aloud in two sentences without using jargon.'},
-    rest:{label:'Mindful break · 30 seconds',title:'Notice three details',body:'Look away from your screen and notice three details in your surroundings you normally overlook.'}
+  /* One short card per interest, each with a clear ending. */
+  const CARDS={
+    psychology:{title:'Why you keep checking: variable rewards',body:['In the 1950s, B. F. Skinner found that animals rewarded on an unpredictable schedule kept pressing a lever far longer than animals rewarded every time. Not knowing when the next reward comes is what keeps the behaviour going.','Feeds work the same way. Most posts are forgettable, but now and then one is great, and you can’t tell which swipe will bring it. So “just one more” always feels worth it.'],tryThis:'Next time you reach for a refresh, notice the little “maybe this one” feeling. Naming it makes it easier to put the phone down.',source:'Based on Ferster & Skinner, Schedules of Reinforcement (1957).'},
+    finance:{title:'The rule of 72',body:['To estimate how long money takes to double, divide 72 by the yearly growth rate. At 6% a year, savings double in about 12 years (72 ÷ 6). At 9%, about 8 years.','It works backwards too: debt at 18% a year doubles in about 4 years if you don’t pay it down. The same maths that builds savings also makes debt grow fast.'],tryThis:'Look up the interest rate on one account or card you have and divide 72 by it.',source:'A standard approximation for compound growth; most accurate between about 4% and 12%.'},
+    science:{title:'Why the sky is blue',body:['Sunlight contains every colour. As it passes through the air, tiny gas molecules scatter short wavelengths (blue) much more strongly than long ones (red). That scattered blue light reaches your eyes from every direction, so the whole sky looks blue.','At sunset, light travels through far more air to reach you. Most of the blue is scattered away before it arrives, leaving the oranges and reds.'],tryThis:'Next sunset, notice that the sky overhead often stays blue while the horizon turns orange.',source:'This effect is called Rayleigh scattering.'},
+    history:{title:'The printing press changed who could know things',body:['Around 1440, Johannes Gutenberg in Mainz combined movable metal type with a screw press. Before that, most books in Europe were copied by hand, and a single book could take months.','Within about 50 years, printing presses were running in more than 200 European cities. Books became cheaper, ideas spread faster, and far more people could read for themselves.'],tryThis:'Think about which modern invention you’d compare to it, and why.',source:'Gutenberg’s printing began in Mainz in the 1440s–1450s.'},
+    languages:{title:'Saudade (Portuguese)',body:['Saudade is a Portuguese word for a deep, bittersweet longing for someone or something you love that is absent, and may never come back. It mixes sadness with warmth, because missing something means it mattered.','It’s often called untranslatable. English needs a whole sentence for what Portuguese says in one word.'],tryThis:'Say it out loud: “sow-DAH-jee” (Brazilian) or “sow-DAHD” (European). Who or what do you feel saudade for?',source:'A central idea in Portuguese and Brazilian music, especially fado.'}
   };
-  const alternatives={
-    reading:{title:'Read just two pages',desc:'Start with a book, article or saved piece you actually want to read.',emoji:'▤'},
-    move:{title:'Take a two-minute walk',desc:'Get up, stretch or step outside. A tiny change of scene counts.',emoji:'↗'},
-    learn:{title:'Learn one useful thing',desc:'Try a 30-second micro-learning card from your interests.',emoji:'✦'},
-    rest:{title:'Take a proper breather',desc:'Put the phone down and give your eyes a few screen-free moments.',emoji:'◌'}
-  };
+  /* Two-minute puzzles with a clear answer (classic cognitive-reflection questions). */
+  const PUZZLES=[
+    {q:'A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?',a:'5 cents. (Not 10: then the bat would be $1.10 and the total $1.20.)'},
+    {q:'If 5 machines take 5 minutes to make 5 widgets, how long would 100 machines take to make 100 widgets?',a:'5 minutes. Each machine makes one widget in 5 minutes.'},
+    {q:'A patch of lily pads doubles in size every day. It takes 48 days to cover the whole lake. How long to cover half the lake?',a:'47 days. One more doubling covers the rest.'}
+  ];
+  /* Optional next steps, matched to the reason for opening, the interest and the time available. */
+  const NEXT=[
+    {id:'card',mins:2,reasons:['learn','habit','break','friends'],title:i=>`Learn one thing about ${i}`,desc:'A one-minute card with a clear ending.'},
+    {id:'puzzle',mins:2,reasons:['habit','break'],title:()=>'Try a two-minute puzzle',desc:'One question, one answer. Then you’re done.'},
+    {id:'message',mins:2,reasons:['friends'],title:()=>'Message one friend directly',desc:'Skip the feed and send one real message.'},
+    {id:'eyes',mins:2,reasons:['break'],title:()=>'Rest your eyes',desc:'Look at something far away for twenty seconds.'},
+    {id:'walk',mins:10,reasons:['habit','break'],title:()=>'Take a short walk',desc:'A change of scene, no phone needed.'},
+    {id:'call',mins:10,reasons:['friends'],title:()=>'Call someone you’ve been meaning to',desc:'Ten minutes of real conversation.'},
+    {id:'article',mins:10,reasons:['learn','habit'],title:i=>`Read a saved article about ${i}`,desc:'Something you chose earlier, not something the feed chose.'},
+    {id:'podcast',mins:30,reasons:['learn','break','habit'],title:i=>`Listen to a ${i} podcast episode`,desc:'Good on a walk, too.'},
+    {id:'plan',mins:30,reasons:['friends'],title:()=>'Plan a meetup',desc:'Turn “we should hang out” into a date.'}
+  ];
+  const TIMES=[['2','2 minutes'],['10','10 minutes'],['30','30 minutes']];
   /* Photos: Kodak Lossless True Color Image Suite, released by Eastman Kodak for unrestricted use. */
   const FEED=[
     {img:'kodim23',pos:'45% 50%',user:'birdwatch.daily',color:'#2f8f5b',cap:'Two very talkative neighbours 🦜',audio:'Original audio',likes:'48.2K',comments:'612'},
@@ -201,13 +229,13 @@
     {img:'kodim10',pos:'50% 45%',user:'regatta.club',color:'#e0a100',cap:'Leaning into it.',audio:'Sea Breeze · regatta.club',likes:'11.3K',comments:'152'},
     {img:'kodim24',pos:'60% 50%',user:'alpine.villages',color:'#7a5a3c',cap:'Every house here is painted by hand.',audio:'Original audio',likes:'26.8K',comments:'377'}
   ];
-  const defaults={reason:'break',limit:'5',after:'reading',grayscale:true,platform:'instagram'};
+  const defaults={reason:'break',limit:'5',interest:'psychology',freeTime:'10',grayscale:true,platform:'instagram'};
   let saved={};try{saved=JSON.parse(localStorage.getItem('pause_prefs')||'{}')||{}}catch(e){}
   let prefs={...defaults,...saved,platform:'instagram'};
   // New v2 default is on even for people who turned off the experimental v1 setting.
   try{if(localStorage.getItem('pause_prefs_version')!=='2')prefs.grayscale=true;}catch(e){}
   let existingGate=false;try{existingGate=sessionStorage.getItem('pause_instagram_reels_disabled')==='true'}catch(e){}
-  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,after:prefs.after,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
+  let state={screen:'home',countdown:5,learnFrom:'pause',reason:prefs.reason,limit:prefs.limit,interest:OPTIONS.interests.some(x=>x[0]===prefs.interest)?prefs.interest:'psychology',freeTime:prefs.freeTime||'10',nextPick:'',puzzle:0,grayscale:prefs.grayscale,platform:prefs.platform||'instagram',views:0,checkpoint:5,progress:0,elapsed:0,sessionStart:0,noticeShown:false,notice:false,finishedBy:'',history:[],extraRounds:0,extraRoundStart:0,reelsDisabled:existingGate,restrictedTab:'feed',activeChat:'Alex',messages:{Alex:[],Sam:[],Maya:[]}};
   let countdownTimer=null,feedTimer=null,noticeTimer=null,lastTick=0,lastWheel=0,touchY=null;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const selected=(kind,v)=>state[kind]===v?' selected':'';
@@ -215,9 +243,11 @@
   const brand=()=>'<span class="brand" aria-label="Pause">pause<i>.</i></span>';
   const step=n=>`<span class="step-label">${n}</span>`;
   const time=secs=>{const s=Math.max(0,Math.floor(secs));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
-  const save=()=>{prefs={reason:state.reason,limit:state.limit,after:state.after,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
+  const save=()=>{prefs={reason:state.reason,limit:state.limit,interest:state.interest,freeTime:state.freeTime,grayscale:state.grayscale,platform:state.platform};try{localStorage.setItem('pause_prefs',JSON.stringify(prefs));localStorage.setItem('pause_prefs_version','2')}catch(e){}};
   const grayPercent=()=>{if(!state.grayscale||state.extraRounds===0)return 0;const n=Math.max(0,Math.min(2,state.views-state.extraRoundStart))+Math.min(1,state.progress/100);return Math.min(100,Math.round((state.extraRounds===1?35:70)+n*10));};
-  const displayCount=()=>state.extraRounds?`Extra ${Math.min(3,state.views-state.extraRoundStart+1)} / 3`:state.limit==='120'?`${time(state.elapsed)} / 2:00`:`${state.views} / ${state.checkpoint} Reels`;
+  const displayCount=()=>{const t=time(state.elapsed);
+    if(state.extraRounds)return `Extra ${Math.min(3,state.views-state.extraRoundStart+1)} of 3 · ${state.views} Reels · ${t} · ${grayPercent()}% gray`;
+    return state.limit==='120'?`${state.views} Reels · ${t} / 2:00`:`${state.views} / ${state.checkpoint} Reels · ${t}`;};
   const protectInstagram=()=>{if(state.platform==='instagram'){state.reelsDisabled=true;try{sessionStorage.setItem('pause_instagram_reels_disabled','true')}catch(e){}}};
   const clearTimers=()=>{clearInterval(countdownTimer);clearInterval(feedTimer);clearTimeout(noticeTimer);countdownTimer=feedTimer=noticeTimer=null;};
   const render=()=>{root.className='screen '+(state.screen==='home'?'home-screen':state.screen==='feed'?'feed-screen':state.screen==='setup'?'setup-panel':state.screen.startsWith('protected-')?'protected-screen':'');
@@ -225,6 +255,7 @@
     if(state.screen==='pause')root.innerHTML=pause();
     if(state.screen==='setup')root.innerHTML=setup();
     if(state.screen==='learn')root.innerHTML=learn();
+    if(state.screen==='puzzle')root.innerHTML=puzzle();
     if(state.screen==='feed')root.innerHTML=feed();
     if(state.screen==='checkpoint')root.innerHTML=checkpoint();
     if(state.screen==='exit')root.innerHTML=exitScreen();
@@ -259,27 +290,37 @@
   </div>`}
   function setup(){const reasonOpts=OPTIONS.reasons.map(([k,v])=>`<button class="pill${selected('reason',k)}" data-set="reason" data-value="${k}" aria-pressed="${state.reason===k}">${v}</button>`).join('');
     const limitOpts=OPTIONS.limits.map(([k,v])=>`<button class="pill${selected('limit',k)}" data-set="limit" data-value="${k}" aria-pressed="${state.limit===k}">${v}</button>`).join('');
-    const afterOpts=OPTIONS.afters.map(([k,v])=>`<button class="pill${selected('after',k)}" data-set="after" data-value="${k}" aria-pressed="${state.after===k}">${v}</button>`).join('');
+    const interestOpts=OPTIONS.interests.map(([k,v])=>`<button class="pill${selected('interest',k)}" data-set="interest" data-value="${k}" aria-pressed="${state.interest===k}">${v}</button>`).join('');
     return `<div class="inner">
       <div class="brand-row"><button class="btn text btn-sm" data-action="back-pause">← Back</button>${step('01 · PURPOSE SESSIONS')}</div>
       <h2 style="margin:16px 0 6px">Three little<br/>commitments.</h2><p class="lede" style="margin-bottom:19px">Set them once. Change them anytime.</p>
       <section class="card rule-card"><div class="rule-label"><span class="rule-number">1</span> Why am I here?</div><div class="pill-grid">${reasonOpts}</div></section>
       <section class="card rule-card"><div class="rule-label"><span class="rule-number">2</span> Where's my finish line?</div><div class="pill-grid three">${limitOpts}</div></section>
-      <section class="card rule-card"><div class="rule-label"><span class="rule-number">3</span> What might I do afterwards?</div><div class="pill-grid">${afterOpts}</div></section>
+      <section class="card rule-card"><div class="rule-label"><span class="rule-number">3</span> What are you curious about?</div><div class="pill-grid three">${interestOpts}</div></section>
     </div>
     <div class="setup-footer"><div class="switch-row gray-setting"><span><b>Progressive grayscale</b><br/><span style="font-size:10px">On by default · starts with the first +3 Reels</span></span><button role="switch" aria-checked="${state.grayscale}" aria-label="Progressive grayscale" class="switch${state.grayscale?' on':''}" data-action="grayscale"></button></div><button class="btn full" data-action="start-feed">Start my session →</button><p class="tip">The first portion stays colourful. Each extra portion gets grayer.</p></div>`;
   }
-  function learn(){const lesson=lessons[state.after];return `<div class="inner">
-     <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('A MEANINGFUL DETOUR')}</div>
+  function learn(){const c=CARDS[state.interest];const label=nameOf(OPTIONS.interests,state.interest);return `<div class="inner">
+     <div class="brand-row"><button class="btn text btn-sm" data-action="learn-back">← Back</button>${step('LEARN ONE THING')}</div>
+     <h2 style="margin:14px 0 6px">One thing worth<br/>knowing.</h2>
+     <p class="lede" style="margin-bottom:14px">Pick what you’re curious about. One card, then you’re done.</p>
+     <div class="pill-grid three" style="margin-bottom:14px">${OPTIONS.interests.map(([k,v])=>`<button class="pill${selected('interest',k)}" data-set="interest" data-value="${k}" aria-pressed="${state.interest===k}">${v}</button>`).join('')}</div>
+     <article class="lesson-card"><span class="mini-eyebrow">${label} · 1-minute read</span><h3>${c.title}</h3>${c.body.map(t=>`<p>${t}</p>`).join('')}
+       <div class="try-this"><b>Try this</b>${c.tryThis}</div>
+       <p class="card-source">${c.source}</p>
+       <p class="card-end">That’s the whole card.</p></article>
      <div class="spacer"></div>
-     <h2>One small thing<br/>instead of a scroll.</h2>
-     <p class="lede" style="margin-bottom:24px">Your interests don't need an infinite feed. Try this 30-second exercise.</p>
-     <div class="section-title">Choose a topic</div>
-     <div class="pill-grid" style="margin-bottom:16px">${OPTIONS.afters.map(([k,v])=>`<button class="pill${selected('after',k)}" data-set="after" data-value="${k}">${v}</button>`).join('')}</div>
-     <div class="lesson-card"><span class="mini-eyebrow">${lesson.label}</span><h3>${lesson.title}</h3><p>${lesson.body}</p></div>
+     <button class="btn full" data-action="learn-complete">Done, I learned one thing ✓</button>
+     <button class="btn text full" data-action="learn-back">Back</button>
+   </div>`}
+  function puzzle(){const pz=PUZZLES[state.puzzle%PUZZLES.length];return `<div class="inner">
+     <div class="brand-row"><button class="btn text btn-sm" data-action="puzzle-back">← Back</button>${step('TWO-MINUTE PUZZLE')}</div>
      <div class="spacer"></div>
-     <button class="btn full" data-action="learn-complete">That was enough for now ✓</button>
-     <button class="btn text full" data-action="learn-back">Return to my plan</button>
+     <article class="lesson-card"><span class="mini-eyebrow">Think before you answer</span><h3 style="font-size:23px">${pz.q}</h3>
+       ${state.puzzleShown?`<div class="try-this"><b>Answer</b>${pz.a}</div><p class="card-end">That’s it. Puzzle done.</p>`:''}</article>
+     <div class="spacer"></div>
+     ${state.puzzleShown?'<button class="btn full" data-action="go-home">Done ✓</button>':'<button class="btn full" data-action="puzzle-reveal">Show the answer</button>'}
+     <button class="btn text full" data-action="puzzle-back">Back</button>
    </div>`}
   const ICON={
     heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 20.3s-7.6-4.6-9.2-9.3C1.7 7.6 4 4.5 7.3 4.5c2 0 3.6 1.1 4.7 2.8 1.1-1.7 2.7-2.8 4.7-2.8 3.3 0 5.6 3.1 4.5 6.5-1.6 4.7-9.2 9.3-9.2 9.3z"/></svg>',
@@ -312,7 +353,7 @@
     ['Settings','#8e8e93',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6"/></svg>`],
     ['Files','#2f7de1',`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h6l2 2h8v10H4z"/></svg>`]
   ]};
-  const IG_GLYPH='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8.5h3l1.6-2.5h6.8L17 8.5h3V19H4z"/><circle cx="12" cy="13.3" r="3.4"/></svg>';
+  const IG_GLYPH='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r="1.1" fill="#fff" stroke="none"/></svg>';
   function currentReel(){return FEED[(Math.max(1,state.views)-1)%FEED.length]}
   function feed(){const reel=currentReel();const gray=grayPercent();const ig=state.platform==='instagram';
     return `<div class="reel" aria-label="Simulated Instagram Reels feed. Swipe up, scroll or use the arrow for the next one.">
@@ -321,10 +362,10 @@
       <div class="reel-top">
         <button class="reel-finish" data-action="early-exit">Finish</button>
         <span class="reel-title">Reels</span>
-        <span class="reel-count" id="feed-count">${displayCount()}</span>
+        <span class="reel-cam" aria-hidden="true">${ICON.camera}</span>
       </div>
       <div class="reel-bar"><div id="reel-progress" style="width:${state.progress}%"></div></div>
-      ${state.extraRounds?`<div class="reel-gray" id="gray-label" role="status">Round ${state.extraRounds} of 2 · ${gray}% gray</div>`:''}
+      <div class="reel-stats${state.extraRounds?' gray':''}" id="feed-count" role="status">${displayCount()}</div>
       <div class="reel-rail">
         <button class="like" data-action="like" aria-label="Like">${ICON.heart}<span>${reel.likes}</span></button>
         <button aria-label="Comments">${ICON.comment}<span>${reel.comments}</span></button>
@@ -347,7 +388,7 @@
     <p class="lede">${final?`You used both +3 Reel extensions. The ${noun} Reels section is now unavailable ${state.platform==='instagram'?'in this simulated browser view':'for this demo session'}.`:state.extraRounds===0?`You reached your ${esc(nameOf(OPTIONS.limits,state.limit).toLowerCase())} boundary. The next Reel won't autoplay until you decide.`:`You finished extra portion ${state.extraRounds} of 2. If you choose the last +3, Reels start at 70% grayscale and fade to fully gray.`}</p>
     <div class="card" style="margin:23px 0 13px;background:#e8f0e7">
       <div style="font-size:11px;color:#708775;margin-bottom:8px">YOUR ORIGINAL INTENTION</div>
-      <b>${nameOf(OPTIONS.reasons,state.reason)}</b><div class="small" style="margin-top:5px">Planned finish: ${nameOf(OPTIONS.limits,state.limit)}</div>
+      <b>${nameOf(OPTIONS.reasons,state.reason)}</b><div class="small" style="margin-top:5px">Planned finish: ${nameOf(OPTIONS.limits,state.limit)}</div><div class="small" style="margin-top:3px">So far: <b>${state.views} Reels</b> in <b>${time(state.elapsed)}</b></div>
       <div class="round-indicators" aria-label="${state.extraRounds} of 2 extra portions used"><span class="${state.extraRounds>=1?'used':''}"></span><span class="${state.extraRounds>=2?'used':''}"></span><small>${state.extraRounds}/2 extensions used</small></div>
     </div>
     <p class="small">${final?'Endless scrolling ends here, but messages and regular posts stay available.':'No phone lock. If you choose three more Reels, grayscale starts immediately and gets stronger.'}</p>
@@ -359,18 +400,25 @@
        <button class="btn alt full" style="margin-top:10px" data-action="continue">+3 more Reels ${state.extraRounds===0?'(first extra portion)':'(last extra portion)'}</button>`}
     <p class="tip">${final?'The Reels tab cannot be reopened in this demo until you reset it.':'You can always stop earlier.'}</p>
   </div>`}
-  function exitScreen(){const a=alternatives[state.after],early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
+  function nextOptions(){const mins=Number(state.freeTime);const interest=nameOf(OPTIONS.interests,state.interest).toLowerCase();
+    let list=NEXT.filter(n=>n.mins<=mins&&n.reasons.includes(state.reason));
+    list.sort((a,b)=>(b.id==='card'&&state.reason==='learn')-(a.id==='card'&&state.reason==='learn')||b.mins-a.mins);
+    return list.slice(0,3).map(n=>({...n,label:n.title(interest)}));}
+  function exitScreen(){const early=state.finishedBy==='early',detour=state.finishedBy==='learn';const title=detour?'You chose a different kind of break.':early?'You decided when to stop.':'You reached your finish line.';
+    const why=nameOf(OPTIONS.reasons,state.reason).toLowerCase();const opts=nextOptions();const picked=opts.find(o=>o.id===state.nextPick);
     return `<div class="inner">
-      <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div><div class="spacer"></div>
-      <div class="checkmark">✓</div><h2>${title}</h2>
-      <p class="lede">No streaks, points or pressure. The reward is getting back to something you actually wanted to do.</p>
-      ${detour?'':`<div class="stat-grid" style="margin:24px 0"><div class="stat"><strong>${state.views}</strong><small>Posts viewed</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
-      <div class="section-title" style="margin:24px 0 12px">Your next small thing <span>Based on your choice</span></div>
-      <div class="choice-box"><div class="choice-icon">${a.emoji}</div><div><h3>${a.title}</h3><p>${a.desc}</p></div></div>
+      <div class="brand-row">${brand()}${step('02 · REWARD THE EXIT')}</div>
+      <div class="checkmark" style="margin:18px 0 16px">✓</div><h2>${title}</h2>
+      ${detour?'':`<div class="stat-grid" style="margin:14px 0 4px"><div class="stat"><strong>${state.views}</strong><small>Reels watched</small></div><div class="stat"><strong>${time(state.elapsed)}</strong><small>Time in feed</small></div></div>`}
+      <div class="section-title" style="margin:20px 0 8px">Want a next step? <span>Optional</span></div>
+      <p class="small" style="margin-bottom:10px">You came to ${esc(why)}. How much time do you have?</p>
+      <div class="pill-grid three" style="margin-bottom:10px">${TIMES.map(([k,v])=>`<button class="pill${selected('freeTime',k)}" data-set="freeTime" data-value="${k}" aria-pressed="${state.freeTime===k}" style="text-align:center">${v}</button>`).join('')}</div>
+      <div class="next-list">${opts.map(o=>`<button class="next-opt${state.nextPick===o.id?' picked':''}" data-action="pick-next" data-next="${o.id}"><b>${o.label}</b><span>${o.desc}</span><em>${o.mins} min</em></button>`).join('')}</div>
+      ${picked&&!['card','puzzle'].includes(picked.id)?`<p class="next-note">Good choice. Enjoy it, no need to report back.</p>`:''}
       <div class="spacer"></div>
-      ${state.after==='learn'?'<button class="btn full" data-action="learn-from-exit">Try my 30-second learning card →</button>':'<button class="btn full" data-action="go-home">Sounds good. I’m done.</button>'}
-      ${state.reelsDisabled&&state.platform==='instagram'?'<button class="btn alt full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':state.after==='learn'?'<button class="btn text full" data-action="go-home">I’ll do that later</button>':'<button class="btn text full" data-action="open">Start another intentional session</button>'}
-      <p class="tip">Ending your session is the reward. You don’t have to prove what you did next.</p>
+      <button class="btn full" data-action="go-home">${picked?'Done':'I’m done for now'}</button>
+      ${state.reelsDisabled?'<button class="btn text full" data-action="protected-feed">Continue with Instagram feed (no Reels)</button>':''}
+      <p class="tip">Ending your session is the reward. You don’t have to do anything else.</p>
     </div>`}
   const mockPosts=[
     {img:'kodim22',user:'maya.outdoors',place:'Hollow Creek Farm',color:'#a8322d',likes:'1,204',cap:'Weekend at the farm. No signal, no complaints.',comments:23,time:'2 hours ago'},
@@ -430,7 +478,7 @@
     if(reach){clearInterval(feedTimer);if(state.extraRounds>=2)protectInstagram();state.screen='checkpoint';state.notice=false;render();return}
     state.views++;state.progress=0;
     if(!state.noticeShown&&((state.extraRounds===0&&state.limit==='120'&&state.elapsed>50)||(state.extraRounds===0&&state.limit!=='120'&&state.views===Math.ceil(Number(state.limit)/2)))){state.notice=true;state.noticeShown=true;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{if(state.screen==='feed'&&state.notice){state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove()}},4200)}render();lastTick=performance.now()}
-  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;render()}
+  function finish(how){clearTimers();state.screen='exit';state.finishedBy=how;state.nextPick='';render()}
   function continueAfter(){if(state.extraRounds>=2)return;state.extraRounds++;state.views++;state.extraRoundStart=state.views;state.checkpoint=state.views+2;state.notice=false;state.screen='feed';state.progress=0;clearInterval(feedTimer);lastTick=performance.now();render();feedTimer=setInterval(tick,100)}
   root.addEventListener('click',event=>{
     const choice=event.target.closest('[data-set]');if(choice){const key=choice.dataset.set;state[key]=choice.dataset.value;save();render();return}
@@ -451,6 +499,9 @@
       case 'dismiss-notice':state.notice=false;const n=root.querySelector('.feed-nudge');if(n)n.remove();break;
       case 'early-exit':finish('early');break;case 'finish':finish('limit');break;case 'continue':continueAfter();break;
       case 'learn-from-exit':state.learnFrom='exit';state.screen='learn';render();break;
+      case 'pick-next':{const id=target.dataset.next;state.nextPick=id;if(id==='card'){state.learnFrom='exit';state.screen='learn'}else if(id==='puzzle'){state.puzzle++;state.puzzleShown=false;state.screen='puzzle'}render();break;}
+      case 'puzzle-reveal':state.puzzleShown=true;render();break;
+      case 'puzzle-back':state.screen='exit';render();break;
     }
   });
   root.addEventListener('submit',event=>{if(event.target.id!=='demo-chat')return;event.preventDefault();const input=event.target.querySelector('input[name=message]');const msg=input?.value.trim();if(msg){state.messages[state.activeChat].push(msg.slice(0,180));render();}});
