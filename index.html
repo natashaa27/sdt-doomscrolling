@@ -37,7 +37,7 @@
     .landing-actions{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}.land-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:14px;border:1px solid #b9ccbc;background:#fffefa;color:#264c3d;font-size:14px;font-weight:750;text-decoration:none}.land-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
     .landing-bar{display:none}.phone:focus{outline:none}
     .demo-tap{position:absolute;z-index:40;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(38,76,61,.28);border:2px solid rgba(38,76,61,.55);pointer-events:none;animation:demotap .65s ease-out forwards}@keyframes demotap{from{transform:scale(.35);opacity:1}to{transform:scale(1.25);opacity:0}}
-    @media(max-width:700px){.landing-bar{display:flex;gap:8px;justify-content:center;padding:7px 10px;background:#e4eee5}.landing-bar .land-btn{min-height:34px;font-size:12.5px;padding:0 13px;border-radius:11px;flex:1;max-width:190px}.phone{height:calc(100dvh - 48px)}}
+    @media(max-width:700px){.landing-bar{display:flex;flex-direction:column;gap:6px;padding:8px 12px 9px;background:#e4eee5}.lb-line{margin:0;font-size:13px;line-height:1.35;color:#2f4a3c;text-align:center}.lb-row{display:flex;gap:8px;justify-content:center}.landing-bar .land-btn{min-height:36px;font-size:13px;padding:0 13px;border-radius:11px;flex:1;max-width:200px}.phone{height:calc(100dvh - 78px)}}
     html.embed .landing-bar{display:none}html.embed .phone{height:100dvh}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 
@@ -229,7 +229,7 @@
   </style>
 </head>
 <body>
-<nav class="landing-bar" aria-label="Choose a mode"><a class="land-btn primary" href="#phone" data-land="try">Try Pause</a><a class="land-btn" href="walkthrough.html">▶ Watch Walkthrough</a></nav>
+<nav class="landing-bar" aria-label="About Pause"><p class="lb-line"><b>Pause</b> helps students scroll on purpose and stop by choice.</p><div class="lb-row"><a class="land-btn primary" href="walkthrough.html">▶ Watch Walkthrough</a><a class="land-btn" href="#phone" data-land="try">Try Pause</a></div></nav>
 <div id="app">
   <aside class="site-note" aria-label="Prototype explanation">
     <div class="eyebrow">A behavioural design prototype</div>
@@ -239,7 +239,7 @@
       <div class="phase"><div class="phase-index">01</div><div><b>Purpose Sessions</b>Pause for five seconds, choose why you came and set your own finish line.</div></div>
       <div class="phase"><div class="phase-index">02</div><div><b>Reward the Exit</b>Two optional +3 portions, increasingly gray Reels, then a protected feed with no Reels.</div></div>
     </div>
-    <div class="landing-actions"><a class="land-btn primary" href="#phone" data-land="try">Try Pause</a><a class="land-btn" href="walkthrough.html">▶ Watch Walkthrough</a></div>
+    <div class="landing-actions"><a class="land-btn primary" href="walkthrough.html">▶ Watch Walkthrough</a><a class="land-btn" href="#phone" data-land="try">Try Pause</a></div>
     <p style="font-size:11px;margin-top:28px;color:#819285">The Instagram view is a simulation. Blocking real Instagram Reels requires a compatible browser or browser extension; this page cannot alter the native app.</p>
   </aside>
   <main class="phone" id="phone" tabindex="-1" aria-label="Pause interactive mobile prototype">
@@ -247,7 +247,7 @@
     <div id="phone-screen" class="screen" aria-live="polite"></div>
     <div class="app-toast" id="app-toast" role="status"></div>
   </main>
-  <aside class="side-foot">Prototype v2<br/>Two extra portions → stronger grayscale → Reels off</aside>
+  <aside class="side-foot">Interactive behavioural design prototype</aside>
 </div>
 <script>
 (()=>{'use strict';

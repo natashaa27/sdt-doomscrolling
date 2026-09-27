@@ -36,6 +36,10 @@ Useful URL options:
 - **Pause** freezes both the script and the phone: the countdown, Reels and grayscale all stop.
 - **Jumping** to a step (Previous, Next, the step numbers or the chapter menu) stops automatic playback. The chosen step still sets itself up and plays its own demonstration, then waits. Press **Play** to continue to the following steps.
 
+**The explanation panel** shows a short description of what is happening and one prominent **behavioural insight**. The detail sits under **Explore further**, collapsed by default and kept open across steps once opened: what is on the phone, the user's experience, the design rationale, the systems-thinking link and its label.
+
+**The overview on the left** shrinks to a slim Pause sidebar during playback, so the phone has more room. It expands again when you pause, and you can open or close it at any time with O or the sidebar button.
+
 On screens narrower than 900 px, the explanation moves into a bottom sheet (tap its heading to shrink it), the overview is hidden, and the connecting line is replaced by the numbered bubble alone.
 
 ## How it works
@@ -64,7 +68,8 @@ Files:
 ## Updating the walkthrough
 
 Each step in `steps.js` has:
-- the panel text: `phone`, `user`, `why` and `systems`
+- `now` (a short description) and `insight` (one behavioural insight), which the panel shows first
+- the detail under "Explore further": `phone`, `user`, `why` and `systems`
 - a systems-thinking `label`
 - `say`: one or two sentences used for subtitles and narration
 - an optional `note`

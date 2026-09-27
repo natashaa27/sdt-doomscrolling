@@ -22,7 +22,7 @@
   /* ---------- Playback state ---------- */
   class Abort extends Error{}
   let token=0,cur=-1,auto=false,frozen=false,speed=Number(params.get('speed'))===1.5?1.5:1,scriptDone=false,caption='',demoRate=1;
-  let resumeWaiters=[];
+  let resumeWaiters=[],moreOpen=false,lastPlaying=null;
   const log=(ev,extra)=>{if(VIDEO)console.log('WT '+JSON.stringify({ev,t:Math.round(performance.now()),...extra}))};
   const check=t=>{if(t!==token)throw new Abort()};
   const gate=async t=>{check(t);while(frozen){await new Promise(r=>resumeWaiters.push(r));check(t)}};
@@ -78,14 +78,19 @@
     panel.style.animation='none';void panel.offsetWidth;panel.style.animation='';
     panel.innerHTML=`
       <div class="p-head" id="p-head"><span class="p-badge" id="p-anchor">${s.num}</span><div><div class="p-chapter">${c.short} · ${c.title}</div><h2>${s.name}</h2></div></div>
-      <div class="p-labels"><span class="sys-label">◎ ${s.label}</span><span class="sys-label loop-tag">${LOOPS.find(l=>l.id===s.loop).name}</span></div>
+      <p class="p-what">${s.now}</p>
+      <div class="p-insight"><span class="ins-k">Behavioural insight</span><p>${s.insight}</p></div>
       <div class="p-now" id="p-now"><span class="dotn">${s.num}</span><span id="p-caption">${caption||'Setting up the phone…'}</span></div>
-      <div class="p-sec"><h3>On the phone</h3><p>${s.phone}</p></div>
-      <div class="p-sec"><h3>What the user experiences</h3><p>${s.user}</p></div>
-      <div class="p-sec"><h3>Why this intervention</h3><p>${s.why}</p></div>
-      <div class="p-sec sys"><h3>Systems-thinking link</h3><p>${s.systems}</p></div>
-      ${s.note?`<p class="p-note">${s.note}</p>`:''}`;
-    document.querySelectorAll('.ov-int').forEach(el=>el.classList.toggle('on',Number(el.dataset.int)===c.intervention));
+      ${s.note?`<p class="p-note">${s.note}</p>`:''}
+      <details class="p-more" id="p-more"${moreOpen?' open':''}><summary>Explore further <span>design rationale and systems thinking</span></summary><div class="p-more-body">
+        <div class="p-labels"><span class="sys-label">◎ ${s.label}</span><span class="sys-label loop-tag">${s.loop} · ${LOOPS.find(l=>l.id===s.loop).name}</span></div>
+        <div class="p-sec"><h3>On the phone</h3><p>${s.phone}</p></div>
+        <div class="p-sec"><h3>What the user experiences</h3><p>${s.user}</p></div>
+        <div class="p-sec"><h3>Why this intervention</h3><p>${s.why}</p></div>
+        <div class="p-sec sys"><h3>Systems-thinking link</h3><p>${s.systems}</p></div>
+      </div></details>`;
+    $('p-more').addEventListener('toggle',e=>{moreOpen=e.target.open;layoutOverlay()});
+    document.querySelectorAll('[data-int]').forEach(el=>el.classList.toggle('on',Number(el.dataset.int)===c.intervention));
     document.querySelectorAll('.loop').forEach(el=>el.classList.toggle('on',el.dataset.id===s.loop));
     $('chapter').value=s.chapter;
     $('panel').scrollTop=0;
@@ -95,7 +100,9 @@
     box.innerHTML=CHAPTERS.map(c=>`<div class="pg-chap"><small>${c.short}</small>${STEPS.map((s,i)=>s.chapter!==c.id?'':`<button class="pg${i===cur?' on':''}${flowOf(i)===flowOf(Math.max(cur,0))&&i<cur?' done':''}" data-step="${i}" role="tab" aria-selected="${i===cur}" title="${s.num} · ${s.name}">${s.num}</button>`).join('')}</div>`).join('');
     const on=box.querySelector('.pg.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});}
   function updateButtons(){const b=$('btn-play');const playing=auto&&!frozen&&$('card-intro').hidden&&$('card-summary').hidden;
-    b.textContent=playing?'❚❚':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause (Space)':'Play (Space)'}
+    b.textContent=playing?'❚❚':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause (Space)':'Play (Space)';
+    if(playing!==lastPlaying){lastPlaying=playing;setOverview(VIDEO?false:!playing)}}
+  function setOverview(open){if(wt.classList.contains('ov-collapsed')!==open)return;wt.classList.toggle('ov-collapsed',!open);$('ov-toggle').setAttribute('aria-expanded',open);setTimeout(layout,380)}
   function renderOverview(){$('ov-loops').innerHTML='<h3>Systems view</h3>'+LOOPS.map(l=>`<div class="loop" data-id="${l.id}"><span class="tag">${l.id}</span><span><b>${l.name}.</b> ${l.text}</span></div>`).join('')}
   function fillChapters(){$('chapter').innerHTML=CHAPTERS.map(c=>`<option value="${c.id}">${c.short} · ${c.title}</option>`).join('')}
 
@@ -162,8 +169,9 @@
   $('chapter').addEventListener('change',e=>goto(chapterStart(e.target.value),{manual:true}));
   $('progress').addEventListener('click',e=>{const b=e.target.closest('[data-step]');if(b)goto(Number(b.dataset.step),{manual:true})});
   document.querySelectorAll('.spd').forEach(b=>b.addEventListener('click',()=>{speed=Number(b.dataset.speed);document.querySelectorAll('.spd').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});sendSpeed()}));
-  const toggleOverview=()=>{wt.classList.toggle('ov-collapsed');$('ov-toggle').setAttribute('aria-expanded',!wt.classList.contains('ov-collapsed'));setTimeout(layout,380)};
+  const toggleOverview=()=>setOverview(wt.classList.contains('ov-collapsed'));
   $('ov-toggle').addEventListener('click',toggleOverview);
+  document.querySelector('.ov-rail').addEventListener('click',()=>setOverview(true));
   $('panel').addEventListener('click',e=>{if(innerWidth<=900&&e.target.closest('.p-head'))wt.classList.toggle('sheet-min')});
   document.addEventListener('keydown',e=>{if(e.target.closest('select')||e.altKey||e.ctrlKey||e.metaKey)return;
     const k=e.key;
@@ -181,7 +189,7 @@
 
   /* ---------- Start ---------- */
   renderOverview();fillChapters();
-  if(innerWidth<=1280&&!VIDEO)wt.classList.add('ov-collapsed');
+  if(VIDEO)wt.classList.add('ov-collapsed');
   if(speed===1.5)document.querySelectorAll('.spd').forEach(x=>{x.classList.toggle('on',x.dataset.speed==='1.5');x.setAttribute('aria-pressed',x.dataset.speed==='1.5')});
   layout();renderProgress();
   whenReady().then(async()=>{await sendSpeed();
