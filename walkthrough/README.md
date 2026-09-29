@@ -38,7 +38,7 @@ Useful URL options:
 
 **The explanation panel** shows a short description of what is happening and one prominent **systems-thinking insight**. The detail sits under **Explore further**, collapsed by default and kept open across steps once opened: what is on the phone, the user's experience, the design rationale, the systems-thinking link and its label.
 
-**The overview on the left** shrinks to a slim Pause sidebar during playback, so the phone has more room. It expands again when you pause, and you can open or close it at any time with O or the sidebar button.
+**The overview on the left** stays open or closed exactly as you leave it; playing, pausing or replaying the walkthrough never changes it. Open or close it at any time with O or the sidebar button.
 
 On screens narrower than 900 px, the explanation moves into a bottom sheet (tap its heading to shrink it), the overview is hidden, and the connecting line is replaced by the numbered bubble alone.
 
