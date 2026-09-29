@@ -22,7 +22,7 @@
   /* ---------- Playback state ---------- */
   class Abort extends Error{}
   let token=0,cur=-1,auto=false,frozen=false,speed=Number(params.get('speed'))===1.5?1.5:1,scriptDone=false,caption='',demoRate=1;
-  let resumeWaiters=[],moreOpen=false,lastPlaying=null;
+  let resumeWaiters=[],moreOpen=false;
   const log=(ev,extra)=>{if(VIDEO)console.log('WT '+JSON.stringify({ev,t:Math.round(performance.now()),...extra}))};
   const check=t=>{if(t!==token)throw new Abort()};
   const gate=async t=>{check(t);while(frozen){await new Promise(r=>resumeWaiters.push(r));check(t)}};
@@ -100,8 +100,7 @@
     box.innerHTML=CHAPTERS.map(c=>`<div class="pg-chap"><small>${c.short}</small>${STEPS.map((s,i)=>s.chapter!==c.id?'':`<button class="pg${i===cur?' on':''}${flowOf(i)===flowOf(Math.max(cur,0))&&i<cur?' done':''}" data-step="${i}" role="tab" aria-selected="${i===cur}" title="${s.num} · ${s.name}">${s.num}</button>`).join('')}</div>`).join('');
     const on=box.querySelector('.pg.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});}
   function updateButtons(){const b=$('btn-play');const playing=auto&&!frozen&&$('card-intro').hidden&&$('card-summary').hidden;
-    b.textContent=playing?'❚❚':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause (Space)':'Play (Space)';
-    if(playing!==lastPlaying){lastPlaying=playing;setOverview(VIDEO?false:!playing)}}
+    b.textContent=playing?'❚❚':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.title=playing?'Pause (Space)':'Play (Space)'}
   function setOverview(open){if(wt.classList.contains('ov-collapsed')!==open)return;wt.classList.toggle('ov-collapsed',!open);$('ov-toggle').setAttribute('aria-expanded',open);setTimeout(layout,380)}
   function renderOverview(){$('ov-loops').innerHTML='<h3>Systems view</h3>'+LOOPS.map(l=>`<div class="loop" data-id="${l.id}"><span class="tag">${l.id}</span><span><b>${l.name}.</b> ${l.text}</span></div>`).join('')}
   function fillChapters(){$('chapter').innerHTML=CHAPTERS.map(c=>`<option value="${c.id}">${c.short} · ${c.title}</option>`).join('')}
